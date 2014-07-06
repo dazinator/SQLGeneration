@@ -40,10 +40,10 @@ namespace SQLGeneration.Generators
         }
 
         private FormattingVisitor(
-            TextWriter writer, 
-            CommandOptions options, 
-            int level, 
-            CommandType commandType, 
+            TextWriter writer,
+            CommandOptions options,
+            int level,
+            CommandType commandType,
             SourceReferenceType sourceType,
             ValueReferenceType projectionType)
         {
@@ -105,6 +105,19 @@ namespace SQLGeneration.Generators
                 writer.Write(".");
             }
             writer.Write("*");
+        }
+
+        /// <summary>
+        /// Generates the text for a Batch builder.
+        /// </summary>
+        /// <param name="item">The BatchBuilder to generate the text for.</param>
+        protected internal override void VisitBatch(BatchBuilder item)
+        {
+            foreach (var command in item.Commands())
+            {
+                command.Accept(this);
+            }
+            base.VisitBatch(item);
         }
 
         /// <summary>
@@ -227,6 +240,10 @@ namespace SQLGeneration.Generators
                 writer.Write(" WHERE ");
                 IFilter filterGroup = item.WhereFilterGroup;
                 filterGroup.Accept(forSubCommand().forValueContext(ValueReferenceType.Reference));
+            }
+            if (item.HasTerminator)
+            {
+                writer.Write(options.Terminator);
             }
         }
 
@@ -507,6 +524,10 @@ namespace SQLGeneration.Generators
                 writer.Write("VALUES");
             }
             item.Values.Accept(forSubCommand().forValueContext(ValueReferenceType.Reference));
+            if (item.HasTerminator)
+            {
+                writer.Write(options.Terminator);
+            }
         }
 
         /// <summary>
@@ -834,7 +855,7 @@ namespace SQLGeneration.Generators
             visitUnboundFrame(item);
             writer.Write(" PRECEDING");
         }
-        
+
         /// <summary>
         /// Generates the text for a RightOuterJoin builder.
         /// </summary>
@@ -910,6 +931,10 @@ namespace SQLGeneration.Generators
             if (needsParentheses)
             {
                 writer.Write(")");
+            }
+            if (item.HasTerminator)
+            {
+                writer.Write(options.Terminator);
             }
         }
 
@@ -1009,6 +1034,10 @@ namespace SQLGeneration.Generators
                 writer.Write(" WHERE ");
                 IVisitableBuilder where = item.WhereFilterGroup;
                 where.Accept(forSubCommand().forValueContext(ValueReferenceType.Reference));
+            }
+            if (item.HasTerminator)
+            {
+                writer.Write(options.Terminator);
             }
         }
 
@@ -1214,6 +1243,10 @@ namespace SQLGeneration.Generators
             {
                 writer.Write(")");
             }
+            if (combiner.HasTerminator)
+            {
+                writer.Write(options.Terminator);
+            }
         }
 
         private void visitBoundFrame(BoundFrame item)
@@ -1312,7 +1345,8 @@ namespace SQLGeneration.Generators
             Select,
             Insert,
             Update,
-            Delete
+            Delete,
+            Batch
         }
 
         private enum SourceReferenceType

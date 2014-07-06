@@ -71,9 +71,9 @@ namespace SQLGeneration.Parsing
         /// <summary>
         /// Gets the default instance of the SqlGrammar.
         /// </summary>
-        public static SqlGrammar Default 
-        { 
-            get { return instance; } 
+        public static SqlGrammar Default
+        {
+            get { return instance; }
         }
 
         #region Start
@@ -89,8 +89,8 @@ namespace SQLGeneration.Parsing
             public const string Name = "Start";
 
             /// <summary>
-                /// Gets the name for the SELECT statement option.
-                /// </summary>
+            /// Gets the name for the SELECT statement option.
+            /// </summary>
             public const string SelectStatement = "select_statement";
 
             /// <summary>
@@ -107,6 +107,13 @@ namespace SQLGeneration.Parsing
             /// Gets the name for the DELETE statement option.
             /// </summary>
             public const string DeleteStatement = "delete_statement";
+
+            /// <summary>
+            /// Gets the name for the Terminator of a statement.
+            /// </summary>
+            public const string Terminator = "terminator";
+
+
         }
 
         private void defineStart()
@@ -116,7 +123,8 @@ namespace SQLGeneration.Parsing
                     .Add(Start.SelectStatement, Expression(SelectStatement.Name))
                     .Add(Start.InsertStatement, Expression(InsertStatement.Name))
                     .Add(Start.UpdateStatement, Expression(UpdateStatement.Name))
-                    .Add(Start.DeleteStatement, Expression(DeleteStatement.Name)));
+                    .Add(Start.DeleteStatement, Expression(DeleteStatement.Name)))
+                    .Add(Start.Terminator, false, Token(SqlTokenRegistry.LineTerminator));
         }
 
         #endregion
@@ -184,8 +192,8 @@ namespace SQLGeneration.Parsing
             public const string Name = "SelectExpression";
 
             /// <summary>
-                /// Describes the structure of the leading SELECT expression when it is surrounded by parenthesis.
-                /// </summary>
+            /// Describes the structure of the leading SELECT expression when it is surrounded by parenthesis.
+            /// </summary>
             public static class Wrapped
             {
                 /// <summary>
@@ -884,7 +892,7 @@ namespace SQLGeneration.Parsing
                 /// Gets the identifier for the comma separator.
                 /// </summary>
                 public const string Comma = "comma";
-                
+
                 /// <summary>
                 /// Gets the identifier for the rest of the projection list.
                 /// </summary>
@@ -1899,7 +1907,7 @@ namespace SQLGeneration.Parsing
                 /// Gets the identifier indicating whether the filter is doing a string comparison.
                 /// </summary>
                 public const string Name = "Like";
-                
+
                 /// <summary>
                 /// Gets the identifier for the expression being compared.
                 /// </summary>
@@ -2665,7 +2673,7 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string RightParenthesis = "right_parenthesis";
             }
-            
+
             /// <summary>
             /// Gets the identifier for an unwrapped item.
             /// </summary>
@@ -3686,7 +3694,7 @@ namespace SQLGeneration.Parsing
                 /// Gets the identifier for the dot separator.
                 /// </summary>
                 public const string Dot = "dot";
-                
+
                 /// <summary>
                 /// Gets the identifier for the rest of the identifiers.
                 /// </summary>

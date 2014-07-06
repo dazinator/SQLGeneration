@@ -377,6 +377,11 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string End = "End";
 
+          /// <summary>
+        /// Gets the identifier for the Line Terminator which can be used to seperate SQL statements in a batch.
+        /// </summary>
+        public const string LineTerminator = "LineTerminator";
+
         /// <summary>
         /// Initializes a new instance of a SqlTokenizer.
         /// </summary>
@@ -458,6 +463,7 @@ namespace SQLGeneration.Parsing
             Define(Number, @"[-+]?\d*\.?\d+([eE][-+]?\d+)?");
             Define(RightParenthesis, @"\)");
             Define(String, @"'([^']|'')*'");
+            Define(LineTerminator, @"('(?:\\.|''|[^'])*(')?)|(;)");           
         }
     }
 }

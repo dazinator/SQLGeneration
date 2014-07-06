@@ -825,7 +825,7 @@ namespace SQLGeneration.Tests
         /// </summary>
         [TestMethod]
         public void TestSelect_FunctionWithStartFraming()
-        {            
+        {
             string commandText = "SELECT sale.prod_id, sale.month_num, sale.sales, SUM(sale.sales) OVER (PARTITION BY sale.prod_id ORDER BY sale.month_num ROWS 12 PRECEDING) FROM sale";
             assertCanReproduce(commandText);
         }
@@ -1025,6 +1025,21 @@ namespace SQLGeneration.Tests
 
         #endregion
 
+        #region Batch
+
+        /// <summary>
+        /// This sees whether we can reproduce multiple insert statements in a batch.
+        /// </summary>
+        [TestMethod]
+        public void TestBatch_MultipleInserts()
+        {
+            string commandText = @"INSERT INTO Table VALUES();
+                                   INSERT INTO Table VALUES()";
+            assertCanReproduce(commandText);
+        }
+
+        #endregion      
+
         private void assertCanReproduce(string commandText, CommandBuilderOptions options = null)
         {
             CommandBuilder builder = new CommandBuilder();
@@ -1049,7 +1064,7 @@ namespace SQLGeneration.Tests
             customerId.Qualify = false;
             Placeholder parameter = new Placeholder("@customerId");
             select.AddWhere(new EqualToFilter(customerId, parameter));
-            
+
             Formatter formatter = new Formatter();
             string actual = formatter.GetCommandText(select);
             string expected = "SELECT * FROM Customer WHERE CustomerId = @customerId";
@@ -1078,7 +1093,7 @@ namespace SQLGeneration.Tests
         [TestMethod]
         public void TestSelect_Newlines()
         {
-            string commandText = 
+            string commandText =
 @"SELECT
     *
 FROM Table1
@@ -1213,7 +1228,7 @@ ORDER BY b.CompanyId, r.RouteId, vm.VendingMachineId, p.ProductLookupId, rc.Effe
                         new EqualToFilter(new Column("FirstName"), new StringLiteral("Max")),
                         new FilterGroup(Conjunction.And,
                             new EqualToFilter(new Column("LastName"), new StringLiteral("Planck")))));
-            
+
             wrapInParentheses(topFilter, true);
 
             SelectBuilder selectBuilder = new SelectBuilder();

@@ -44,8 +44,36 @@ namespace SQLGeneration.Generators
             this.scope = new SourceScope();
             this.options = options ?? new CommandBuilderOptions();
             ITokenSource tokenSource = Grammar.TokenRegistry.CreateTokenSource(commandText);
-            MatchResult result = GetResult(tokenSource);
-            return buildStart(result);
+
+            var batch = new BatchBuilder();
+
+            while (true)
+            {
+                MatchResult result = GetResult(tokenSource);
+                if (result != null && result.IsMatch)
+                {
+                    var command = buildStart(result);
+                    batch.AddCommand(command);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (batch.IsSingleCommand())
+            {
+                return batch.GetCommand(0);
+            }
+
+            return batch;
+        }
+
+        private void buildTerminator(MatchResult result, ICommand builder)
+        {
+            MatchResult terminator = result.Matches[SqlGrammar.Start.Terminator];
+            builder.HasTerminator = terminator.IsMatch;
+            return;
         }
 
         private ICommand buildStart(MatchResult result)
@@ -53,22 +81,30 @@ namespace SQLGeneration.Generators
             MatchResult select = result.Matches[SqlGrammar.Start.SelectStatement];
             if (select.IsMatch)
             {
-                return buildSelectStatement(select);
+                ICommand command = buildSelectStatement(select);
+                buildTerminator(result, command);
+                return command;
             }
             MatchResult insert = result.Matches[SqlGrammar.Start.InsertStatement];
             if (insert.IsMatch)
             {
-                return buildInsertStatement(insert);
+                ICommand command = buildInsertStatement(insert);
+                buildTerminator(result, command);
+                return command;
             }
             MatchResult update = result.Matches[SqlGrammar.Start.UpdateStatement];
             if (update.IsMatch)
             {
-                return buildUpdateStatement(update);
+                ICommand command = buildUpdateStatement(update);
+                buildTerminator(result, command);
+                return command;
             }
             MatchResult delete = result.Matches[SqlGrammar.Start.DeleteStatement];
             if (delete.IsMatch)
             {
-                return buildDeleteStatement(delete);
+                ICommand command = buildDeleteStatement(delete);
+                buildTerminator(result, command);
+                return command;
             }
             throw new InvalidOperationException();
         }

@@ -46,6 +46,7 @@
     <Compile Include="Builders\AliasedProjection.cs" />
     <Compile Include="Builders\AliasedSource.cs" />
     <Compile Include="Builders\ArithmeticExpression.cs" />
+    <Compile Include="Builders\BatchBuilder.cs" />
     <Compile Include="Builders\BetweenFilter.cs" />
     <Compile Include="Builders\BetweenWindowFrame.cs" />
     <Compile Include="Builders\BuilderVisitor.cs" />

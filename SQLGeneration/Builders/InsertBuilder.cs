@@ -12,6 +12,7 @@ namespace SQLGeneration.Builders
         private readonly AliasedSource _table;
         private readonly List<Column> _columns;
         private readonly IValueProvider _values;
+        private bool _hasTerminator = false;
 
         /// <summary>
         /// Initializes a new instance of a InsertBuilder.
@@ -85,9 +86,26 @@ namespace SQLGeneration.Builders
             get { return _values; }
         }
 
+        /// <summary>
+        /// Gets whether this command has a terminator.
+        /// </summary>
+        public bool HasTerminator
+        {
+            get
+            {
+                return _hasTerminator;
+            }
+            set
+            {
+                _hasTerminator = value;
+            }
+        }
+
         void IVisitableBuilder.Accept(BuilderVisitor visitor)
         {
             visitor.VisitInsert(this);
         }
+
+
     }
 }

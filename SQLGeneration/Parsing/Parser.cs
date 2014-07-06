@@ -39,13 +39,7 @@ namespace SQLGeneration.Parsing
 
             Expression expression = grammar.Expression(expressionType);
             ParseAttempt attempt = new ParseAttempt(this, tokenSource);
-            MatchResult result = expression.Match(attempt, String.Empty);
-
-            // check that there are no trailing tokens
-            if (result.IsMatch && attempt.GetToken() != null)
-            {
-                result.IsMatch = false;
-            }
+            MatchResult result = expression.Match(attempt, String.Empty);         
 
             return result;
         }

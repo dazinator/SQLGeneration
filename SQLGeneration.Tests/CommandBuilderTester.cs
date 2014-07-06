@@ -1038,17 +1038,36 @@ namespace SQLGeneration.Tests
         #region Batch
 
         /// <summary>
-        /// This sees whether we can reproduce multiple insert statements in a batch.
+        /// This sees whether we can reproduce a batch of SQL statements.
+        /// </summary>
+        [TestMethod]
+        public void TestBatch_MixtureOfStatementsWithSemiColons()
+        {
+            string commandText = @"INSERT INTO Table (TestCol) VALUES(';');SELECT 1 UNION ALL SELECT 1;SELECT CASE WHEN Table.Column = 'Adm;in' THEN 'Administ;rator' ELSE 'Us;er' END FROM Table";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce multiple insert statements in a batch using a terminator.
         /// </summary>
         [TestMethod]
         public void TestBatch_MultipleInserts()
         {
-            string commandText = @"INSERT INTO Table VALUES();
-                                   INSERT INTO Table VALUES()";
+            string commandText = @"INSERT INTO Table VALUES();INSERT INTO Table VALUES()";
             assertCanReproduce(commandText);
         }
 
-        #endregion      
+        /// <summary>
+        /// This tests whether the terminator is persisted when we parse and reproduce the sql.
+        /// </summary>
+        [TestMethod]
+        public void TestBatch_TerminatorPersists()
+        {
+            string commandText = @"INSERT INTO Table VALUES();";
+            assertCanReproduce(commandText);
+        }
+
+        #endregion
 
         private void assertCanReproduce(string commandText, CommandBuilderOptions options = null)
         {

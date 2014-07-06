@@ -46,6 +46,14 @@ namespace SQLGeneration.Builders
         }
 
         /// <summary>
+        /// Visits a Batch builder.
+        /// </summary>
+        /// <param name="item">The item to visit.</param>
+        protected internal virtual void VisitBatch(BatchBuilder item)
+        {
+        }
+
+        /// <summary>
         /// Visits a BetweenFilter builder.
         /// </summary>
         /// <param name="item">The item to visit.</param>

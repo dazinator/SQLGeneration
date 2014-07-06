@@ -13,6 +13,7 @@ namespace SQLGeneration.Builders
         private readonly AliasedSource _table;
         private readonly IList<Setter> _setters;
         private readonly FilterGroup _where;
+        private bool _hasTerminator = false;
 
         /// <summary>
         /// Initializes a new instance of a UpdateBuilder.
@@ -106,6 +107,21 @@ namespace SQLGeneration.Builders
         public bool RemoveWhere(IFilter filter)
         {
             return _where.RemoveFilter(filter);
+        }
+
+        /// <summary>
+        /// Gets whether this command has a terminator.
+        /// </summary>
+        public bool HasTerminator
+        {
+            get
+            {
+                return _hasTerminator;
+            }
+            set
+            {
+                _hasTerminator = value;
+            }
         }
 
         void IVisitableBuilder.Accept(BuilderVisitor visitor)

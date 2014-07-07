@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SQLGeneration")]
-[assembly: AssemblyDescription("An object model for generating SQL at runtime.")]
+[assembly: AssemblyTitle("SQLGeneration-DazinatorFork")]
+[assembly: AssemblyDescription("An object model for generating SQL at runtime. (Fork of SQLGeneration)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Truncon")]
-[assembly: AssemblyProduct("SQLGeneration")]
+[assembly: AssemblyCompany("Dazinator")]
+[assembly: AssemblyProduct("SQLGeneration-DazinatorFork")]
 [assembly: AssemblyCopyright("Copyright © 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

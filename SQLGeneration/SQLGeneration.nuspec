@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
-<package >
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <projectUrl>http://github.com/jehugaleahsa/sqlgeneration</projectUrl>
+    <id>SQLGeneration.DazinatorFork</id>
+    <version>2.5.0.0-dazinatorfork</version>
+    <title>SQLGeneration (DazinatorFork)</title>
+    <authors>Dazinator</authors>
+    <owners>Dazinator</owners>
+    <projectUrl>https://github.com/dazinator/SQLGeneration</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Record Token Type When Building Commands</releaseNotes>
-    <copyright>Copyright 2013</copyright>
-    <tags>SQL generation builder building command select insert update delete</tags>
+    <description>A fork of the SQLGeneration code base.</description>
+    <releaseNotes>Can now parse SQL that contains multiple commands, when they are terminated with a semicolon.</releaseNotes>
+    <copyright>Copyright 2014</copyright>
+    <tags>SQL generation builder sql parser sqlparser building command select insert update delete</tags>
   </metadata>
 </package>

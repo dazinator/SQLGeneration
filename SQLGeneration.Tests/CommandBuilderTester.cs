@@ -1040,6 +1040,17 @@ namespace SQLGeneration.Tests
         /// <summary>
         /// This sees whether we can reproduce a batch of SQL statements.
         /// </summary>
+        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
+        public void TestBatch_InvalidSql()
+        {
+            string commandText = @"SELECT FROM X";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a batch of SQL statements.
+        /// </summary>
         [TestMethod]
         public void TestBatch_MixtureOfStatementsWithSemiColons()
         {

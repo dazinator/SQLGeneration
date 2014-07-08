@@ -46,12 +46,13 @@ namespace SQLGeneration.Generators
             ITokenSource tokenSource = Grammar.TokenRegistry.CreateTokenSource(commandText);
 
             var batch = new BatchBuilder();
-
+            int statementCount = 0;
             while (true)
             {
                 MatchResult result = GetResult(tokenSource);
                 if (result != null && result.IsMatch)
                 {
+                    statementCount++;
                     var command = buildStart(result);
                     batch.AddCommand(command);
                 }
@@ -61,12 +62,18 @@ namespace SQLGeneration.Generators
                 }
             }
 
-            if (batch.IsSingleCommand())
+            if (statementCount == 0)
+            {
+                throw new InvalidOperationException();
+            }
+            else if (statementCount == 1)
             {
                 return batch.GetCommand(0);
             }
-
-            return batch;
+            else
+            {
+                return batch;
+            }
         }
 
         private void buildTerminator(MatchResult result, ICommand builder)

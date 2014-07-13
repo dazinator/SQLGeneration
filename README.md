@@ -1,11 +1,15 @@
-## This FORK (hopefully temporary) of SQLGeneration contains some additional functionality to allow you to parse batches of SQL statements, where individual statements are terminated with a semicolon. Example:
+## This FORK 
 
+This (hopefully temporary) fork of SQLGeneration contains some additional functionality to allow you to parse batches of SQL statements as opposed to just a single one. Individual statements in a batch should be terminated with a semicolon. Example:
+
+```cs
     string commandText = "SELECT CustomerId, FirstName, LastName, Created FROM Customer; INSERT INTO Names (Name) Values  ('Chuck Norris');";
     CommandBuilder commandBuilder = new CommandBuilder();
     SelectBuilder builder = (SelectBuilder)commandBuilder.GetCommand(commandText);
     
     Formatter formatter = new Formatter();
     commandText = formatter.GetCommandText(builder);
+```
 
 # SQLGeneration
 

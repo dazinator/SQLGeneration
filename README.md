@@ -1,4 +1,4 @@
-# This FORK (hopefully temporary) of SQLGeneration contains some additional functionality to allow you to parse batches of SQL statements, where individual statements are terminated with a semicolon. Example:
+## This FORK (hopefully temporary) of SQLGeneration contains some additional functionality to allow you to parse batches of SQL statements, where individual statements are terminated with a semicolon. Example:
 
     string commandText = "SELECT CustomerId, FirstName, LastName, Created FROM Customer; INSERT INTO Names (Name) Values  ('Chuck Norris');";
     CommandBuilder commandBuilder = new CommandBuilder();

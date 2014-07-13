@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>SQLGeneration.DazinatorFork</id>
-    <version>2.5.3-dazinatorfork</version>
+    <version>2.5.3</version>
     <title>SQLGeneration (DazinatorFork)</title>
     <authors>Dazinator</authors>
     <owners>Dazinator</owners>

@@ -5,7 +5,7 @@ This (hopefully temporary) fork of SQLGeneration contains some additional functi
 ```cs
     string commandText = "SELECT CustomerId, FirstName, LastName, Created FROM Customer; INSERT INTO Names (Name) Values  ('Chuck Norris');";
     CommandBuilder commandBuilder = new CommandBuilder();
-    SelectBuilder builder = (SelectBuilder)commandBuilder.GetCommand(commandText);
+    var builder = commandBuilder.GetCommand(commandText);
     
     Formatter formatter = new Formatter();
     commandText = formatter.GetCommandText(builder);

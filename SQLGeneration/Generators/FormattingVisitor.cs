@@ -1346,7 +1346,7 @@ namespace SQLGeneration.Generators
             Insert,
             Update,
             Delete,
-            Batch
+            Create
         }
 
         private enum SourceReferenceType
@@ -1361,5 +1361,37 @@ namespace SQLGeneration.Generators
             Alias,
             Reference
         }
+
+        /// <summary>
+        /// Generates the text for a Create builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitCreate(CreateBuilder item)
+        {
+            forCommandType(CommandType.Create).visitCreate(item);
+        }
+
+        private void visitCreate(CreateBuilder item)
+        {
+            writer.Write("CREATE ");
+
+            item.CreateObject.Accept(this);          
+
+            if (item.HasTerminator)
+            {
+                writer.Write(options.Terminator);
+            }
+        }
+
+        /// <summary>
+        /// Generates the text for a Database builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitDatabase(Database item)
+        {
+            writer.Write("DATABASE ");
+            writer.Write(item.Name);
+        }
+
     }
 }

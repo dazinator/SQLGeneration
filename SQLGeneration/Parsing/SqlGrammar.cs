@@ -66,6 +66,9 @@ namespace SQLGeneration.Parsing
             defineSetter();
             defineDeleteStatement();
             defineMultipartIdentifier();
+
+            // ddl
+            defineCreateStatement();
         }
 
         /// <summary>
@@ -113,6 +116,11 @@ namespace SQLGeneration.Parsing
             /// </summary>
             public const string Terminator = "terminator";
 
+            /// <summary>
+            /// Gets the name for the INSERT statement option.
+            /// </summary>
+            public const string CreateStatement = "create_statement";
+
 
         }
 
@@ -123,8 +131,10 @@ namespace SQLGeneration.Parsing
                     .Add(Start.SelectStatement, Expression(SelectStatement.Name))
                     .Add(Start.InsertStatement, Expression(InsertStatement.Name))
                     .Add(Start.UpdateStatement, Expression(UpdateStatement.Name))
-                    .Add(Start.DeleteStatement, Expression(DeleteStatement.Name)))
-                    .Add(Start.Terminator, false, Token(SqlTokenRegistry.LineTerminator));
+                    .Add(Start.DeleteStatement, Expression(DeleteStatement.Name))
+                    .Add(Start.CreateStatement, Expression(CreateStatement.Name))
+                    )
+                .Add(Start.Terminator, false, Token(SqlTokenRegistry.LineTerminator));
         }
 
         #endregion
@@ -3717,6 +3727,92 @@ namespace SQLGeneration.Parsing
                         .Add(MultipartIdentifier.Multiple.Remaining, true, Expression(MultipartIdentifier.Name)))
                     .Add(MultipartIdentifier.Single, Token(SqlTokenRegistry.Identifier)));
         }
+
+        #endregion
+
+        #region DDL
+
+        #region CreateStatement
+
+        /// <summary>
+        /// Describes the structure of the Create statement.
+        /// </summary>
+        public static class CreateStatement
+        {
+            /// <summary>
+            /// Gets the name identifying the CREATE statement.
+            /// </summary>
+            public const string Name = "CreateStatement";
+
+            /// <summary>
+            /// Gets the identifier for the CREATE keyword.
+            /// </summary>
+            public const string CreateKeyword = "create";
+
+            /// <summary>
+            /// Gets the identifier for the DATABASE keyword.
+            /// </summary>
+            public const string DatabaseKeyword = "database";
+
+            /// <summary>
+            /// Gets the identifier for the table name.
+            /// </summary>
+            public const string DatabaseName = "databasename";
+
+            /// <summary>
+            /// Gets the identifier for the TABLE keyword.
+            /// </summary>
+            public const string TableKeyword = "table";
+
+            /// <summary>
+            /// Gets the identifier for the table name.
+            /// </summary>
+            public const string TableName = "tablename";
+
+            /// <summary>
+            /// Describes the structure of the table.
+            /// </summary>
+            public static class TableDefinitionList
+            {
+                /// <summary>
+                /// Gets the identifier indicating that there is a columns definition list.
+                /// </summary>
+                public const string Name = "TableDefinitionList";
+
+                /// <summary>
+                /// Gets the identifier for the left parenthesis.
+                /// </summary>
+                public const string LeftParenthesis = "left_parenthesis";
+
+                /// <summary>
+                /// Gets the identifier for the columns definition list.
+                /// </summary>
+                public const string ColumnsDefinitionList = "tabledefinition_list";
+
+                /// <summary>
+                /// Gets the identifier for the right parenthesis.
+                /// </summary>
+                public const string RightParenthesis = "right_parenthesis";
+            }
+
+        }
+
+        private void defineCreateStatement()
+        {
+            Define(CreateStatement.Name)
+                .Add(SqlGrammar.CreateStatement.CreateKeyword, true, Token(SqlTokenRegistry.Create))
+                .Add(SqlGrammar.CreateStatement.DatabaseKeyword, true, Token(SqlTokenRegistry.Database))
+                 .Add(SqlGrammar.CreateStatement.DatabaseName, true, Token(SqlTokenRegistry.Identifier));
+
+
+
+            //.Add(SqlGrammar.CreateStatement.TableKeyword, Define()
+            //            .Add(SqlGrammar.CreateStatement.TableName, true, Expression(MultipartIdentifier.Name)))
+
+        }
+
+        #endregion
+
 
         #endregion
     }

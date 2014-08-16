@@ -911,6 +911,16 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// Tests whether we can reproduce a select statement without any sources.
+        /// </summary>
+        [TestMethod]
+        public void TestSelect_NoSources()
+        {
+            string commandText = @"SELECT SomeFunction('ServerName') AS test1, SomeFunction('ServerName') AS test2";
+            assertCanReproduce(commandText);
+        }
+
         #endregion
 
         #region Insert
@@ -1077,6 +1087,21 @@ namespace SQLGeneration.Tests
             string commandText = @"INSERT INTO Table VALUES();";
             assertCanReproduce(commandText);
         }
+
+        #endregion
+
+        #region Create
+
+        /// <summary>
+        /// This sees whether we can reproduce a simple create database statement.
+        /// </summary>
+        [TestMethod]
+        public void TestCreate_Database()
+        {
+            string commandText = "CREATE DATABASE NewDatabase";
+            assertCanReproduce(commandText);
+        }
+
 
         #endregion
 

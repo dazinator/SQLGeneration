@@ -113,7 +113,32 @@ namespace SQLGeneration.Generators
                 buildTerminator(result, command);
                 return command;
             }
+            MatchResult create = result.Matches[SqlGrammar.Start.CreateStatement];
+            if (create.IsMatch)
+            {
+                ICommand command = buildCreateStatement(create);
+                buildTerminator(result, command);
+                return command;
+            }
             throw new InvalidOperationException();
+        }
+
+        private ICommand buildCreateStatement(MatchResult result)
+        { 
+            var createBuilder = new CreateBuilder();
+            MatchResult databaseResult = result.Matches[SqlGrammar.CreateStatement.DatabaseKeyword];
+            if (databaseResult.IsMatch)
+            {
+                MatchResult databaseNameResult = result.Matches[SqlGrammar.CreateStatement.DatabaseName];
+                if (databaseNameResult.IsMatch)
+                {
+                    var databaseName = getToken(databaseNameResult);
+                    var database = new Database(databaseName);
+                    createBuilder.CreateObject = database;
+                }
+            }
+
+            return createBuilder;          
         }
 
         private ISelectBuilder buildSelectStatement(MatchResult result)

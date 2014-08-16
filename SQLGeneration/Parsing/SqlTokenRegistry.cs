@@ -151,7 +151,7 @@ namespace SQLGeneration.Parsing
         /// Gets the identifier for the CROSS JOIN keyword.
         /// </summary>
         public const string CrossJoin = "CrossJoin";
-        
+
         /// <summary>
         /// Gets the identifier for a left parenthesis.
         /// </summary>
@@ -246,7 +246,7 @@ namespace SQLGeneration.Parsing
         /// Gets the identifier for the SET keyword.
         /// </summary>
         public const string Set = "Set";
-        
+
         /// <summary>
         /// Gets the identifier for a string literal.
         /// </summary>
@@ -377,10 +377,29 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string End = "End";
 
-          /// <summary>
+        /// <summary>
         /// Gets the identifier for the Line Terminator which can be used to seperate SQL statements in a batch.
         /// </summary>
         public const string LineTerminator = "LineTerminator";
+
+        #region DDL
+
+        /// <summary>
+        /// Gets the identifier for the CREATE keyword.
+        /// </summary>
+        public const string Create = "Create";
+
+        /// <summary>
+        /// Gets the identifier for the Database keyword.
+        /// </summary>
+        public const string Database = "Database";
+
+        /// <summary>
+        /// Gets the identifier for the Table keyword.
+        /// </summary>
+        public const string Table = "Table";
+
+        #endregion
 
         /// <summary>
         /// Initializes a new instance of a SqlTokenizer.
@@ -444,6 +463,11 @@ namespace SQLGeneration.Parsing
             Define(Else, @"ELSE\b", true);
             Define(End, @"END\b", true);
 
+            // DDL
+            Define(Create, @"CREATE\b", true);
+            Define(Database, @"DATABASE\b", true);
+            Define(Table, @"TABLE\b", true);
+
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 
             Define(PlusOperator, @"\+");
@@ -464,6 +488,7 @@ namespace SQLGeneration.Parsing
             Define(RightParenthesis, @"\)");
             Define(String, @"'([^']|'')*'");
             Define(LineTerminator, @"('(?:\\.|''|[^'])*(')?)|(;)");           
+
         }
     }
 }

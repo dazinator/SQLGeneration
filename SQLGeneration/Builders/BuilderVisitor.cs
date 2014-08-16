@@ -99,7 +99,7 @@ namespace SQLGeneration.Builders
         /// <param name="item">The item to visit.</param>
         protected internal virtual void VisitCurrentRowFrame(CurrentRowFrame item)
         {
-        }
+        }    
 
         /// <summary>
         /// Visits a Delete builder.
@@ -517,5 +517,22 @@ namespace SQLGeneration.Builders
         {
         }
 
+        /// <summary>
+        /// Visits a Create builder.
+        /// </summary>
+        /// <param name="item">The item to visit.</param>
+        protected internal virtual void VisitCreate(CreateBuilder item)
+        {
+            // throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Visits a Database builder.
+        /// </summary>
+        /// <param name="item">The item to visit.</param>
+        protected internal virtual void VisitDatabase(Database item)
+        {
+           // throw new NotImplementedException();
+        }
     }
 }

@@ -775,7 +775,7 @@ namespace SQLGeneration.Tests
         [TestMethod]
         public void TestSelect_FullyQualifiedColumn()
         {
-            string commandText = "SELECT Server.Database.Owner.Table.Column FROM Server.Database.Owner.Table";
+            string commandText = "SELECT Server.Db.Owner.Tbl.Column FROM Server.Db.Owner.Tbl";
             assertCanReproduce(commandText);
         }
 

@@ -3745,6 +3745,16 @@ namespace SQLGeneration.Parsing
             public const string Name = "CreateStatement";
 
             /// <summary>
+            /// Gets the name identifying the CREATE DATABASE statement.
+            /// </summary>
+            public const string CreateDatabaseName = "CreateDatabaseStatement";
+
+            /// <summary>
+            /// Gets the name identifying the CREATE TABLE statement.
+            /// </summary>
+            public const string CreateTableName = "CreateTableStatement";
+
+            /// <summary>
             /// Gets the identifier for the CREATE keyword.
             /// </summary>
             public const string CreateKeyword = "create";
@@ -3772,12 +3782,12 @@ namespace SQLGeneration.Parsing
             /// <summary>
             /// Describes the structure of the table.
             /// </summary>
-            public static class TableDefinitionList
+            public static class TableDefinition
             {
                 /// <summary>
                 /// Gets the identifier indicating that there is a columns definition list.
                 /// </summary>
-                public const string Name = "TableDefinitionList";
+                public const string Name = "TableDefinition";
 
                 /// <summary>
                 /// Gets the identifier for the left parenthesis.
@@ -3787,7 +3797,7 @@ namespace SQLGeneration.Parsing
                 /// <summary>
                 /// Gets the identifier for the columns definition list.
                 /// </summary>
-                public const string ColumnsDefinitionList = "tabledefinition_list";
+                public const string ColumnsDefinitionList = "tabledefinition_columnslist";
 
                 /// <summary>
                 /// Gets the identifier for the right parenthesis.
@@ -3799,15 +3809,55 @@ namespace SQLGeneration.Parsing
 
         private void defineCreateStatement()
         {
+
+            /* Examples of Supported SQL Create Statements
+             
+             CREATE DATABASE MyDatabase
+             
+             CREATE TABLE MyTable
+             
+             CREATE TABLE MyDatabase.Dbo.MyTable
+                          
+             CREATE TABLE MyTable
+             (
+                ID UNIQUEIDENTIFIER PRIMARY KEY,
+                FirstName VARCHAR NULL,
+                LastName VARCHAR NOT NULL
+             )            
+              
+              
+             */
+
             Define(CreateStatement.Name)
                 .Add(SqlGrammar.CreateStatement.CreateKeyword, true, Token(SqlTokenRegistry.Create))
-                .Add(SqlGrammar.CreateStatement.DatabaseKeyword, true, Token(SqlTokenRegistry.Database))
-                 .Add(SqlGrammar.CreateStatement.DatabaseName, true, Token(SqlTokenRegistry.Identifier));
+                .Add(true, Options()
+                    .Add(CreateStatement.CreateDatabaseName, Define()
+                        .Add(SqlGrammar.CreateStatement.DatabaseKeyword, true, Token(SqlTokenRegistry.Database))
+                        .Add(SqlGrammar.CreateStatement.DatabaseName, true, Token(SqlTokenRegistry.Identifier)))
+                    .Add(CreateStatement.CreateTableName, Define()
+                        .Add(SqlGrammar.CreateStatement.TableKeyword, true, Token(SqlTokenRegistry.Table))
+                        .Add(SqlGrammar.CreateStatement.TableName, true, Expression(MultipartIdentifier.Name))
+                        .Add(false, Options()
+                            .Add(CreateStatement.TableDefinition.Name, Define()
+                                .Add(CreateStatement.TableDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                // .Add(CreateStatement.TableDefinition.ColumnsDefinitionList, true, Expression(ColumnDefinitionsStatement.Name))
+                                .Add(CreateStatement.TableDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))))
 
+                        ));
 
+            //CREATE TABLE C
+            //(
+            //ID UNIQUEIDENTIFIER DEFAULT NEWSEQUENTIALID() PRIMARY KEY,
+            //... Other Columns
+            //)
 
-            //.Add(SqlGrammar.CreateStatement.TableKeyword, Define()
-            //            .Add(SqlGrammar.CreateStatement.TableName, true, Expression(MultipartIdentifier.Name)))
+            //CREATE TABLE employees (
+            //id            INTEGER      PRIMARY KEY,
+            //first_name    VARCHAR(50) NOT NULL,
+            //last_name     VARCHAR(75) NOT NULL,
+            //fname         VARCHAR(50) NOT NULL,
+            //dateofbirth   DATE         NULL
+            //);
 
         }
 

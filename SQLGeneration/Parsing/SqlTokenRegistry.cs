@@ -466,7 +466,7 @@ namespace SQLGeneration.Parsing
             // DDL
             Define(Create, @"CREATE\b", true);
             Define(Database, @"DATABASE\b", true);
-           // Define(Table, @"TABLE\b", true);
+            Define(Table, @"TABLE\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 

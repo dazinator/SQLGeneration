@@ -531,8 +531,23 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item">The item to visit.</param>
         protected internal virtual void VisitDatabase(Database item)
-        {
-           // throw new NotImplementedException();
+        {         
+        }
+
+        /// <summary>
+        /// Visits a TableDefinition builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitTableDefinition(TableDefinition item)
+        {          
+        }
+
+        /// <summary>
+        /// Visits a ColumnDefinition builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitColumnDefinition(ColumnDefinition item)
+        {         
         }
     }
 }

@@ -3864,6 +3864,66 @@ namespace SQLGeneration.Parsing
         #endregion
 
 
+        #region ColumnDefinitionList
+
+        /// <summary>
+        /// Describes the structure of the column definitions list.
+        /// </summary>
+        public static class ColumnDefinitionList
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "ColumnDefinitionList";
+
+            /// <summary>
+            /// Describes the structure of a column definitions list with multiple columns.
+            /// </summary>
+            public static class Multiple
+            {
+                /// <summary>
+                /// Gets the identifier used to indicate that multiple column definitions exist.
+                /// </summary>
+                public const string Name = "Multiple";
+
+                /// <summary>
+                /// Gets the identifier for the first column.
+                /// </summary>
+                public const string First = "first";
+
+                /// <summary>
+                /// Gets the identifier for the comma separator.
+                /// </summary>
+                public const string Comma = "comma";
+
+                /// <summary>
+                /// Gets the identifier for the remaining columns.
+                /// </summary>
+                public const string Remaining = "remaining";
+            }
+
+            /// <summary>
+            /// Gets the identifier used to indicate that a single column definition exists.
+            /// </summary>
+            public const string Single = "single";
+        }
+
+        private void defineColumnDefinitionsList()
+        {
+            Define(ColumnDefinitionList.Name)
+                .Add(true, Options()
+                    .Add(ColumnDefinitionList.Multiple.Name, Define()
+
+                       // TODO: 
+                        .Add(ColumnDefinitionList.Multiple.First, true, Expression(MultipartIdentifier.Name))                     
+                        .Add(ColumnDefinitionList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
+                        .Add(ColumnDefinitionList.Multiple.Remaining, true, Expression(ColumnDefinitionList.Name)))
+                    .Add(ColumnDefinitionList.Single, Expression(MultipartIdentifier.Name)));
+        }
+
+        #endregion
+
+
         #endregion
     }
 }

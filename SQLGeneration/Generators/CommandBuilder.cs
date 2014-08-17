@@ -124,12 +124,12 @@ namespace SQLGeneration.Generators
         }
 
         private ICommand buildCreateStatement(MatchResult result)
-        { 
+        {
             var createBuilder = new CreateBuilder();
-            MatchResult databaseResult = result.Matches[SqlGrammar.CreateStatement.DatabaseKeyword];
+            MatchResult databaseResult = result.Matches[SqlGrammar.CreateStatement.CreateDatabaseName];
             if (databaseResult.IsMatch)
             {
-                MatchResult databaseNameResult = result.Matches[SqlGrammar.CreateStatement.DatabaseName];
+                MatchResult databaseNameResult = databaseResult.Matches[SqlGrammar.CreateStatement.DatabaseName];
                 if (databaseNameResult.IsMatch)
                 {
                     var databaseName = getToken(databaseNameResult);
@@ -137,8 +137,40 @@ namespace SQLGeneration.Generators
                     createBuilder.CreateObject = database;
                 }
             }
+            else
+            {
+                MatchResult tableResult = result.Matches[SqlGrammar.CreateStatement.CreateTableName];
+                if (tableResult.IsMatch)
+                {
+                    MatchResult tableNameResult = tableResult.Matches[SqlGrammar.CreateStatement.TableName];
+                    if (tableNameResult.IsMatch)
+                    {
+                        List<string> parts = new List<string>();
+                        buildMultipartIdentifier(tableNameResult, parts);
+                        TableDefinition tableDef = null;
 
-            return createBuilder;          
+                        if (parts.Count > 1)
+                        {
+                            Namespace qualifier = getNamespace(parts.Take(parts.Count - 1));
+                            string tableName = parts[parts.Count - 1];
+                            // AliasedSource source = scope.GetSource(tableName);               
+                            tableDef = new TableDefinition(qualifier, tableName);
+
+                        }
+                        else
+                        {
+                            string name = parts[0];
+                            tableDef = new TableDefinition(name);
+                        }
+
+                        createBuilder.CreateObject = tableDef;
+                    }
+
+                }
+            }
+
+
+            return createBuilder;
         }
 
         private ISelectBuilder buildSelectStatement(MatchResult result)

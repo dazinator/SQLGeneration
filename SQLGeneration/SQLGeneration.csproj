@@ -52,6 +52,7 @@
     <Compile Include="Builders\BuilderVisitor.cs" />
     <Compile Include="Builders\ConditionalCaseBranch.cs" />
     <Compile Include="Builders\ConditionalCase.cs" />
+    <Compile Include="Builders\DDL\ColumnDefinition.cs" />
     <Compile Include="Builders\DDL\Database.cs" />
     <Compile Include="Builders\DDL\ICreateBuilder.cs" />
     <Compile Include="Builders\DDL\IDatabaseObject.cs" />

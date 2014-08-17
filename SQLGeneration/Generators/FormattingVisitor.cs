@@ -1393,5 +1393,15 @@ namespace SQLGeneration.Generators
             writer.Write(item.Name);
         }
 
+        /// <summary>
+        /// Generates the text for a TableDefinition builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitTableDefinition(TableDefinition item)
+        {
+            writer.Write("TABLE ");
+            visitMultipartIdentifier(item.Qualifier, item.Name);           
+        }
+
     }
 }

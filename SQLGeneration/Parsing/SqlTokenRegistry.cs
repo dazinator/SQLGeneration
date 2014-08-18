@@ -399,6 +399,32 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string Table = "Table";
 
+        /// <summary>
+        /// Gets the identifier for the Primary keyword.
+        /// </summary>
+        public const string Primary = "Primary";
+
+        /// <summary>
+        /// Gets the identifier for the Key keyword.
+        /// </summary>
+        public const string Key = "Key";
+
+        /// <summary>
+        /// Gets the identifier for the Collate keyword.
+        /// </summary>
+        public const string Collate = "Collate";
+
+        /// <summary>
+        /// Gets the identifier for the Constraint keyword.
+        /// </summary>
+        public const string Constraint = "Constraint";
+
+                /// <summary>
+        /// Gets the identifier for the Constraint keyword.
+        /// </summary>
+        public const string Identity = "Identity";
+         
+
         #endregion
 
         /// <summary>
@@ -467,6 +493,11 @@ namespace SQLGeneration.Parsing
             Define(Create, @"CREATE\b", true);
             Define(Database, @"DATABASE\b", true);
             Define(Table, @"TABLE\b", true);
+            Define(Primary, @"PRIMARY\b", true);
+            Define(Key, @"KEY\b", true);
+            Define(Collate, @"COLLATE\b", true);
+            Define(Constraint, @"CONSTRAINT\b", true);
+            Define(Identity, @"IDENTITY\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 

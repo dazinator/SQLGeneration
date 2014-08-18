@@ -155,12 +155,23 @@ namespace SQLGeneration.Generators
                             string tableName = parts[parts.Count - 1];
                             // AliasedSource source = scope.GetSource(tableName);               
                             tableDef = new TableDefinition(qualifier, tableName);
-
                         }
                         else
                         {
                             string name = parts[0];
                             tableDef = new TableDefinition(name);
+                        }
+
+                        // build the table definition
+                        MatchResult tableDefinitionResult = tableResult.Matches[SqlGrammar.CreateStatement.TableDefinition.Name];
+                        if (tableDefinitionResult != null && tableDefinitionResult.IsMatch)
+                        {
+                            MatchResult columnsDefinitionResult = tableDefinitionResult.Matches[SqlGrammar.CreateStatement.TableDefinition.ColumnsDefinitionList];
+                            if (columnsDefinitionResult.IsMatch)
+                            {
+                                buildColumnDefinitionsList(tableDef, columnsDefinitionResult);
+                            }
+
                         }
 
                         createBuilder.CreateObject = tableDef;
@@ -171,6 +182,98 @@ namespace SQLGeneration.Generators
 
 
             return createBuilder;
+        }
+
+        private void buildColumnDefinitionsList(TableDefinition builder, MatchResult columnsDefinitionResult)
+        {
+            // First add column defintions
+            MatchResult multiple = columnsDefinitionResult.Matches[SqlGrammar.ColumnDefinitionList.Multiple.Name];
+            if (multiple.IsMatch)
+            {
+                MatchResult first = multiple.Matches[SqlGrammar.ColumnDefinitionList.Multiple.First];
+                ColumnDefinition column = buildColumnDefinition(first);
+                builder.Columns.AddColumnDefinition(column);
+                MatchResult remaining = multiple.Matches[SqlGrammar.ColumnDefinitionList.Multiple.Remaining];
+                buildColumnDefinitionsList(builder, remaining);
+                return;
+            }
+            MatchResult single = columnsDefinitionResult.Matches[SqlGrammar.ColumnList.Single];
+            if (single.IsMatch)
+            {
+                ColumnDefinition column = buildColumnDefinition(single);
+                builder.Columns.AddColumnDefinition(column);
+                return;
+            }
+        }
+
+        private ColumnDefinition buildColumnDefinition(MatchResult result)
+        {
+            var columnNameResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnName];
+            var columnName = getToken(columnNameResult);
+            var columnDefinition = new ColumnDefinition(columnName);
+
+            var collationResult = result.Matches[SqlGrammar.ColumnDefinition.Collation];
+            if (collationResult.IsMatch)
+            {
+                var collationNameResult = collationResult.Matches[SqlGrammar.ColumnDefinition.CollationName];
+                columnDefinition.Collation = getToken(collationNameResult);
+            }
+
+            var dataTypeResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnDataType];
+            if (dataTypeResult.IsMatch)
+            {
+                List<string> parts = new List<string>();
+                buildMultipartIdentifier(dataTypeResult, parts);
+
+                DataType dataType;
+                if (parts.Count > 1)
+                {
+                    Namespace qualifier = getNamespace(parts.Take(parts.Count - 1));
+                    string dataTypeName = parts[parts.Count - 1];
+                    dataType = new DataType(qualifier, dataTypeName);
+
+                }
+                else
+                {
+                    string dataTypeName = parts[0];
+                    dataType = new DataType(dataTypeName);
+                }
+
+                var columnSizeResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnSize];
+                if (columnSizeResult.IsMatch)
+                {
+                    MatchResult argumentsResult = columnSizeResult.Matches[SqlGrammar.ColumnDefinition.ColumnSizeArguments];
+                    if (argumentsResult.IsMatch)
+                    {
+                        ValueList arguments = new ValueList();
+                        buildValueList(argumentsResult, arguments);
+                        foreach (Literal value in arguments.Values)
+                        {
+                            dataType.AddArgument(value);
+                        }
+                    }
+
+
+                }
+
+                columnDefinition.DataType = dataType;
+
+            }
+
+            var isNullableResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnNullable];
+            if (isNullableResult.IsMatch)
+            {
+                var isNotNullResult = isNullableResult.Matches[SqlGrammar.ColumnDefinition.NotKeyword];
+                if (isNotNullResult.IsMatch)
+                {
+                    columnDefinition.IsNullable = false;
+                }
+                else
+                {
+                    columnDefinition.IsNullable = true;
+                }
+            }
+            return columnDefinition;
         }
 
         private ISelectBuilder buildSelectStatement(MatchResult result)

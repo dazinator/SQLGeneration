@@ -7,6 +7,7 @@ using System.Text;
 using SQLGeneration.Builders;
 using SQLGeneration.Properties;
 
+
 namespace SQLGeneration.Generators
 {
     /// <summary>
@@ -1375,7 +1376,7 @@ namespace SQLGeneration.Generators
         {
             writer.Write("CREATE ");
 
-            item.CreateObject.Accept(this);          
+            item.CreateObject.Accept(this);
 
             if (item.HasTerminator)
             {
@@ -1400,7 +1401,77 @@ namespace SQLGeneration.Generators
         protected internal override void VisitTableDefinition(TableDefinition item)
         {
             writer.Write("TABLE ");
-            visitMultipartIdentifier(item.Qualifier, item.Name);           
+            visitMultipartIdentifier(item.Qualifier, item.Name);
+
+            if (item.Columns != null && item.Columns.Any())
+            {
+                writer.Write("(");
+
+                join(", ", item.Columns);               
+
+                writer.Write(")");
+            }
+        }
+
+        /// <summary>
+        /// Generates the text for a DataType builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitDataType(DataType item)
+        {
+            visitMultipartIdentifier(item.Qualifier, item.Name);
+
+            if (item.Arguments != null && item.Arguments.Any())
+            {
+                writer.Write("(");
+                if (item.Arguments.Any())
+                {
+                    join(",", item.Arguments);
+                }
+                writer.Write(")");
+            }
+
+            base.VisitDataType(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a ColumnDefinition builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitColumnDefinition(ColumnDefinition item)
+        {
+            writer.Write(item.Name);
+
+            if (item.DataType != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.DataType).Accept(this);
+            }
+
+            if (!string.IsNullOrEmpty(item.Collation))
+            {
+                writer.Write(" COLLATE ");
+                writer.Write(item.Collation);
+            }
+
+            if (item.IsNullable.HasValue)
+            {
+                if (item.IsNullable.Value)
+                {
+                    writer.Write(" NULL");
+                }
+                else
+                {
+                    writer.Write(" NOT NULL");
+                }
+            }
+
+            if (item.IsPrimaryKey)
+            {
+                writer.Write(" PRIMARY KEY");
+            }
+
+            base.VisitColumnDefinition(item);
         }
 
     }

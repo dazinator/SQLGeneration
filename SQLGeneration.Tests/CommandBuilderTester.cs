@@ -1132,6 +1132,60 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one simplistic column
+        /// </summary>
+        [TestMethod]
+        public void TestCreate_Table_WithSimpleColumn()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA CHAR)";         
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has a COLLATION
+        /// </summary>
+        [TestMethod]
+        public void TestCreate_Table_WithColumn_Collate()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA NCHAR COLLATE Latin1_General)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has a precision and scale.
+        /// </summary>
+        [TestMethod]
+        public void TestCreate_Table_WithColumn_PrecisionAndScale()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA DECIMAL(10,2))";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement using quoted identifiers
+        /// </summary>
+        [TestMethod]
+        public void TestCreate_Table_WithColumns()
+        {
+            string commandText =
+@"CREATE TABLE [dbo].[NewTable]
+  (
+    ColumnA CHAR,
+    ColumnB VARCHAR(150),
+    ColumnC DECIMAL(10,2),
+    ColumnD NTEXT Collate Latin1_General,
+    ColumnE NCHAR Collate Latin1_General NOT NULL,
+    ColumnF NVARCHAR Collate Latin1_General NULL CONSTRAINT my_constraintname,
+    ColumnG INT NOT NULL IDENTITY,
+    ColumnH INT NOT NULL IDENTITY(1,1),
+    ColumnH INT NOT NULL IDENTITY(1,1)
+  )";
+
+           
+            assertCanReproduce(commandText);
+        }
+
 
         #endregion
 

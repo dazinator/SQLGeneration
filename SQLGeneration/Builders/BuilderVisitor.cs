@@ -549,5 +549,13 @@ namespace SQLGeneration.Builders
         protected internal virtual void VisitColumnDefinition(ColumnDefinition item)
         {         
         }
+
+        /// <summary>
+        /// Visits a DataType builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitDataType(DataType item)
+        {           
+        }
     }
 }

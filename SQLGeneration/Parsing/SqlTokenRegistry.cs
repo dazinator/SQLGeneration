@@ -429,6 +429,11 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string Default = "Default";
 
+        /// <summary>
+        /// Gets the identifier for the RowGuidCol keyword.
+        /// </summary>
+        public const string RowGuidCol = "RowGuidCol";
+
 
         #endregion
 
@@ -504,6 +509,7 @@ namespace SQLGeneration.Parsing
             Define(Constraint, @"CONSTRAINT\b", true);
             Define(Identity, @"IDENTITY\b", true);
             Define(Default, @"DEFAULT\b", true);
+            Define(RowGuidCol, @"ROWGUIDCOL\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 

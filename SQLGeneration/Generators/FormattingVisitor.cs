@@ -1476,7 +1476,11 @@ namespace SQLGeneration.Generators
             {
                 writer.Write(" ");
                 ((IVisitableBuilder)item.AutoIncrement).Accept(this);
+            }
 
+            if(item.IsRowGuid)
+            {
+                writer.Write(" ROWGUIDCOL");               
             }
 
             if (item.IsPrimaryKey)

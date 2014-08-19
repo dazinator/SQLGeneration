@@ -54,6 +54,11 @@ namespace SQLGeneration.Builders
         /// </summary>
         public bool IsPrimaryKey { get; set; }
 
+        /// <summary>
+        /// Whether the column is a row guid column.
+        /// </summary>
+        public bool IsRowGuid { get; set; }
+
         void IVisitableBuilder.Accept(BuilderVisitor visitor)
         {
             visitor.VisitColumnDefinition(this);

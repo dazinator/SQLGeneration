@@ -4045,6 +4045,11 @@ namespace SQLGeneration.Parsing
             /// </summary>
             public const string IdentitySeedValues = "IdentitySeedValues";
 
+            /// <summary>
+            /// Gets the name identifying RowGuidCol Keyword.
+            /// </summary>
+            public const string RowGuidColKeyword = "RowGuidColKeyword";
+
         }
 
         private void defineColumnDefinition()
@@ -4085,7 +4090,8 @@ namespace SQLGeneration.Parsing
                         .Add(ColumnDefinition.IdentitySeed, false, Define()
                             .Add(ColumnDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
                             .Add(ColumnDefinition.IdentitySeedValues, true, Expression(ValueList.Name))
-                            .Add(ColumnDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))));
+                            .Add(ColumnDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))))
+                     .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol));
 
              // Default 'HI'
             // Now we can have an optional column constraint.

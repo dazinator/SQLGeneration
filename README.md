@@ -15,11 +15,11 @@ You can parse (and build) batches of SQL statements, you are not limited to just
 ```
 
 ### DDL
-You can parse some DDL statements. I am busy extending DDL support currently.
+You can parse / and generate some DDL statements! I am busy extending DDL support currently.
 
 #### Create Database
 
-Example: 
+Example of supported SQL: 
 ```
 CREATE DATABASE MyDatabase
 
@@ -27,7 +27,7 @@ CREATE DATABASE MyDatabase
 
 #### Create Table
 
-Example: 
+Example of supported SQL: 
 ```
 CREATE TABLE [dbo].[NewTable]
 (

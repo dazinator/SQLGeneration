@@ -31,7 +31,8 @@ Example:
 ```
 CREATE TABLE [dbo].[NewTable]
 (
-ColumnA CHAR, ColumnB VARCHAR(150), 
+ColumnA CHAR, 
+ColumnB VARCHAR(150), 
 ColumnC DECIMAL(10,2), 
 ColumnD NTEXT COLLATE Latin1_General, 
 ColumnE NCHAR COLLATE Latin1_General NOT NULL, 

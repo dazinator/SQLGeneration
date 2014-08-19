@@ -1,14 +1,46 @@
 ## This FORK 
 
-This (hopefully temporary) fork of SQLGeneration contains some additional functionality to allow you to parse batches of SQL statements as opposed to just a single one. Individual statements in a batch should be terminated with a semicolon. Example:
+This (hopefully temporary) fork of SQLGeneration contains some additional functionality not (yet) in core SQLGeneration.
+
+### Batching 
+You can parse (and build) batches of SQL statements, you are not limited to just a single statement. Individual statements in the batch must be terminated with a semicolon. Example:
 
 ```cs
-    string commandText = "SELECT CustomerId, FirstName, LastName, Created FROM Customer; INSERT INTO Names (Name) Values  ('Chuck Norris');";
+    string commandText = "SELECT FirstName FROM Customer; INSERT INTO Names (Name) Values ('Chuck Norris');";
     CommandBuilder commandBuilder = new CommandBuilder();
     var builder = commandBuilder.GetCommand(commandText);
     
     Formatter formatter = new Formatter();
     commandText = formatter.GetCommandText(builder);
+```
+
+### DDL
+You can parse some DDL statements. I am busy extending DDL support currently.
+
+#### Create Database
+
+Example: 
+```
+CREATE DATABASE MyDatabase
+
+```
+
+#### Create Table
+
+Example: 
+```
+CREATE TABLE [dbo].[NewTable]
+(
+ColumnA CHAR, ColumnB VARCHAR(150), 
+ColumnC DECIMAL(10,2), 
+ColumnD NTEXT COLLATE Latin1_General, 
+ColumnE NCHAR COLLATE Latin1_General NOT NULL, 
+ColumnF NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', 
+ColumnG NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', 
+ColumnH INT NOT NULL IDENTITY, 
+ColumnI INT NOT NULL IDENTITY(1,1), 
+ColumnJ INT NOT NULL DEFAULT 1
+)
 ```
 
 # SQLGeneration

@@ -3912,59 +3912,83 @@ namespace SQLGeneration.Parsing
             public const string ColumnName = "ColumnName";
 
             /// <summary>
-            /// Gets the name identifying the Column Data Type.
+            /// Gets the name identifying RowGuidCol Keyword.
             /// </summary>
-            public const string ColumnDataType = "ColumnDataType";
+            public const string RowGuidColKeyword = "RowGuidColKeyword";
 
             /// <summary>
-            /// Gets the name identifying the column size.
+            /// Describes the structure of the DataType syntax.
             /// </summary>
-            public const string ColumnSize = "ColumnSize";
+            public static class DataType
+            {
+
+                /// <summary>
+                /// Gets the name identifying the Column Data Type expression.
+                /// </summary>
+                public const string Name = "ColumnDataType";
+
+                /// <summary>
+                /// Gets the name identifying the column size.
+                /// </summary>
+                public const string ColumnSize = "ColumnSize";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string LeftParenthesis = "LeftParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string RightParenthesis = "RightParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string ColumnSizeArguments = "ColumnSizeArguments";
+            }          
 
             /// <summary>
-            /// Gets the name identifying LeftParethesis.
+            /// Describes the structure of the Nullable syntax.
             /// </summary>
-            public const string LeftParenthesis = "LeftParenthesis";
+            public static class Nullable
+            {
+                /// <summary>
+                /// Gets the name identifying Column Nullable.
+                /// </summary>
+                public const string Name = "ColumnNullable";
+
+                /// <summary>
+                /// Gets the name identifying ColumnNull.
+                /// </summary>
+                public const string NullKeyword = "NullKeyword";
+
+                /// <summary>
+                /// Gets the name identifying Not.
+                /// </summary>
+                public const string NotKeyword = "NotKeyword";
+            }           
 
             /// <summary>
-            /// Gets the name identifying LeftParethesis.
+            /// Describes the structure of the Collation syntax.
             /// </summary>
-            public const string RightParenthesis = "RightParenthesis";
+            public static class Collation
+            {
+                /// <summary>
+                /// Gets the name identifying Collate.
+                /// </summary>
+                public const string Name = "Collation";
 
-            /// <summary>
-            /// Gets the name identifying LeftParethesis.
-            /// </summary>
-            public const string ColumnSizeArguments = "ColumnSizeArguments";
+                /// <summary>
+                /// Gets the name identifying Collate.
+                /// </summary>
+                public const string CollateKeyword = "CollateKeyword";
 
-            /// <summary>
-            /// Gets the name identifying LeftParethesis.
-            /// </summary>
-            public const string ColumnNullable = "ColumnNullable";
-
-            /// <summary>
-            /// Gets the name identifying ColumnNull.
-            /// </summary>
-            public const string NullKeyword = "NullKeyword";
-
-            /// <summary>
-            /// Gets the name identifying Not.
-            /// </summary>
-            public const string NotKeyword = "NotKeyword";
-
-            /// <summary>
-            /// Gets the name identifying Collate.
-            /// </summary>
-            public const string Collation = "Collation";
-
-            /// <summary>
-            /// Gets the name identifying Collate.
-            /// </summary>
-            public const string CollateKeyword = "CollateKeyword";
-
-            /// <summary>
-            /// Gets the name identifying CollationName.
-            /// </summary>
-            public const string CollationName = "CollationName";
+                /// <summary>
+                /// Gets the name identifying CollationName.
+                /// </summary>
+                public const string CollationName = "CollationName";
+            }        
 
             /// <summary>
             /// Describes the structure of the Default syntax.
@@ -3980,29 +4004,7 @@ namespace SQLGeneration.Parsing
                 /// <summary>
                 /// Gets the name identifying the 'Default' part of the syntax.
                 /// </summary>
-                public const string DefaultName = "Default";
-
-                /// <summary>
-                /// Describes the structure of the Constraint syntax.
-                /// </summary>
-                public static class Constraint
-                {
-
-                    /// <summary>
-                    /// Gets the name identifying Constraint.
-                    /// </summary>
-                    public const string Name = "Constraint";
-
-                    /// <summary>
-                    /// Gets the name identifying Constraint Keyword.
-                    /// </summary>
-                    public const string ConstraintKeyword = "ConstraintKeyword";
-
-                    /// <summary>
-                    /// Gets the name identifying Constraint Name.
-                    /// </summary>
-                    public const string ConstraintName = "ConstraintName";
-                }
+                public const string DefaultName = "Default";            
 
                 /// <summary>
                 /// Gets the name identifying Default Keyword .
@@ -4023,82 +4025,131 @@ namespace SQLGeneration.Parsing
                 /// Gets the name identifying Default Function.
                 /// </summary>
                 public const string DefaultFunction = "DefaultFunction";
-            }                 
+            }
 
             /// <summary>
-            /// Gets the name identifying Identity.
+            /// Describes the structure of the Constraint syntax.
             /// </summary>
-            public const string Identity = "Identity";
+            public static class Constraint
+            {
+
+                /// <summary>
+                /// Gets the name identifying Constraint.
+                /// </summary>
+                public const string Name = "Constraint";
+
+                /// <summary>
+                /// Gets the name identifying Constraint Keyword.
+                /// </summary>
+                public const string ConstraintKeyword = "ConstraintKeyword";
+
+                /// <summary>
+                /// Gets the name identifying Constraint Name.
+                /// </summary>
+                public const string ConstraintName = "ConstraintName";
+            }
 
             /// <summary>
-            /// Gets the name identifying Identity Keyword.
+            /// Describes the structure of the Identity syntax.
             /// </summary>
-            public const string IdentityKeyword = "IdentityKeyword";
+            public static class Identity
+            {
+                /// <summary>
+                /// Gets the name identifying Identity.
+                /// </summary>
+                public const string Name = "Identity";
 
-            /// <summary>
-            /// Gets the name identifying Identity Seed.
-            /// </summary>
-            public const string IdentitySeed = "IdentitySeed";
+                /// <summary>
+                /// Gets the name identifying Identity Keyword.
+                /// </summary>
+                public const string IdentityKeyword = "IdentityKeyword";
 
-            /// <summary>
-            /// Gets the name identifying Identity Seed Values.
-            /// </summary>
-            public const string IdentitySeedValues = "IdentitySeedValues";
+                /// <summary>
+                /// Gets the name identifying Identity Seed.
+                /// </summary>
+                public const string IdentitySeed = "IdentitySeed";
 
-            /// <summary>
-            /// Gets the name identifying RowGuidCol Keyword.
-            /// </summary>
-            public const string RowGuidColKeyword = "RowGuidColKeyword";
+                /// <summary>
+                /// Gets the name identifying Identity Seed Values.
+                /// </summary>
+                public const string IdentitySeedValues = "IdentitySeedValues";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string LeftParenthesis = "LeftParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string RightParenthesis = "RightParenthesis";
+
+            }                   
 
         }
 
         private void defineColumnDefinition()
         {
             // Aiming to support the Syntax definition found here but not yet fully impelemented:
-            // http://msdn.microsoft.com/en-GB/library/ms174979.aspx
-
-            //NB Need to add support for: "DEFAULT memory_optimized_constant_expression" 
-            //NB  'memory_optimized_constant_expression'
-            //    Is a constant, NULL, or a system function that is supported in used as the default value for the column. 
+            // http://msdn.microsoft.com/en-GB/library/ms174979.aspx           
 
             Define(ColumnDefinition.Name)
                 .Add(ColumnDefinition.ColumnName, true, Token(SqlTokenRegistry.Identifier))
-                .Add(ColumnDefinition.ColumnDataType, true, Expression(MultipartIdentifier.Name))
-                .Add(ColumnDefinition.ColumnSize, false, Define()
-                    .Add(ColumnDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                    .Add(ColumnDefinition.ColumnSizeArguments, true, Expression(ValueList.Name))
-                    .Add(ColumnDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
-                .Add(ColumnDefinition.Collation, false, Define()
-                    .Add(ColumnDefinition.CollateKeyword, true, Token(SqlTokenRegistry.Collate))
-                    .Add(ColumnDefinition.CollationName, true, Token(SqlTokenRegistry.Identifier)))
-                .Add(ColumnDefinition.ColumnNullable, false, Define()
-                    .Add(ColumnDefinition.NotKeyword, false, Token(SqlTokenRegistry.Not))
-                    .Add(ColumnDefinition.NullKeyword, true, Token(SqlTokenRegistry.Null)))
+                .Add(ColumnDefinition.DataType.Name, true, Expression(MultipartIdentifier.Name))
+                .Add(ColumnDefinition.DataType.ColumnSize, false, Define()
+                    .Add(ColumnDefinition.DataType.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                    .Add(ColumnDefinition.DataType.ColumnSizeArguments, true, Expression(ValueList.Name))
+                    .Add(ColumnDefinition.DataType.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
+                .Add(ColumnDefinition.Collation.Name, false, Define()
+                    .Add(ColumnDefinition.Collation.CollateKeyword, true, Token(SqlTokenRegistry.Collate))
+                    .Add(ColumnDefinition.Collation.CollationName, true, Token(SqlTokenRegistry.Identifier)))
+                .Add(ColumnDefinition.Nullable.Name, false, Define()
+                    .Add(ColumnDefinition.Nullable.NotKeyword, false, Token(SqlTokenRegistry.Not))
+                    .Add(ColumnDefinition.Nullable.NullKeyword, true, Token(SqlTokenRegistry.Null)))
                 .Add(false, Options()
                     .Add(ColumnDefinition.Default.Name, Define()
-                        .Add(ColumnDefinition.Default.Constraint.Name, false, Define()
-                            .Add(ColumnDefinition.Default.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
-                            .Add(ColumnDefinition.Default.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
+                        .Add(ColumnDefinition.Constraint.Name, false, Define()
+                            .Add(ColumnDefinition.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
+                            .Add(ColumnDefinition.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
                         .Add(ColumnDefinition.Default.DefaultName, true, Define()
                             .Add(ColumnDefinition.Default.DefaultKeyword, true, Token(SqlTokenRegistry.Default))
                             .Add(true, Options()
                                 .Add(ColumnDefinition.Default.DefaultStringLiteral, Token(SqlTokenRegistry.String))
                                 .Add(ColumnDefinition.Default.DefaultNumericLiteral, Token(SqlTokenRegistry.Number))
                                 .Add(ColumnDefinition.Default.DefaultFunction, Expression(FunctionCall.Name)))))
-                    .Add(ColumnDefinition.Identity, Define()
-                        .Add(ColumnDefinition.IdentityKeyword, true, Token(SqlTokenRegistry.Identity))
-                        .Add(ColumnDefinition.IdentitySeed, false, Define()
-                            .Add(ColumnDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                            .Add(ColumnDefinition.IdentitySeedValues, true, Expression(ValueList.Name))
-                            .Add(ColumnDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))))
+                    .Add(ColumnDefinition.Identity.Name, Define()
+                        .Add(ColumnDefinition.Identity.IdentityKeyword, true, Token(SqlTokenRegistry.Identity))
+                        .Add(ColumnDefinition.Identity.IdentitySeed, false, Define()
+                            .Add(ColumnDefinition.Identity.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                            .Add(ColumnDefinition.Identity.IdentitySeedValues, true, Expression(ValueList.Name))
+                            .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))))
                      .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol));
 
              // Default 'HI'
-            // Now we can have an optional column constraint.
+            // Now we can have 0 OR N column constraints.
 
-            /*              <column_constraint> ::=
-             [ CONSTRAINT constraint_name ]
-            { PRIMARY KEY { NONCLUSTERED HASH WITH (BUCKET_COUNT = bucket_count) | NONCLUSTERED } }
+            /*
+             
+ <column_constraint> ::= 
+[ CONSTRAINT constraint_name ] 
+{     { PRIMARY KEY | UNIQUE } 
+        [ CLUSTERED | NONCLUSTERED ] 
+        [ 
+            WITH FILLFACTOR = fillfactor  
+          | WITH ( < index_option > [ , ...n ] ) 
+        ] 
+        [ ON { partition_scheme_name ( partition_column_name ) 
+            | filegroup | "default" } ]
+
+  | [ FOREIGN KEY ] 
+        REFERENCES [ schema_name . ] referenced_table_name [ ( ref_column ) ] 
+        [ ON DELETE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+        [ ON UPDATE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+        [ NOT FOR REPLICATION ] 
+
+  | CHECK [ NOT FOR REPLICATION ] ( logical_expression ) 
+} 
+             
             */
 
             // Then we can have an optional column index.

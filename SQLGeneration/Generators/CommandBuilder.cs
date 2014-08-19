@@ -212,14 +212,14 @@ namespace SQLGeneration.Generators
             var columnName = getToken(columnNameResult);
             var columnDefinition = new ColumnDefinition(columnName);
 
-            var collationResult = result.Matches[SqlGrammar.ColumnDefinition.Collation];
+            var collationResult = result.Matches[SqlGrammar.ColumnDefinition.Collation.Name];
             if (collationResult.IsMatch)
             {
-                var collationNameResult = collationResult.Matches[SqlGrammar.ColumnDefinition.CollationName];
+                var collationNameResult = collationResult.Matches[SqlGrammar.ColumnDefinition.Collation.CollationName];
                 columnDefinition.Collation = getToken(collationNameResult);
             }
 
-            var dataTypeResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnDataType];
+            var dataTypeResult = result.Matches[SqlGrammar.ColumnDefinition.DataType.Name];
             if (dataTypeResult.IsMatch)
             {
                 List<string> parts = new List<string>();
@@ -239,10 +239,10 @@ namespace SQLGeneration.Generators
                     dataType = new DataType(dataTypeName);
                 }
 
-                var columnSizeResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnSize];
+                var columnSizeResult = result.Matches[SqlGrammar.ColumnDefinition.DataType.ColumnSize];
                 if (columnSizeResult.IsMatch)
                 {
-                    MatchResult argumentsResult = columnSizeResult.Matches[SqlGrammar.ColumnDefinition.ColumnSizeArguments];
+                    MatchResult argumentsResult = columnSizeResult.Matches[SqlGrammar.ColumnDefinition.DataType.ColumnSizeArguments];
                     if (argumentsResult.IsMatch)
                     {
                         ValueList arguments = new ValueList();
@@ -258,10 +258,10 @@ namespace SQLGeneration.Generators
 
             }
 
-            var isNullableResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnNullable];
+            var isNullableResult = result.Matches[SqlGrammar.ColumnDefinition.Nullable.Name];
             if (isNullableResult.IsMatch)
             {
-                var isNotNullResult = isNullableResult.Matches[SqlGrammar.ColumnDefinition.NotKeyword];
+                var isNotNullResult = isNullableResult.Matches[SqlGrammar.ColumnDefinition.Nullable.NotKeyword];
                 if (isNotNullResult.IsMatch)
                 {
                     columnDefinition.IsNullable = false;
@@ -277,10 +277,10 @@ namespace SQLGeneration.Generators
             {
                 columnDefinition.Default = new DefaultConstraint();
 
-                var constraintResult = defaultConstraintResult.Matches[SqlGrammar.ColumnDefinition.Default.Constraint.Name];
+                var constraintResult = defaultConstraintResult.Matches[SqlGrammar.ColumnDefinition.Constraint.Name];
                 if (constraintResult.IsMatch)
                 {
-                    var constraintNameResult = constraintResult.Matches[SqlGrammar.ColumnDefinition.Default.Constraint.ConstraintName];
+                    var constraintNameResult = constraintResult.Matches[SqlGrammar.ColumnDefinition.Constraint.ConstraintName];
                     if (constraintNameResult.IsMatch)
                     {
                         columnDefinition.Default.ConstraintName = getToken(constraintNameResult);
@@ -318,15 +318,15 @@ namespace SQLGeneration.Generators
             }
 
 
-            var identityResult = result.Matches[SqlGrammar.ColumnDefinition.Identity];
+            var identityResult = result.Matches[SqlGrammar.ColumnDefinition.Identity.Name];
             if (identityResult.IsMatch)
             {
                 AutoIncrement autoIncrement = new AutoIncrement();
-                MatchResult identitySeedResult = identityResult.Matches[SqlGrammar.ColumnDefinition.IdentitySeed];
+                MatchResult identitySeedResult = identityResult.Matches[SqlGrammar.ColumnDefinition.Identity.IdentitySeed];
                 if (identitySeedResult.IsMatch)
                 {
 
-                    MatchResult identitySeedValuesResult = identitySeedResult.Matches[SqlGrammar.ColumnDefinition.IdentitySeedValues];
+                    MatchResult identitySeedValuesResult = identitySeedResult.Matches[SqlGrammar.ColumnDefinition.Identity.IdentitySeedValues];
                     if (identitySeedValuesResult.IsMatch)
                     {
                         ValueList arguments = new ValueList();

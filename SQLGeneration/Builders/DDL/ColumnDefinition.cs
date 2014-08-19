@@ -101,6 +101,16 @@ namespace SQLGeneration.Builders
         public DataType DataType { get; set; }
 
         /// <summary>
+        /// The autoincrement of the column.
+        /// </summary>
+        public AutoIncrement AutoIncrement { get; set; }
+
+        /// <summary>
+        /// The default value of the column.
+        /// </summary>
+        public DefaultConstraint Default { get; set; }
+
+        /// <summary>
         /// Whether the column can hold null values.
         /// </summary>
         public bool? IsNullable { get; set; }

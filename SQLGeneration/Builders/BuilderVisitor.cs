@@ -99,7 +99,7 @@ namespace SQLGeneration.Builders
         /// <param name="item">The item to visit.</param>
         protected internal virtual void VisitCurrentRowFrame(CurrentRowFrame item)
         {
-        }    
+        }
 
         /// <summary>
         /// Visits a Delete builder.
@@ -531,7 +531,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item">The item to visit.</param>
         protected internal virtual void VisitDatabase(Database item)
-        {         
+        {
         }
 
         /// <summary>
@@ -539,7 +539,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitTableDefinition(TableDefinition item)
-        {          
+        {
         }
 
         /// <summary>
@@ -547,7 +547,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitColumnDefinition(ColumnDefinition item)
-        {         
+        {
         }
 
         /// <summary>
@@ -555,7 +555,24 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitDataType(DataType item)
-        {           
+        {
+        }
+
+        /// <summary>
+        /// Visits a AutoIncrement builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAutoIncrement(AutoIncrement item)
+        {
+        }
+
+
+        /// <summary>
+        /// Visits a DefaultConstraint builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitDefaultConstraint(DefaultConstraint item)
+        {          
         }
     }
 }

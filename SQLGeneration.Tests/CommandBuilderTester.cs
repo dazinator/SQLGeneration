@@ -1163,26 +1163,32 @@ namespace SQLGeneration.Tests
         }
 
         /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has an identity.
+        /// </summary>
+        [TestMethod]
+        public void TestCreate_Table_WithColumn_Identity()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1))";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with multiple simple columns.
+        /// </summary>
+        [TestMethod]
+        public void TestCreate_Table_WithSimpleColumns()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT, ColumnB CHAR)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
         /// This sees whether we can reproduce a create table statement using quoted identifiers
         /// </summary>
         [TestMethod]
         public void TestCreate_Table_WithColumns()
         {
-            string commandText =
-@"CREATE TABLE [dbo].[NewTable]
-  (
-    ColumnA CHAR,
-    ColumnB VARCHAR(150),
-    ColumnC DECIMAL(10,2),
-    ColumnD NTEXT Collate Latin1_General,
-    ColumnE NCHAR Collate Latin1_General NOT NULL,
-    ColumnF NVARCHAR Collate Latin1_General NULL CONSTRAINT my_constraintname,
-    ColumnG INT NOT NULL IDENTITY,
-    ColumnH INT NOT NULL IDENTITY(1,1),
-    ColumnH INT NOT NULL IDENTITY(1,1)
-  )";
-
-           
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA CHAR, ColumnB VARCHAR(150), ColumnC DECIMAL(10,2), ColumnD NTEXT COLLATE Latin1_General, ColumnE NCHAR COLLATE Latin1_General NOT NULL, ColumnF NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', ColumnG NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', ColumnH INT NOT NULL IDENTITY, ColumnI INT NOT NULL IDENTITY(1,1), ColumnJ INT NOT NULL DEFAULT 1)";
             assertCanReproduce(commandText);
         }
 

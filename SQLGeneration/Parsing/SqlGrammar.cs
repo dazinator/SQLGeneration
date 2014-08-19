@@ -3812,25 +3812,7 @@ namespace SQLGeneration.Parsing
         }
 
         private void defineCreateStatement()
-        {
-
-            /* Examples of Supported SQL Create Statements
-             
-             CREATE DATABASE MyDatabase
-             
-             CREATE TABLE MyTable
-             
-             CREATE TABLE MyDatabase.Dbo.MyTable
-                          
-             CREATE TABLE MyTable
-             (
-                ID UNIQUEIDENTIFIER PRIMARY KEY,
-                FirstName VARCHAR NULL,
-                LastName VARCHAR NOT NULL
-             )            
-              
-              
-             */
+        {          
 
             Define(CreateStatement.Name)
                 .Add(SqlGrammar.CreateStatement.CreateKeyword, true, Token(SqlTokenRegistry.Create))
@@ -3847,21 +3829,7 @@ namespace SQLGeneration.Parsing
                                 .Add(CreateStatement.TableDefinition.ColumnsDefinitionList, true, Expression(ColumnDefinitionList.Name))
                                 .Add(CreateStatement.TableDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))))
 
-                        ));
-
-            //CREATE TABLE C
-            //(
-            //ID UNIQUEIDENTIFIER DEFAULT NEWSEQUENTIALID() PRIMARY KEY,
-            //... Other Columns
-            //)
-
-            //CREATE TABLE employees (
-            //id            INTEGER      PRIMARY KEY,
-            //first_name    VARCHAR(50) NOT NULL,
-            //last_name     VARCHAR(75) NOT NULL,
-            //fname         VARCHAR(50) NOT NULL,
-            //dateofbirth   DATE         NULL
-            //);
+                        ));        
 
         }
 
@@ -3916,11 +3884,12 @@ namespace SQLGeneration.Parsing
         {
             Define(ColumnDefinitionList.Name)
                 .Add(true, Options()
-                    .Add(ColumnDefinitionList.Multiple.Name, Define()                     
+                    .Add(ColumnDefinitionList.Multiple.Name, Define()
                         .Add(ColumnDefinitionList.Multiple.First, true, Expression(ColumnDefinition.Name))
                         .Add(ColumnDefinitionList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
-                        .Add(ColumnDefinitionList.Multiple.Remaining, true, Expression(ColumnDefinition.Name)))
+                        .Add(ColumnDefinitionList.Multiple.Remaining, true, Expression(ColumnDefinitionList.Name)))
                     .Add(ColumnDefinitionList.Single, Expression(ColumnDefinition.Name)));
+
         }
 
         #endregion
@@ -3998,19 +3967,63 @@ namespace SQLGeneration.Parsing
             public const string CollationName = "CollationName";
 
             /// <summary>
-            /// Gets the name identifying Constraint.
+            /// Describes the structure of the Default syntax.
             /// </summary>
-            public const string Constraint = "Constraint";
+            public static class Default
+            {
 
-            /// <summary>
-            /// Gets the name identifying Constraint Keyword.
-            /// </summary>
-            public const string ConstraintKeyword = "ConstraintKeyword";
+                /// <summary>
+                /// Gets the name identifying the 'Default' syntax.
+                /// </summary>
+                public const string Name = "Default";
 
-            /// <summary>
-            /// Gets the name identifying Constraint Name.
-            /// </summary>
-            public const string ConstraintName = "ConstraintName";
+                /// <summary>
+                /// Gets the name identifying the 'Default' part of the syntax.
+                /// </summary>
+                public const string DefaultName = "Default";
+
+                /// <summary>
+                /// Describes the structure of the Constraint syntax.
+                /// </summary>
+                public static class Constraint
+                {
+
+                    /// <summary>
+                    /// Gets the name identifying Constraint.
+                    /// </summary>
+                    public const string Name = "Constraint";
+
+                    /// <summary>
+                    /// Gets the name identifying Constraint Keyword.
+                    /// </summary>
+                    public const string ConstraintKeyword = "ConstraintKeyword";
+
+                    /// <summary>
+                    /// Gets the name identifying Constraint Name.
+                    /// </summary>
+                    public const string ConstraintName = "ConstraintName";
+                }
+
+                /// <summary>
+                /// Gets the name identifying Default Keyword .
+                /// </summary>
+                public const string DefaultKeyword = "DefaultKeyword";
+
+                /// <summary>
+                /// Gets the name identifying Default Expression.
+                /// </summary>
+                public const string DefaultStringLiteral = "DefaultStringLiteral";
+
+                /// <summary>
+                /// Gets the name identifying Default Numeric Literal.
+                /// </summary>
+                public const string DefaultNumericLiteral = "DefaultNumericLiteral";
+
+                /// <summary>
+                /// Gets the name identifying Default Function.
+                /// </summary>
+                public const string DefaultFunction = "DefaultFunction";
+            }                 
 
             /// <summary>
             /// Gets the name identifying Identity.
@@ -4031,7 +4044,7 @@ namespace SQLGeneration.Parsing
             /// Gets the name identifying Identity Seed Values.
             /// </summary>
             public const string IdentitySeedValues = "IdentitySeedValues";
-            
+
         }
 
         private void defineColumnDefinition()
@@ -4057,9 +4070,16 @@ namespace SQLGeneration.Parsing
                     .Add(ColumnDefinition.NotKeyword, false, Token(SqlTokenRegistry.Not))
                     .Add(ColumnDefinition.NullKeyword, true, Token(SqlTokenRegistry.Null)))
                 .Add(false, Options()
-                    .Add(ColumnDefinition.Constraint, Define()
-                        .Add(ColumnDefinition.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
-                        .Add(ColumnDefinition.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
+                    .Add(ColumnDefinition.Default.Name, Define()
+                        .Add(ColumnDefinition.Default.Constraint.Name, false, Define()
+                            .Add(ColumnDefinition.Default.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
+                            .Add(ColumnDefinition.Default.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
+                        .Add(ColumnDefinition.Default.DefaultName, true, Define()
+                            .Add(ColumnDefinition.Default.DefaultKeyword, true, Token(SqlTokenRegistry.Default))
+                            .Add(true, Options()
+                                .Add(ColumnDefinition.Default.DefaultStringLiteral, Token(SqlTokenRegistry.String))
+                                .Add(ColumnDefinition.Default.DefaultNumericLiteral, Token(SqlTokenRegistry.Number))
+                                .Add(ColumnDefinition.Default.DefaultFunction, Expression(FunctionCall.Name)))))
                     .Add(ColumnDefinition.Identity, Define()
                         .Add(ColumnDefinition.IdentityKeyword, true, Token(SqlTokenRegistry.Identity))
                         .Add(ColumnDefinition.IdentitySeed, false, Define()
@@ -4067,7 +4087,7 @@ namespace SQLGeneration.Parsing
                             .Add(ColumnDefinition.IdentitySeedValues, true, Expression(ValueList.Name))
                             .Add(ColumnDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))));
 
-
+             // Default 'HI'
             // Now we can have an optional column constraint.
 
             /*              <column_constraint> ::=

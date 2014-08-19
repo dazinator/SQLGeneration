@@ -1407,7 +1407,7 @@ namespace SQLGeneration.Generators
             {
                 writer.Write("(");
 
-                join(", ", item.Columns);               
+                join(", ", item.Columns);
 
                 writer.Write(")");
             }
@@ -1466,12 +1466,76 @@ namespace SQLGeneration.Generators
                 }
             }
 
+            if (item.Default != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.Default).Accept(this);
+            }
+
+            if (item.AutoIncrement != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.AutoIncrement).Accept(this);
+
+            }
+
             if (item.IsPrimaryKey)
             {
                 writer.Write(" PRIMARY KEY");
             }
 
             base.VisitColumnDefinition(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a AutoIncrement builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitAutoIncrement(AutoIncrement item)
+        {
+            writer.Write("IDENTITY");
+            if (item.Arguments != null && item.Arguments.Any())
+            {
+                writer.Write("(");
+                if (item.Arguments.Any())
+                {
+                    join(",", item.Arguments);
+                }
+                writer.Write(")");
+            }
+            base.VisitAutoIncrement(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a DefaultConstraint builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitDefaultConstraint(DefaultConstraint item)
+        {
+
+            if (!string.IsNullOrWhiteSpace(item.ConstraintName))
+            {
+                writer.Write("CONSTRAINT ");                    
+                writer.Write(item.ConstraintName);
+                writer.Write(" ");
+            }
+
+            writer.Write("DEFAULT");
+            if (item.Value != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.Value).Accept(this);
+                return;
+            }
+
+            if (item.Function != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.Function).Accept(this);
+                return;
+            }
+
+            base.VisitDefaultConstraint(item);
         }
 
     }

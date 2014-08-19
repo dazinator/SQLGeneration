@@ -288,7 +288,7 @@ namespace SQLGeneration.Generators
                 }
 
                 var defaultValueResult = defaultConstraintResult.Matches[SqlGrammar.ColumnDefinition.Default.DefaultName];
-                if(defaultValueResult.IsMatch)
+                if (defaultValueResult.IsMatch)
                 {
 
                     var defaultStringLiteralResult = defaultValueResult.Matches[SqlGrammar.ColumnDefinition.Default.DefaultStringLiteral];
@@ -314,7 +314,7 @@ namespace SQLGeneration.Generators
                     }
 
                 }
-              
+
             }
 
 
@@ -338,6 +338,12 @@ namespace SQLGeneration.Generators
                     }
                 }
                 columnDefinition.AutoIncrement = autoIncrement;
+            }
+
+            var rowGuidResult = result.Matches[SqlGrammar.ColumnDefinition.RowGuidColKeyword];
+            if (rowGuidResult.IsMatch)
+            {
+                columnDefinition.IsRowGuid = true;
             }
 
             return columnDefinition;

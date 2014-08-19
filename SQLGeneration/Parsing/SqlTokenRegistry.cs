@@ -419,11 +419,16 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string Constraint = "Constraint";
 
-                /// <summary>
+        /// <summary>
         /// Gets the identifier for the Constraint keyword.
         /// </summary>
         public const string Identity = "Identity";
-         
+
+        /// <summary>
+        /// Gets the identifier for the Default keyword.
+        /// </summary>
+        public const string Default = "Default";
+
 
         #endregion
 
@@ -498,6 +503,7 @@ namespace SQLGeneration.Parsing
             Define(Collate, @"COLLATE\b", true);
             Define(Constraint, @"CONSTRAINT\b", true);
             Define(Identity, @"IDENTITY\b", true);
+            Define(Default, @"DEFAULT\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 
@@ -518,7 +524,7 @@ namespace SQLGeneration.Parsing
             Define(Number, @"[-+]?\d*\.?\d+([eE][-+]?\d+)?");
             Define(RightParenthesis, @"\)");
             Define(String, @"'([^']|'')*'");
-            Define(LineTerminator, @"('(?:\\.|''|[^'])*(')?)|(;)");           
+            Define(LineTerminator, @"('(?:\\.|''|[^'])*(')?)|(;)");
 
         }
     }

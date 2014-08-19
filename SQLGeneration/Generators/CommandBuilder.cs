@@ -197,7 +197,7 @@ namespace SQLGeneration.Generators
                 buildColumnDefinitionsList(builder, remaining);
                 return;
             }
-            MatchResult single = columnsDefinitionResult.Matches[SqlGrammar.ColumnList.Single];
+            MatchResult single = columnsDefinitionResult.Matches[SqlGrammar.ColumnDefinitionList.Single];
             if (single.IsMatch)
             {
                 ColumnDefinition column = buildColumnDefinition(single);
@@ -252,8 +252,6 @@ namespace SQLGeneration.Generators
                             dataType.AddArgument(value);
                         }
                     }
-
-
                 }
 
                 columnDefinition.DataType = dataType;
@@ -273,6 +271,75 @@ namespace SQLGeneration.Generators
                     columnDefinition.IsNullable = true;
                 }
             }
+
+            var defaultConstraintResult = result.Matches[SqlGrammar.ColumnDefinition.Default.Name];
+            if (defaultConstraintResult.IsMatch)
+            {
+                columnDefinition.Default = new DefaultConstraint();
+
+                var constraintResult = defaultConstraintResult.Matches[SqlGrammar.ColumnDefinition.Default.Constraint.Name];
+                if (constraintResult.IsMatch)
+                {
+                    var constraintNameResult = constraintResult.Matches[SqlGrammar.ColumnDefinition.Default.Constraint.ConstraintName];
+                    if (constraintNameResult.IsMatch)
+                    {
+                        columnDefinition.Default.ConstraintName = getToken(constraintNameResult);
+                    }
+                }
+
+                var defaultValueResult = defaultConstraintResult.Matches[SqlGrammar.ColumnDefinition.Default.DefaultName];
+                if(defaultValueResult.IsMatch)
+                {
+
+                    var defaultStringLiteralResult = defaultValueResult.Matches[SqlGrammar.ColumnDefinition.Default.DefaultStringLiteral];
+                    if (defaultStringLiteralResult.IsMatch)
+                    {
+                        columnDefinition.Default.Value = buildStringLiteral(defaultStringLiteralResult);
+                    }
+                    else
+                    {
+                        var defaultNumericLiteralResult = defaultValueResult.Matches[SqlGrammar.ColumnDefinition.Default.DefaultNumericLiteral];
+                        if (defaultNumericLiteralResult.IsMatch)
+                        {
+                            columnDefinition.Default.Value = buildNumericLiteral(defaultNumericLiteralResult);
+                        }
+                        else
+                        {
+                            var defaultFunctionResult = defaultValueResult.Matches[SqlGrammar.ColumnDefinition.Default.DefaultFunction];
+                            if (defaultFunctionResult.IsMatch)
+                            {
+                                columnDefinition.Default.Function = buildFunctionCall(defaultFunctionResult);
+                            }
+                        }
+                    }
+
+                }
+              
+            }
+
+
+            var identityResult = result.Matches[SqlGrammar.ColumnDefinition.Identity];
+            if (identityResult.IsMatch)
+            {
+                AutoIncrement autoIncrement = new AutoIncrement();
+                MatchResult identitySeedResult = identityResult.Matches[SqlGrammar.ColumnDefinition.IdentitySeed];
+                if (identitySeedResult.IsMatch)
+                {
+
+                    MatchResult identitySeedValuesResult = identitySeedResult.Matches[SqlGrammar.ColumnDefinition.IdentitySeedValues];
+                    if (identitySeedValuesResult.IsMatch)
+                    {
+                        ValueList arguments = new ValueList();
+                        buildValueList(identitySeedValuesResult, arguments);
+                        foreach (NumericLiteral value in arguments.Values)
+                        {
+                            autoIncrement.AddArgument(value);
+                        }
+                    }
+                }
+                columnDefinition.AutoIncrement = autoIncrement;
+            }
+
             return columnDefinition;
         }
 

@@ -4270,8 +4270,7 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string KeyKeyword = "KeyKeyword";
             }
-
-
+            
             /// <summary>
             /// Describes the structure of the Unique constraint syntax.
             /// </summary>
@@ -4312,9 +4311,7 @@ namespace SQLGeneration.Parsing
               /// <summary>
             /// Gets the name identifying the Non Clustered Keyword.
             /// </summary>
-            public const string NonClusteredKeyword = "NonClusteredKeyword";
-            
-
+            public const string NonClusteredKeyword = "NonClusteredKeyword";            
 
         }
 

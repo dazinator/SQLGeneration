@@ -3812,7 +3812,7 @@ namespace SQLGeneration.Parsing
         }
 
         private void defineCreateStatement()
-        {          
+        {
 
             Define(CreateStatement.Name)
                 .Add(SqlGrammar.CreateStatement.CreateKeyword, true, Token(SqlTokenRegistry.Create))
@@ -3829,7 +3829,7 @@ namespace SQLGeneration.Parsing
                                 .Add(CreateStatement.TableDefinition.ColumnsDefinitionList, true, Expression(ColumnDefinitionList.Name))
                                 .Add(CreateStatement.TableDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))))
 
-                        ));        
+                        ));
 
         }
 
@@ -3946,7 +3946,7 @@ namespace SQLGeneration.Parsing
                 /// Gets the name identifying LeftParethesis.
                 /// </summary>
                 public const string ColumnSizeArguments = "ColumnSizeArguments";
-            }          
+            }
 
             /// <summary>
             /// Describes the structure of the Nullable syntax.
@@ -3967,7 +3967,7 @@ namespace SQLGeneration.Parsing
                 /// Gets the name identifying Not.
                 /// </summary>
                 public const string NotKeyword = "NotKeyword";
-            }           
+            }
 
             /// <summary>
             /// Describes the structure of the Collation syntax.
@@ -3988,7 +3988,7 @@ namespace SQLGeneration.Parsing
                 /// Gets the name identifying CollationName.
                 /// </summary>
                 public const string CollationName = "CollationName";
-            }        
+            }
 
             /// <summary>
             /// Describes the structure of the Default syntax.
@@ -4004,7 +4004,7 @@ namespace SQLGeneration.Parsing
                 /// <summary>
                 /// Gets the name identifying the 'Default' part of the syntax.
                 /// </summary>
-                public const string DefaultName = "Default";            
+                public const string DefaultName = "Default";
 
                 /// <summary>
                 /// Gets the name identifying Default Keyword .
@@ -4084,7 +4084,7 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string RightParenthesis = "RightParenthesis";
 
-            }                   
+            }
 
         }
 
@@ -4125,7 +4125,7 @@ namespace SQLGeneration.Parsing
                             .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))))
                      .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol));
 
-             // Default 'HI'
+            // Default 'HI'
             // Now we can have 0 OR N column constraints.
 
             /*
@@ -4163,6 +4163,192 @@ namespace SQLGeneration.Parsing
         }
 
         #endregion
+
+        #region ColumnConstraintList
+
+        /// <summary>
+        /// Describes the structure of the column constraint list.
+        /// </summary>
+        public static class ColumnConstraintList
+        {
+            /// <summary>
+            /// Gets the name identifying the column constraint list.
+            /// </summary>
+            public const string Name = "ColumnConstraintList";
+
+            /// <summary>
+            /// Describes the structure of a column constraint list with multiple columns.
+            /// </summary>
+            public static class Multiple
+            {
+                /// <summary>
+                /// Gets the identifier used to indicate that multiple column definitions exist.
+                /// </summary>
+                public const string Name = "Multiple";
+
+                /// <summary>
+                /// Gets the identifier for the first column.
+                /// </summary>
+                public const string First = "first";          
+
+                /// <summary>
+                /// Gets the identifier for the remaining columns.
+                /// </summary>
+                public const string Remaining = "remaining";
+            }
+
+            /// <summary>
+            /// Gets the identifier used to indicate that a single column definition exists.
+            /// </summary>
+            public const string Single = "single";
+
+        }
+
+        private void defineColumnConstraintList()
+        {
+            Define(ColumnConstraintList.Name)
+                .Add(true, Options()
+                    .Add(ColumnConstraintList.Multiple.Name, Define()
+                        .Add(ColumnConstraintList.Multiple.First, true, Expression(ColumnConstraint.Name))                       
+                        .Add(ColumnConstraintList.Multiple.Remaining, true, Expression(ColumnConstraintList.Name)))
+                    .Add(ColumnConstraintList.Single, Expression(ColumnConstraint.Name)));
+        }
+
+
+        #endregion
+
+        #region ColumnConstraint
+
+        //        <column_constraint> ::= 
+        //[ CONSTRAINT constraint_name ] 
+        //{     { PRIMARY KEY | UNIQUE } 
+        //        [ CLUSTERED | NONCLUSTERED ] 
+        //        [ 
+        //            WITH FILLFACTOR = fillfactor  
+        //          | WITH ( < index_option > [ , ...n ] ) 
+        //        ] 
+        //        [ ON { partition_scheme_name ( partition_column_name ) 
+        //            | filegroup | "default" } ]
+
+        //  | [ FOREIGN KEY ] 
+        //        REFERENCES [ schema_name . ] referenced_table_name [ ( ref_column ) ] 
+        //        [ ON DELETE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+        //        [ ON UPDATE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+        //        [ NOT FOR REPLICATION ] 
+
+        //  | CHECK [ NOT FOR REPLICATION ] ( logical_expression ) 
+        //} 
+
+        /// <summary>
+        /// Describes the structure of the column constraint.
+        /// </summary>
+        public static class ColumnConstraint
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "ColumnConstraint";
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public static class PrimaryKey
+            {
+
+                /// <summary>
+                /// Gets the name identifying PrimaryKey Syntax.
+                /// </summary>
+                public const string Name = "PrimaryKey";
+
+                /// <summary>
+                /// Gets the name identifying Primary Keyword.
+                /// </summary>
+                public const string PrimaryKeyword = "PrimaryKeyword";
+
+                /// <summary>
+                /// Gets the name identifying Key Keyword.
+                /// </summary>
+                public const string KeyKeyword = "KeyKeyword";
+            }
+
+
+            /// <summary>
+            /// Describes the structure of the Unique constraint syntax.
+            /// </summary>
+            public static class Unique
+            {
+
+                /// <summary>
+                /// Gets the name identifying Unique Syntax.
+                /// </summary>
+                public const string Name = "Unique";
+
+                /// <summary>
+                /// Gets the name identifying Primary Keyword.
+                /// </summary>
+                public const string UniqueKeyword = "UniqueKeyword";
+               
+            }
+            
+            /// <summary>
+            /// Describes the structure of the PrimarKey Or UniqueConstraint syntax.
+            /// </summary>
+            public static class PrimarKeyOrUniqueConstraint
+            {
+
+                /// <summary>
+                /// Gets the name identifying Constraint.
+                /// </summary>
+                public const string Name = "PrimarKeyOrUniqueConstraint";             
+
+
+            }
+
+            /// <summary>
+            /// Gets the name identifying the Clustered Keyword.
+            /// </summary>
+            public const string ClusteredKeyword = "ClusteredKeyword";
+
+              /// <summary>
+            /// Gets the name identifying the Non Clustered Keyword.
+            /// </summary>
+            public const string NonClusteredKeyword = "NonClusteredKeyword";
+            
+
+
+        }
+
+        private void defineColumnConstraint()
+        {
+            // Aiming to support the Syntax definition found here but not yet fully impelemented:
+            // http://msdn.microsoft.com/en-GB/library/ms174979.aspx           
+
+            Define(ColumnConstraint.Name)
+                .Add(ColumnDefinition.Constraint.Name, false, Define()
+                    .Add(ColumnDefinition.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
+                    .Add(ColumnDefinition.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
+                .Add(true, Options()
+                    .Add(ColumnConstraint.PrimarKeyOrUniqueConstraint.Name, Define()
+                        .Add(true, Options()
+                            .Add(ColumnConstraint.PrimaryKey.Name, Define()
+                                .Add(ColumnConstraint.PrimaryKey.PrimaryKeyword, true, Token(SqlTokenRegistry.Primary))
+                                .Add(ColumnConstraint.PrimaryKey.KeyKeyword, true, Token(SqlTokenRegistry.Key)))
+                            .Add(ColumnConstraint.Unique.Name, Define()
+                                .Add(ColumnConstraint.Unique.UniqueKeyword, true, Token(SqlTokenRegistry.Unique))))
+                        .Add(false, Options()
+                            .Add(ColumnConstraint.ClusteredKeyword, Token(SqlTokenRegistry.Clustered))
+                            .Add(ColumnConstraint.NonClusteredKeyword, Token(SqlTokenRegistry.NonClustered))))
+
+                            );
+
+                            // TODO: ADD FOREIGN KEY SYNTAX
+                   // .Add(ColumnConstraint.)             
+
+
+        }
+
+        #endregion
+
 
         #region ColumnSize
 

@@ -434,6 +434,21 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string RowGuidCol = "RowGuidCol";
 
+        /// <summary>
+        /// Gets the identifier for the Unique keyword.
+        /// </summary>
+        public const string Unique = "Unique";
+
+        /// <summary>
+        /// Gets the identifier for the Clustered keyword.
+        /// </summary>
+        public const string Clustered = "Clustered";
+
+        /// <summary>
+        /// Gets the identifier for the NonClustered keyword.
+        /// </summary>
+        public const string NonClustered = "NonClustered";
+
 
         #endregion
 
@@ -510,6 +525,9 @@ namespace SQLGeneration.Parsing
             Define(Identity, @"IDENTITY\b", true);
             Define(Default, @"DEFAULT\b", true);
             Define(RowGuidCol, @"ROWGUIDCOL\b", true);
+            Define(Unique, @"UNIQUE\b", true);
+            Define(Clustered, @"CLUSTERED\b", true);
+            Define(NonClustered, @"NONCLUSTERED\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 

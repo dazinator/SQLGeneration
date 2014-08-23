@@ -449,6 +449,47 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string NonClustered = "NonClustered";
 
+        /// <summary>
+        /// Gets the identifier for the Foreign keyword.
+        /// </summary>
+        public const string Foreign = "Foreign";
+
+        /// <summary>
+        /// Gets the identifier for the References keyword.
+        /// </summary>
+        public const string References = "References";
+
+        /// <summary>
+        /// Gets the identifier for the No keyword.
+        /// </summary>
+        public const string No = "No";
+
+        /// <summary>
+        /// Gets the identifier for the Action keyword.
+        /// </summary>
+        public const string Action = "Action";
+
+        /// <summary>
+        /// Gets the identifier for the Cascade keyword.
+        /// </summary>
+        public const string Cascade = "Cascade";
+
+        /// <summary>
+        /// Gets the identifier for the For keyword.
+        /// </summary>
+        public const string For = "For";
+
+        /// <summary>
+        /// Gets the identifier for the Replication keyword.
+        /// </summary>
+        public const string Replication = "Replication";
+
+        /// <summary>
+        /// Gets the identifier for the Check keyword.
+        /// </summary>
+        public const string Check = "Check";
+        
+
 
         #endregion
 
@@ -528,6 +569,14 @@ namespace SQLGeneration.Parsing
             Define(Unique, @"UNIQUE\b", true);
             Define(Clustered, @"CLUSTERED\b", true);
             Define(NonClustered, @"NONCLUSTERED\b", true);
+            Define(Foreign, @"FOREIGN\b", true);
+            Define(References, @"REFERENCES\b", true);
+            Define(No, @"NO\b", true);
+            Define(Action, @"ACTION\b", true);
+            Define(Cascade, @"CASCADE\b", true);
+            Define(For, @"FOR\b", true);
+            Define(Replication, @"REPLICATION\b", true);
+            Define(Check, @"CHECK\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 

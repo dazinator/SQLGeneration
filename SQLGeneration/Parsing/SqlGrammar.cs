@@ -69,9 +69,12 @@ namespace SQLGeneration.Parsing
 
             // ddl
             defineCreateStatement();
-            defineColumnDefinition();
             defineColumnDefinitionsList();
-
+            defineColumnDefinition();
+            defineColumnConstraintList();
+            defineColumnConstraint();         
+            defineForeignKeyConstraint();
+            defineNotForReplication();          
 
         }
 
@@ -3835,7 +3838,6 @@ namespace SQLGeneration.Parsing
 
         #endregion
 
-
         #region ColumnDefinitionList
 
         /// <summary>
@@ -4086,71 +4088,47 @@ namespace SQLGeneration.Parsing
 
             }
 
+            /// <summary>
+            /// Gets the name identifying Column Constraint List Expression
+            /// </summary>
+            public const string ColumnConstraintListExpressionName = "ColumnConstraintListExpression";
+
         }
 
         private void defineColumnDefinition()
         {
-            // Aiming to support the Syntax definition found here but not yet fully impelemented:
-            // http://msdn.microsoft.com/en-GB/library/ms174979.aspx           
-
             Define(ColumnDefinition.Name)
-                .Add(ColumnDefinition.ColumnName, true, Token(SqlTokenRegistry.Identifier))
-                .Add(ColumnDefinition.DataType.Name, true, Expression(MultipartIdentifier.Name))
-                .Add(ColumnDefinition.DataType.ColumnSize, false, Define()
-                    .Add(ColumnDefinition.DataType.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                    .Add(ColumnDefinition.DataType.ColumnSizeArguments, true, Expression(ValueList.Name))
-                    .Add(ColumnDefinition.DataType.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
-                .Add(ColumnDefinition.Collation.Name, false, Define()
-                    .Add(ColumnDefinition.Collation.CollateKeyword, true, Token(SqlTokenRegistry.Collate))
-                    .Add(ColumnDefinition.Collation.CollationName, true, Token(SqlTokenRegistry.Identifier)))
-                .Add(ColumnDefinition.Nullable.Name, false, Define()
-                    .Add(ColumnDefinition.Nullable.NotKeyword, false, Token(SqlTokenRegistry.Not))
-                    .Add(ColumnDefinition.Nullable.NullKeyword, true, Token(SqlTokenRegistry.Null)))
-                .Add(false, Options()
-                    .Add(ColumnDefinition.Default.Name, Define()
-                        .Add(ColumnDefinition.Constraint.Name, false, Define()
-                            .Add(ColumnDefinition.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
-                            .Add(ColumnDefinition.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
-                        .Add(ColumnDefinition.Default.DefaultName, true, Define()
-                            .Add(ColumnDefinition.Default.DefaultKeyword, true, Token(SqlTokenRegistry.Default))
-                            .Add(true, Options()
-                                .Add(ColumnDefinition.Default.DefaultStringLiteral, Token(SqlTokenRegistry.String))
-                                .Add(ColumnDefinition.Default.DefaultNumericLiteral, Token(SqlTokenRegistry.Number))
-                                .Add(ColumnDefinition.Default.DefaultFunction, Expression(FunctionCall.Name)))))
-                    .Add(ColumnDefinition.Identity.Name, Define()
-                        .Add(ColumnDefinition.Identity.IdentityKeyword, true, Token(SqlTokenRegistry.Identity))
-                        .Add(ColumnDefinition.Identity.IdentitySeed, false, Define()
-                            .Add(ColumnDefinition.Identity.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                            .Add(ColumnDefinition.Identity.IdentitySeedValues, true, Expression(ValueList.Name))
-                            .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))))
-                     .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol));
-
-            // Default 'HI'
-            // Now we can have 0 OR N column constraints.
-
-            /*
-             
- <column_constraint> ::= 
-[ CONSTRAINT constraint_name ] 
-{     { PRIMARY KEY | UNIQUE } 
-        [ CLUSTERED | NONCLUSTERED ] 
-        [ 
-            WITH FILLFACTOR = fillfactor  
-          | WITH ( < index_option > [ , ...n ] ) 
-        ] 
-        [ ON { partition_scheme_name ( partition_column_name ) 
-            | filegroup | "default" } ]
-
-  | [ FOREIGN KEY ] 
-        REFERENCES [ schema_name . ] referenced_table_name [ ( ref_column ) ] 
-        [ ON DELETE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
-        [ ON UPDATE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
-        [ NOT FOR REPLICATION ] 
-
-  | CHECK [ NOT FOR REPLICATION ] ( logical_expression ) 
-} 
-             
-            */
+                  .Add(ColumnDefinition.ColumnName, true, Token(SqlTokenRegistry.Identifier))
+                  .Add(ColumnDefinition.DataType.Name, true, Expression(MultipartIdentifier.Name))
+                  .Add(ColumnDefinition.DataType.ColumnSize, false, Define()
+                      .Add(ColumnDefinition.DataType.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                      .Add(ColumnDefinition.DataType.ColumnSizeArguments, true, Expression(ValueList.Name))
+                      .Add(ColumnDefinition.DataType.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
+                  .Add(ColumnDefinition.Collation.Name, false, Define()
+                      .Add(ColumnDefinition.Collation.CollateKeyword, true, Token(SqlTokenRegistry.Collate))
+                      .Add(ColumnDefinition.Collation.CollationName, true, Token(SqlTokenRegistry.Identifier)))
+                  .Add(ColumnDefinition.Nullable.Name, false, Define()
+                      .Add(ColumnDefinition.Nullable.NotKeyword, false, Token(SqlTokenRegistry.Not))
+                      .Add(ColumnDefinition.Nullable.NullKeyword, true, Token(SqlTokenRegistry.Null)))
+                  .Add(false, Options()
+                      .Add(ColumnDefinition.Default.Name, Define()
+                          .Add(ColumnDefinition.Constraint.Name, false, Define()
+                              .Add(ColumnDefinition.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
+                              .Add(ColumnDefinition.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
+                          .Add(ColumnDefinition.Default.DefaultName, true, Define()
+                              .Add(ColumnDefinition.Default.DefaultKeyword, true, Token(SqlTokenRegistry.Default))
+                              .Add(true, Options()
+                                  .Add(ColumnDefinition.Default.DefaultStringLiteral, Token(SqlTokenRegistry.String))
+                                  .Add(ColumnDefinition.Default.DefaultNumericLiteral, Token(SqlTokenRegistry.Number))
+                                  .Add(ColumnDefinition.Default.DefaultFunction, Expression(FunctionCall.Name)))))
+                      .Add(ColumnDefinition.Identity.Name, Define()
+                          .Add(ColumnDefinition.Identity.IdentityKeyword, true, Token(SqlTokenRegistry.Identity))
+                          .Add(ColumnDefinition.Identity.IdentitySeed, false, Define()
+                              .Add(ColumnDefinition.Identity.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                              .Add(ColumnDefinition.Identity.IdentitySeedValues, true, Expression(ValueList.Name))
+                              .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))))
+                  .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol))
+                  .Add(ColumnDefinition.ColumnConstraintListExpressionName, false, Expression(ColumnConstraintList.Name));                                
 
             // Then we can have an optional column index.
 
@@ -4189,7 +4167,7 @@ namespace SQLGeneration.Parsing
                 /// <summary>
                 /// Gets the identifier for the first column.
                 /// </summary>
-                public const string First = "first";          
+                public const string First = "first";
 
                 /// <summary>
                 /// Gets the identifier for the remaining columns.
@@ -4209,35 +4187,14 @@ namespace SQLGeneration.Parsing
             Define(ColumnConstraintList.Name)
                 .Add(true, Options()
                     .Add(ColumnConstraintList.Multiple.Name, Define()
-                        .Add(ColumnConstraintList.Multiple.First, true, Expression(ColumnConstraint.Name))                       
+                        .Add(ColumnConstraintList.Multiple.First, true, Expression(ColumnConstraint.Name))
                         .Add(ColumnConstraintList.Multiple.Remaining, true, Expression(ColumnConstraintList.Name)))
                     .Add(ColumnConstraintList.Single, Expression(ColumnConstraint.Name)));
         }
 
-
         #endregion
 
         #region ColumnConstraint
-
-        //        <column_constraint> ::= 
-        //[ CONSTRAINT constraint_name ] 
-        //{     { PRIMARY KEY | UNIQUE } 
-        //        [ CLUSTERED | NONCLUSTERED ] 
-        //        [ 
-        //            WITH FILLFACTOR = fillfactor  
-        //          | WITH ( < index_option > [ , ...n ] ) 
-        //        ] 
-        //        [ ON { partition_scheme_name ( partition_column_name ) 
-        //            | filegroup | "default" } ]
-
-        //  | [ FOREIGN KEY ] 
-        //        REFERENCES [ schema_name . ] referenced_table_name [ ( ref_column ) ] 
-        //        [ ON DELETE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
-        //        [ ON UPDATE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
-        //        [ NOT FOR REPLICATION ] 
-
-        //  | CHECK [ NOT FOR REPLICATION ] ( logical_expression ) 
-        //} 
 
         /// <summary>
         /// Describes the structure of the column constraint.
@@ -4270,7 +4227,7 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string KeyKeyword = "KeyKeyword";
             }
-            
+
             /// <summary>
             /// Describes the structure of the Unique constraint syntax.
             /// </summary>
@@ -4286,9 +4243,9 @@ namespace SQLGeneration.Parsing
                 /// Gets the name identifying Primary Keyword.
                 /// </summary>
                 public const string UniqueKeyword = "UniqueKeyword";
-               
+
             }
-            
+
             /// <summary>
             /// Describes the structure of the PrimarKey Or UniqueConstraint syntax.
             /// </summary>
@@ -4298,7 +4255,7 @@ namespace SQLGeneration.Parsing
                 /// <summary>
                 /// Gets the name identifying Constraint.
                 /// </summary>
-                public const string Name = "PrimarKeyOrUniqueConstraint";             
+                public const string Name = "PrimarKeyOrUniqueConstraint";
 
 
             }
@@ -4308,17 +4265,81 @@ namespace SQLGeneration.Parsing
             /// </summary>
             public const string ClusteredKeyword = "ClusteredKeyword";
 
-              /// <summary>
+            /// <summary>
             /// Gets the name identifying the Non Clustered Keyword.
             /// </summary>
-            public const string NonClusteredKeyword = "NonClusteredKeyword";            
+            public const string NonClusteredKeyword = "NonClusteredKeyword";
+
+            /// <summary>
+            /// Gets the name identifying the Foreign Key.
+            /// </summary>
+            public const string ForeignKeyExpressionName = "ForeignKeyExpression";
+
+
+            /// <summary>
+            /// Describes the structure of the Unique constraint syntax.
+            /// </summary>
+            public static class Check
+            {
+
+                /// <summary>
+                /// Gets the name identifying Unique Syntax.
+                /// </summary>
+                public const string Name = "Check";
+
+                /// <summary>
+                /// Gets the name identifying Check Keyword.
+                /// </summary>
+                public const string CheckKeyword = "CheckKeyword";
+
+                /// <summary>
+                /// Gets the name identifying the Not For Replication Expression.
+                /// </summary>
+                public const string NotForReplicationExpressionName = "NotForReplicationExpression";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string LeftParenthesis = "LeftParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string RightParenthesis = "RightParenthesis";
+
+            }
 
         }
 
         private void defineColumnConstraint()
         {
-            // Aiming to support the Syntax definition found here but not yet fully impelemented:
-            // http://msdn.microsoft.com/en-GB/library/ms174979.aspx           
+
+            /*
+               <column_constraint> ::= 
+       [ CONSTRAINT constraint_name ] 
+       {     { PRIMARY KEY | UNIQUE } 
+               [ CLUSTERED | NONCLUSTERED ] 
+               [ 
+                   WITH FILLFACTOR = fillfactor  
+                 | WITH ( < index_option > [ , ...n ] ) 
+               ] 
+               [ ON { partition_scheme_name ( partition_column_name ) 
+                   | filegroup | "default" } ]
+
+         | [ FOREIGN KEY ] 
+               REFERENCES [ schema_name . ] referenced_table_name [ ( ref_column ) ] 
+               [ ON DELETE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+               [ ON UPDATE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+               [ NOT FOR REPLICATION ] 
+
+         | CHECK [ NOT FOR REPLICATION ] ( logical_expression ) 
+       } 
+       */
+
+            // TODO: ADD SUPPORT FOR 'logical_expression' OF THE CHECK CONSTRAINT
+            // TODO: ADD SUPPORT FOR 'WITH FILLFACTOR = fillfactor'
+            // TODO: ADD SUPPORT FOR '< index_option >'
+            // TODO: ADD SUPPORT FOR 'ON { partition_scheme_name ( partition_column_name ) | filegroup | "default" } '
 
             Define(ColumnConstraint.Name)
                 .Add(ColumnDefinition.Constraint.Name, false, Define()
@@ -4335,24 +4356,329 @@ namespace SQLGeneration.Parsing
                         .Add(false, Options()
                             .Add(ColumnConstraint.ClusteredKeyword, Token(SqlTokenRegistry.Clustered))
                             .Add(ColumnConstraint.NonClusteredKeyword, Token(SqlTokenRegistry.NonClustered))))
-
-                            );
-
-                            // TODO: ADD FOREIGN KEY SYNTAX
-                   // .Add(ColumnConstraint.)             
-
+                    .Add(ColumnConstraint.ForeignKeyExpressionName, Expression(ForeignKeyConstraint.Name))
+                    .Add(ColumnConstraint.Check.Name, Define()
+                        .Add(ColumnConstraint.Check.CheckKeyword, true, Token(SqlTokenRegistry.Check))
+                        .Add(ColumnConstraint.Check.NotForReplicationExpressionName, false, Expression(NotForReplication.Name))
+                        .Add(ColumnConstraint.Check.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                //TODO: Need to figure out how to define a 'logical_expression' (an expression which returns true or false..
+                        .Add(ColumnConstraint.Check.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))));
 
         }
 
         #endregion
 
+        #region ForeignKeyConstraint
 
-        #region ColumnSize
+        /// <summary>
+        /// Describes the structure of the column constraint.
+        /// </summary>
+        public static class ForeignKeyConstraint
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "ForeignKeyConstraint";
+
+            /// <summary>
+            /// Gets the name identifying the Not For Replication Expression.
+            /// </summary>
+            public const string NotForReplicationExpressionName = "NotForReplicationExpression";
+
+            /// <summary>
+            /// Foreign Key
+            /// </summary>
+            public static class ForeignKey
+            {
+
+                /// <summary>
+                /// Gets the name identifying PrimaryKey Syntax.
+                /// </summary>
+                public const string Name = "ForeignKey";
+
+                /// <summary>
+                /// Gets the name identifying the Foreign Keyword.
+                /// </summary>
+                public const string ForeignKeyword = "ForeignKeyword";
+
+                /// <summary>
+                /// Gets the name identifying the Key Keyword.
+                /// </summary>
+                public const string KeyKeyword = "KeyKeyword";
+
+            }
+
+            /// <summary>
+            /// References
+            /// </summary>
+            public static class References
+            {
+
+                /// <summary>
+                /// Gets the name identifying References Syntax.
+                /// </summary>
+                public const string Name = "References";
+
+                /// <summary>
+                /// Gets the name identifying the References Keyword.
+                /// </summary>
+                public const string ReferencesKeyword = "ReferencesKeyword";
+
+            }
+
+            /// <summary>
+            /// ReferencedTable
+            /// </summary>
+            public static class ReferencedTable
+            {
+                /// <summary>
+                /// Gets the name identifying ReferencedTable Syntax.
+                /// </summary>
+                public const string Name = "ReferencedTable";
+            }
+
+            /// <summary>
+            /// ReferencedColumn
+            /// </summary>
+            public static class ReferencedColumn
+            {
+                /// <summary>
+                /// Gets the name identifying ReferencedColumn Syntax.
+                /// </summary>
+                public const string Name = "ReferencedColumn";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string LeftParenthesis = "LeftParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string RightParenthesis = "RightParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying ColumnName.
+                /// </summary>
+                public const string ColumnName = "ColumnName";
 
 
+            }
+
+            /// <summary>
+            /// On
+            /// </summary>
+            public static class On
+            {
+                /// <summary>
+                /// Gets the name identifying On Syntax.
+                /// </summary>
+                public const string Name = "On";
+
+                /// <summary>
+                /// Gets the name identifying On Keyword.
+                /// </summary>
+                public const string OnKeyword = "OnKeyword";
+
+                /// <summary>
+                /// Delete
+                /// </summary>
+                public static class Delete
+                {
+                    /// <summary>
+                    /// Gets the name Delete Syntax.
+                    /// </summary>
+                    public const string Name = "Delete";
+
+                    /// <summary>
+                    /// Gets the name identifying Delete Keyword.
+                    /// </summary>
+                    public const string DeleteKeyword = "DeleteKeyword";
+                }
+
+                /// <summary>
+                /// Update
+                /// </summary>
+                public static class Update
+                {
+                    /// <summary>
+                    /// Gets the name Delete Syntax.
+                    /// </summary>
+                    public const string Name = "Update";
+
+                    /// <summary>
+                    /// Gets the name identifying Update Keyword.
+                    /// </summary>
+                    public const string UpdateKeyword = "UpdateKeyword";
+                }
+
+                /// <summary>
+                /// NoAction
+                /// </summary>
+                public static class NoAction
+                {
+                    /// <summary>
+                    /// Gets the name Delete Syntax.
+                    /// </summary>
+                    public const string Name = "NoAction";
+
+                    /// <summary>
+                    /// Gets the name identifying No Keyword.
+                    /// </summary>
+                    public const string NoKeyword = "NoKeyword";
+
+                    /// <summary>
+                    /// Gets the name identifying Action Keyword.
+                    /// </summary>
+                    public const string ActionKeyword = "ActionKeyword";
+                }
+
+                /// <summary>
+                /// Gets the name identifying Cascade Keyword 
+                /// </summary>
+                public const string CascadeKeyword = "CascadeKeyword";
+
+                /// <summary>
+                /// SetNull
+                /// </summary>
+                public static class SetNull
+                {
+                    /// <summary>
+                    /// Gets the name Set Null Syntax.
+                    /// </summary>
+                    public const string Name = "SetNull";
+
+                    /// <summary>
+                    /// Gets the name identifying Set Keyword.
+                    /// </summary>
+                    public const string SetKeyword = "SetKeyword";
+
+                    /// <summary>
+                    /// Gets the name identifying Null Keyword.
+                    /// </summary>
+                    public const string NullKeyword = "NullKeyword";
+                }
+
+                /// <summary>
+                /// SetDefault
+                /// </summary>
+                public static class SetDefault
+                {
+                    /// <summary>
+                    /// Gets the name Set Default Syntax.
+                    /// </summary>
+                    public const string Name = "SetDefault";
+
+                    /// <summary>
+                    /// Gets the name identifying Set Keyword.
+                    /// </summary>
+                    public const string SetKeyword = "SetKeyword";
+
+                    /// <summary>
+                    /// Gets the name identifying Default Keyword.
+                    /// </summary>
+                    public const string DefaultKeyword = "DefaultKeyword";
+                }
+            }
+
+        }
+
+        private void defineForeignKeyConstraint()
+        {
+            /*
+           [ FOREIGN KEY ] 
+        REFERENCES [ schema_name . ] referenced_table_name [ ( ref_column ) ] 
+        [ ON DELETE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+        [ ON UPDATE { NO ACTION | CASCADE | SET NULL | SET DEFAULT } ] 
+        [ NOT FOR REPLICATION ] 
+            */
+            Define(ForeignKeyConstraint.Name)
+                .Add(ForeignKeyConstraint.ForeignKey.Name, false, Define()
+                    .Add(ForeignKeyConstraint.ForeignKey.ForeignKeyword, true, Token(SqlTokenRegistry.Foreign))
+                    .Add(ForeignKeyConstraint.ForeignKey.KeyKeyword, true, Token(SqlTokenRegistry.Key)))
+                .Add(ForeignKeyConstraint.References.Name, true, Define()
+                    .Add(ForeignKeyConstraint.References.ReferencesKeyword, true, Token(SqlTokenRegistry.References))
+                    .Add(ForeignKeyConstraint.ReferencedTable.Name, true, Expression(MultipartIdentifier.Name))
+                    .Add(ForeignKeyConstraint.ReferencedColumn.Name, false, Define()
+                        .Add(ForeignKeyConstraint.ReferencedColumn.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                        .Add(ForeignKeyConstraint.ReferencedColumn.ColumnName, true, Expression(MultipartIdentifier.Name))
+                        .Add(ForeignKeyConstraint.ReferencedColumn.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))))
+                .Add(ForeignKeyConstraint.On.Delete.Name, false, Define()
+                    .Add(ForeignKeyConstraint.On.OnKeyword, true, Token(SqlTokenRegistry.On))
+                    .Add(ForeignKeyConstraint.On.Delete.DeleteKeyword, true, Token(SqlTokenRegistry.Delete))
+                    .Add(true, Options()
+                        .Add(ForeignKeyConstraint.On.NoAction.Name, Define()
+                            .Add(ForeignKeyConstraint.On.NoAction.NoKeyword, true, Token(SqlTokenRegistry.No))
+                            .Add(ForeignKeyConstraint.On.NoAction.ActionKeyword, true, Token(SqlTokenRegistry.Key)))
+                        .Add(ForeignKeyConstraint.On.CascadeKeyword, Token(SqlTokenRegistry.Cascade))
+                        .Add(ForeignKeyConstraint.On.SetNull.Name, Define()
+                            .Add(ForeignKeyConstraint.On.SetNull.SetKeyword, true, Token(SqlTokenRegistry.Set))
+                            .Add(ForeignKeyConstraint.On.SetNull.NullKeyword, true, Token(SqlTokenRegistry.Null)))
+                        .Add(ForeignKeyConstraint.On.SetDefault.Name, Define()
+                            .Add(ForeignKeyConstraint.On.SetDefault.SetKeyword, true, Token(SqlTokenRegistry.Set))
+                            .Add(ForeignKeyConstraint.On.SetDefault.DefaultKeyword, true, Token(SqlTokenRegistry.Default)))))
+                .Add(ForeignKeyConstraint.On.Update.Name, false, Define()
+                    .Add(ForeignKeyConstraint.On.OnKeyword, true, Token(SqlTokenRegistry.On))
+                    .Add(ForeignKeyConstraint.On.Update.UpdateKeyword, true, Token(SqlTokenRegistry.Update))
+                    .Add(true, Options()
+                        .Add(ForeignKeyConstraint.On.NoAction.Name, Define()
+                             .Add(ForeignKeyConstraint.On.NoAction.NoKeyword, true, Token(SqlTokenRegistry.No))
+                             .Add(ForeignKeyConstraint.On.NoAction.ActionKeyword, true, Token(SqlTokenRegistry.Key)))
+                        .Add(ForeignKeyConstraint.On.CascadeKeyword, Token(SqlTokenRegistry.Cascade))
+                        .Add(ForeignKeyConstraint.On.SetNull.Name, Define()
+                             .Add(ForeignKeyConstraint.On.SetNull.SetKeyword, true, Token(SqlTokenRegistry.Set))
+                             .Add(ForeignKeyConstraint.On.SetNull.NullKeyword, true, Token(SqlTokenRegistry.Null)))
+                        .Add(ForeignKeyConstraint.On.SetDefault.Name, Define()
+                             .Add(ForeignKeyConstraint.On.SetDefault.SetKeyword, true, Token(SqlTokenRegistry.Set))
+                             .Add(ForeignKeyConstraint.On.SetDefault.DefaultKeyword, true, Token(SqlTokenRegistry.Default)))))
+                .Add(ForeignKeyConstraint.NotForReplicationExpressionName, false, Expression(NotForReplication.Name));
+
+        }
 
         #endregion
 
+        #region NotForReplication
+
+        /// <summary>
+        /// NotForReplication
+        /// </summary>
+        public static class NotForReplication
+        {
+            /// <summary>
+            /// Gets the name Delete Syntax.
+            /// </summary>
+            public const string Name = "NotForReplication";
+
+            /// <summary>
+            /// Gets the name identifying Not Keyword.
+            /// </summary>
+            public const string NotKeyword = "NotKeyword";
+
+            /// <summary>
+            /// Gets the name identifying For Keyword.
+            /// </summary>
+            public const string ForKeyword = "ForKeyword";
+
+
+            /// <summary>
+            /// Gets the name identifying Replication Keyword.
+            /// </summary>
+            public const string ReplicationKeyword = "ReplicationKeyword";
+        }
+
+        private void defineNotForReplication()
+        {
+            /*        
+                 NOT FOR REPLICATION 
+            */
+            Define(NotForReplication.Name)
+                 .Add(NotForReplication.NotKeyword, true, Token(SqlTokenRegistry.Not))
+                 .Add(NotForReplication.ForKeyword, true, Token(SqlTokenRegistry.For))
+                 .Add(NotForReplication.ReplicationKeyword, true, Token(SqlTokenRegistry.Replication));
+
+        }
+
+        #endregion
 
         #endregion
     }

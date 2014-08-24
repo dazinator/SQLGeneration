@@ -123,6 +123,8 @@ namespace SQLGeneration.Generators
             throw new InvalidOperationException();
         }
 
+        #region DDL
+
         private ICommand buildCreateStatement(MatchResult result)
         {
             var createBuilder = new CreateBuilder();
@@ -447,6 +449,55 @@ namespace SQLGeneration.Generators
                 if (fkResult.IsMatch)
                 {
                     // build fk
+                    var fk = new ForeignKeyConstraint(constraintName);
+                    var referencesResult = fkResult.Matches[SqlGrammar.ForeignKeyConstraint.References.Name];
+                    if (referencesResult.IsMatch)
+                    {
+                        var referencedTableResult = referencesResult.Matches[SqlGrammar.ForeignKeyConstraint.ReferencedTable.Name];
+                        if (referencedTableResult.IsMatch)
+                        {
+                            var table = buildTable(referencedTableResult);
+                            fk.ReferencedTable = table;
+                        }
+
+                        var referencedColumnResult = referencesResult.Matches[SqlGrammar.ForeignKeyConstraint.ReferencedColumn.Name];
+                        if (referencedColumnResult.IsMatch)
+                        {
+                            var columnNameResult = referencedColumnResult.Matches[SqlGrammar.ForeignKeyConstraint.ReferencedColumn.ColumnName];
+                            if (columnNameResult.IsMatch)
+                            {
+                                var colName = getToken(columnNameResult);
+                                fk.ReferencedColumn = colName;
+                            }
+                        }
+                    }                   
+
+                    // On Delete
+                    var onDeleteResult = fkResult.Matches[SqlGrammar.ForeignKeyConstraint.On.Delete.Name];
+                    if (onDeleteResult.IsMatch)
+                    {
+                        ForeignKeyAction action = null;
+                        action = buildForeignKeyAction(onDeleteResult);
+                        fk.OnDeleteAction = action;
+                    }
+
+                    // On Update
+                    var onUpdateResult = fkResult.Matches[SqlGrammar.ForeignKeyConstraint.On.Update.Name];
+                    if (onUpdateResult.IsMatch)
+                    {
+                        ForeignKeyAction action = null;
+                        action = buildForeignKeyAction(onUpdateResult);
+                        fk.OnUpdateAction = action;
+                    }
+
+                    // Not for replication
+                    var notForReplicationResult = fkResult.Matches[SqlGrammar.ForeignKeyConstraint.NotForReplicationExpressionName];
+                    if (notForReplicationResult.IsMatch)
+                    {
+                        fk.NotForReplication = true;
+                    }
+
+                    builder.Constraints.AddConstraint(fk);
                 }
                 else
                 {
@@ -463,6 +514,36 @@ namespace SQLGeneration.Generators
             //  throw new NotImplementedException();
         }
 
+        private ForeignKeyAction buildForeignKeyAction(MatchResult onDeleteResult)
+        {
+            var noActionResult = onDeleteResult.Matches[SqlGrammar.ForeignKeyConstraint.On.NoAction.Name];
+            if (noActionResult.IsMatch)
+            {
+                return new NoAction();
+            }
+
+            var cascadeResult = onDeleteResult.Matches[SqlGrammar.ForeignKeyConstraint.On.CascadeKeyword];
+            if (cascadeResult.IsMatch)
+            {
+                return new CascadeAction();
+            }
+
+            var setNullResult = onDeleteResult.Matches[SqlGrammar.ForeignKeyConstraint.On.SetNull.Name];
+            if (setNullResult.IsMatch)
+            {
+                return new SetNullAction();
+            }
+
+            var setDefaultResult = onDeleteResult.Matches[SqlGrammar.ForeignKeyConstraint.On.SetDefault.Name];
+            if (setDefaultResult.IsMatch)
+            {
+                return new SetDefaultAction();
+            }
+
+            throw new NotSupportedException();
+        }
+
+        #endregion
 
         private ISelectBuilder buildSelectStatement(MatchResult result)
         {

@@ -37,13 +37,19 @@ Balance DECIMAL(10,2), -- data type with scale and precision arguments --
 Essay VARCHAR(MAX), -- datatype with 'max' argument -- 
 ProfileText NTEXT COLLATE Latin1_General, -- collation -- 
 MustPickAChar NCHAR NOT NULL, -- nullability, not null -- 
-AutoResponseMessage NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', -- default string literal value -- 
-SomeMessage NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', -- named constraints --
-RefNumber INT NOT NULL IDENTITY,  -- identity, no seed --
-JobNumber INT NOT NULL IDENTITY(1,1), -- identity, with seed --
-Points INT NOT NULL DEFAULT 1, -- default numeric literal value -- 
-RegId INT IDENTITY(1,1) CONSTRAINT my_primarykey PRIMARY KEY, -- primary key constraint, optionally named -- 
-AccountRefNumber INT CONSTRAINT my_unique UNIQUE, -- unique constraint, optionally not named -- 
+CanPickAChar NCHAR NULL, -- nullability, null -- 
+AccountTypeName NVARCHAR DEFAULT 'Hello!', -- default string literal value -- 
+Points INT DEFAULT 1, -- default numeric literal value -- 
+SomeMessage NVARCHAR CONSTRAINT my_constraintname DEFAULT 'Wham!', -- default constraint, named -- 
+RefNumber INT IDENTITY,  -- identity, no seed --
+JobNumber INT IDENTITY(1,1), -- identity, with seed --
+SomeId INT PRIMARY KEY, -- primary key constraint, named -- 
+RegId INT CONSTRAINT my_primarykey PRIMARY KEY, -- primary key constraint, named (you wouldnt have 2 pk's though!) -- 
+SpecialRefNumber INT UNIQUE, -- unique constraint  -- 
+AccountRefNumber INT CONSTRAINT my_unique UNIQUE, -- unique constraint, named -- 
+
+ComplexExampleMessage VARCHAR(max) COLLATE Latin1_General NOT NULL DEFAULT 'Hello!', -- multiple of the above -- 
+ComplexExampleOther INT NOT NULL CONSTRAINT my_constraintname DEFAULT 1 CONSTRAINT my_unique UNIQUE -- multiple of the above -- 
 )
 ```
 

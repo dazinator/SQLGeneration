@@ -43,7 +43,7 @@ Points INT DEFAULT 1, -- default numeric literal value --
 SomeMessage NVARCHAR CONSTRAINT my_constraintname DEFAULT 'Wham!', -- default constraint, named -- 
 RefNumber INT IDENTITY,  -- identity, no seed --
 JobNumber INT IDENTITY(1,1), -- identity, with seed --
-SomeId INT PRIMARY KEY, -- primary key constraint, named -- 
+SomeId INT PRIMARY KEY, -- primary key constraint -- 
 RegId INT CONSTRAINT my_primarykey PRIMARY KEY, -- primary key constraint, named (you wouldnt have 2 pk's though!) -- 
 SpecialRefNumber INT UNIQUE, -- unique constraint  -- 
 AccountRefNumber INT CONSTRAINT my_unique UNIQUE, -- unique constraint, named -- 

@@ -31,19 +31,19 @@ Example of supported SQL:
 ```
 CREATE TABLE [dbo].[NewTable]
 (
-ColumnA CHAR, 
-ColumnB VARCHAR(150), 
-ColumnC DECIMAL(10,2), 
-ColumnD NTEXT COLLATE Latin1_General, 
-ColumnE NCHAR COLLATE Latin1_General NOT NULL, 
-ColumnF NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', 
-ColumnG NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', 
-ColumnH INT NOT NULL IDENTITY, 
-ColumnI INT NOT NULL IDENTITY(1,1), 
-ColumnJ INT NOT NULL DEFAULT 1,
-ColumnK INT IDENTITY(1,1) CONSTRAINT my_primarykey PRIMARY KEY, 
-ColumnL INT CONSTRAINT my_unique UNIQUE,
-ColumnM VARCHAR(MAX), 
+ColumnA CHAR, -- simple data type --
+ColumnB VARCHAR(150), -- data type with size argument --
+ColumnC DECIMAL(10,2), -- data type with scale and precision arguments -- 
+ColumnD NTEXT COLLATE Latin1_General, -- collation -- 
+ColumnE NCHAR NOT NULL, -- nullability, not null -- 
+ColumnF NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', -- default string literal value -- 
+ColumnG NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', -- named constraints --
+ColumnH INT NOT NULL IDENTITY,  -- identity, no seed --
+ColumnI INT NOT NULL IDENTITY(1,1), -- identity, with seed --
+ColumnJ INT NOT NULL DEFAULT 1, -- default numeric literal value -- 
+ColumnK INT IDENTITY(1,1) CONSTRAINT my_primarykey PRIMARY KEY, -- primary key constraint, optionally named -- 
+ColumnL INT CONSTRAINT my_unique UNIQUE, -- unique constraint, optionally not named -- 
+ColumnM VARCHAR(MAX), -- datatype with 'max' argument -- 
 )
 ```
 

@@ -566,7 +566,6 @@ namespace SQLGeneration.Builders
         {
         }
 
-
         /// <summary>
         /// Visits a DefaultConstraint builder.
         /// </summary>
@@ -590,6 +589,46 @@ namespace SQLGeneration.Builders
         /// <param name="item"></param>
         protected internal virtual void VisitUniqueConstraint(UniqueConstraint item)
         {
+        }
+
+        /// <summary>
+        /// Visits a ForeignKeyConstraint builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitForeignKeyConstraint(ForeignKeyConstraint item)
+        {
+        }
+
+        /// <summary>
+        /// Visits a CascadeAction builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitForeignKeyCascadeAction(CascadeAction item)
+        {          
+        }
+
+        /// <summary>
+        /// Visits a SetDefaultAction builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitForeignKeySetDefaultAction(SetDefaultAction item)
+        {          
+        }
+
+        /// <summary>
+        /// Visits a SetNullAction builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitForeignKeySetNullAction(SetNullAction item)
+        {          
+        }
+
+        /// <summary>
+        /// Visits a NoAction builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitForeignKeyNoAction(NoAction item)
+        {            
         }
     }
 }

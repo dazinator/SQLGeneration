@@ -1303,7 +1303,136 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint and no referenced column name.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_Constraint_NoColumnReference()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable)";
+            assertCanReproduce(commandText);
+        }
 
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_Constraint()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn))";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint not for replication.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_Constraint_NotForReplication()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) NOT FOR REPLICATION)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a named foreign key constraint.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_Named_Constraint()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT CONSTRAINT my_fk FOREIGN KEY REFERENCES dbo.mytable(idColumn))";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on delete no action.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnDelete_NoAction()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON DELETE NO ACTION)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on delete cascade.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnDelete_Cascade()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON DELETE CASCADE)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on delete set null.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnDelete_SetNull()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON DELETE SET NULL)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on delete set default.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnDelete_SetDefault()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON DELETE SET DEFAULT)";
+            assertCanReproduce(commandText);
+        }
+
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on update no action.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnUpdate_NoAction()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON UPDATE NO ACTION)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on update cascade.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnUpdate_Cascade()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON UPDATE CASCADE)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on update set null.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnUpdate_SetNull()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON UPDATE SET NULL)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a foreign key constraint with an on update set default.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_ForeignKey_OnUpdate_SetDefault()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON UPDATE SET DEFAULT)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has multiple constraints applied of varying kinds.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Multiple_Constraints()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT NOT NULL CONSTRAINT my_default DEFAULT 1 CONSTRAINT my_fk FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON DELETE SET NULL ON UPDATE NO ACTION CONSTRAINT my_unique UNIQUE)";
+            assertCanReproduce(commandText);
+        }
      
 
 

@@ -1363,6 +1363,8 @@ namespace SQLGeneration.Generators
             Reference
         }
 
+        #region DDL
+
         /// <summary>
         /// Generates the text for a Create builder.
         /// </summary>
@@ -1589,6 +1591,90 @@ namespace SQLGeneration.Generators
             writer.Write("UNIQUE");
             base.VisitUniqueConstraint(item);
         }
+
+        /// <summary>
+        /// Generates the text for a ForeignKeyConstraint builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitForeignKeyConstraint(ForeignKeyConstraint item)
+        {
+            if (!string.IsNullOrWhiteSpace(item.ConstraintName))
+            {
+                writer.Write("CONSTRAINT ");
+                writer.Write(item.ConstraintName);
+                writer.Write(" ");
+            }
+            writer.Write("FOREIGN KEY REFERENCES");
+            if (item.ReferencedTable != null)
+            {
+                writer.Write(" ");
+                this.VisitTable(item.ReferencedTable);
+            }
+            if (!string.IsNullOrWhiteSpace(item.ReferencedColumn))
+            {
+                writer.Write("(");
+                writer.Write(item.ReferencedColumn);
+                writer.Write(")");
+            }
+            if (item.OnDeleteAction != null)
+            {
+                writer.Write(" ON DELETE ");
+                ((IVisitableBuilder)item.OnDeleteAction).Accept(this);
+            }
+            if (item.OnUpdateAction != null)
+            {
+                writer.Write(" ON UPDATE ");
+                ((IVisitableBuilder)item.OnUpdateAction).Accept(this);
+            }
+            if (item.NotForReplication)
+            {
+                writer.Write(" NOT FOR REPLICATION");
+            }
+
+            base.VisitForeignKeyConstraint(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a CascadeAction builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitForeignKeyCascadeAction(CascadeAction item)
+        {
+            writer.Write("CASCADE");
+            base.VisitForeignKeyCascadeAction(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a NoAction builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitForeignKeyNoAction(NoAction item)
+        {
+            writer.Write("NO ACTION");
+            base.VisitForeignKeyNoAction(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a SetDefaultAction builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitForeignKeySetDefaultAction(SetDefaultAction item)
+        {
+            writer.Write("SET DEFAULT");
+            base.VisitForeignKeySetDefaultAction(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a SetNullAction builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitForeignKeySetNullAction(SetNullAction item)
+        {
+            writer.Write("SET NULL");
+            base.VisitForeignKeySetNullAction(item);
+        }
+
+        #endregion
 
     }
 }

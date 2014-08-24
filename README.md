@@ -31,19 +31,19 @@ Example of supported SQL:
 ```
 CREATE TABLE [dbo].[NewTable]
 (
-ColumnA CHAR, -- simple data type --
-ColumnB VARCHAR(150), -- data type with size argument --
-ColumnC DECIMAL(10,2), -- data type with scale and precision arguments -- 
-ColumnD NTEXT COLLATE Latin1_General, -- collation -- 
-ColumnE NCHAR NOT NULL, -- nullability, not null -- 
-ColumnF NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', -- default string literal value -- 
-ColumnG NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', -- named constraints --
-ColumnH INT NOT NULL IDENTITY,  -- identity, no seed --
-ColumnI INT NOT NULL IDENTITY(1,1), -- identity, with seed --
-ColumnJ INT NOT NULL DEFAULT 1, -- default numeric literal value -- 
-ColumnK INT IDENTITY(1,1) CONSTRAINT my_primarykey PRIMARY KEY, -- primary key constraint, optionally named -- 
-ColumnL INT CONSTRAINT my_unique UNIQUE, -- unique constraint, optionally not named -- 
-ColumnM VARCHAR(MAX), -- datatype with 'max' argument -- 
+FavouriteLetter CHAR, -- simple column --
+Reason VARCHAR(150), -- data type with size argument --
+Balance DECIMAL(10,2), -- data type with scale and precision arguments -- 
+Essay VARCHAR(MAX), -- datatype with 'max' argument -- 
+ProfileText NTEXT COLLATE Latin1_General, -- collation -- 
+MustPickAChar NCHAR NOT NULL, -- nullability, not null -- 
+AutoResponseMessage NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', -- default string literal value -- 
+SomeMessage NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', -- named constraints --
+RefNumber INT NOT NULL IDENTITY,  -- identity, no seed --
+JobNumber INT NOT NULL IDENTITY(1,1), -- identity, with seed --
+Points INT NOT NULL DEFAULT 1, -- default numeric literal value -- 
+RegId INT IDENTITY(1,1) CONSTRAINT my_primarykey PRIMARY KEY, -- primary key constraint, optionally named -- 
+AccountRefNumber INT CONSTRAINT my_unique UNIQUE, -- unique constraint, optionally not named -- 
 )
 ```
 

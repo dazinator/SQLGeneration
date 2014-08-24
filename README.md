@@ -47,9 +47,14 @@ SomeId INT PRIMARY KEY, -- primary key constraint --
 RegId INT CONSTRAINT my_primarykey PRIMARY KEY, -- primary key constraint, named (you wouldnt have 2 pk's though!) -- 
 SpecialRefNumber INT UNIQUE, -- unique constraint  -- 
 AccountRefNumber INT CONSTRAINT my_unique UNIQUE, -- unique constraint, named -- 
-
+CustomerId INT NOT NULL FOREIGN KEY REFERENCES dbo.mytable, -- foreign key constraint, simple --
+AccountId INT NOT NULL FOREIGN KEY REFERENCES dbo.mytable(accountid), -- foreign key constraint, with column ref --
+SalaryId INT NOT NULL FOREIGN KEY REFERENCES salary(accountid) ON DELETE NO ACTION, -- foreign key constraint, with delete action --
+DestinyId INT NOT NULL FOREIGN KEY REFERENCES destiny ON UPDATE CASCADE, -- foreign key constraint, with update action --
+JeopardyId INT NOT NULL FOREIGN KEY REFERENCES jeopardy(id) ON DELETE SET NULL ON UPDATE SET DEFAULT, -- foreign key constraint, with delete action and update action --
 ComplexExampleMessage VARCHAR(max) COLLATE Latin1_General NOT NULL DEFAULT 'Hello!', -- multiple of the above -- 
-ComplexExampleOther INT NOT NULL CONSTRAINT my_constraintname DEFAULT 1 CONSTRAINT my_unique UNIQUE -- multiple of the above -- 
+ComplexExampleOther INT NOT NULL CONSTRAINT my_constraintname DEFAULT 1 CONSTRAINT my_unique UNIQUE, -- multiple of the above -- 
+ComplexManyConstraints INT NOT NULL CONSTRAINT my_default DEFAULT 1 CONSTRAINT my_fk FOREIGN KEY REFERENCES dbo.mytable(idColumn) ON DELETE SET NULL ON UPDATE NO ACTION CONSTRAINT my_unique UNIQUE
 )
 ```
 

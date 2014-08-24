@@ -5,15 +5,16 @@ using System.Text;
 
 namespace SQLGeneration.Builders
 {
+
     /// <summary>
-    /// Represents an DefaultConstraint.
+    /// Represents an PrimaryKeyConstraint.
     /// </summary>
-    public class DefaultConstraint : Constraint
+    public class PrimaryKeyConstraint : Constraint
     {
         /// <summary>
-        /// Initializes a new instance of an DefaultConstraint.
+        /// Initializes a new instance of an PrimaryKeyConstraint.
         /// </summary>    
-        public DefaultConstraint()
+        public PrimaryKeyConstraint()
             : this(null)
         {
 
@@ -22,20 +23,10 @@ namespace SQLGeneration.Builders
         /// <summary>
         /// Initializes a new instance of an DefaultConstraint.
         /// </summary> 
-        public DefaultConstraint(string constraintName)
+        public PrimaryKeyConstraint(string constraintName)
         {
             this.ConstraintName = constraintName;
         }
-
-        /// <summary>
-        /// The default value expressed as a single literal.
-        /// </summary>
-        public Literal Value { get; set; }
-
-        /// <summary>
-        /// The default value function.
-        /// </summary>
-        public Function Function { get; set; }
 
         /// <summary>
         /// Provides information to the given visitor about the current builder.
@@ -43,8 +34,8 @@ namespace SQLGeneration.Builders
         /// <param name="visitor">The visitor requesting information.</param>
         public override void Accept(BuilderVisitor visitor)
         {
-            visitor.VisitDefaultConstraint(this);
-        }     
-    
+            visitor.VisitPrimaryKeyConstraint(this);
+        }
+
     }
 }

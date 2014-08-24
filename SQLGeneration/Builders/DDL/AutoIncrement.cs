@@ -38,6 +38,11 @@ namespace SQLGeneration.Builders
         }
 
         /// <summary>
+        /// whether this auto increment should be excluded from replicated databases.
+        /// </summary>
+        public bool NotForReplication { get; set; }
+
+        /// <summary>
         /// Adds the given literal item to the arguments list.
         /// </summary>
         /// <param name="item">The value to add.</param>

@@ -6,36 +6,26 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Represents an DefaultConstraint.
+    /// Represents an UniqueConstraint.
     /// </summary>
-    public class DefaultConstraint : Constraint
+    public class UniqueConstraint : Constraint
     {
         /// <summary>
-        /// Initializes a new instance of an DefaultConstraint.
+        /// Initializes a new instance of an UniqueConstraint.
         /// </summary>    
-        public DefaultConstraint()
+        public UniqueConstraint()
             : this(null)
         {
 
         }
 
         /// <summary>
-        /// Initializes a new instance of an DefaultConstraint.
+        /// Initializes a new instance of an UniqueConstraint.
         /// </summary> 
-        public DefaultConstraint(string constraintName)
+        public UniqueConstraint(string constraintName)
         {
             this.ConstraintName = constraintName;
         }
-
-        /// <summary>
-        /// The default value expressed as a single literal.
-        /// </summary>
-        public Literal Value { get; set; }
-
-        /// <summary>
-        /// The default value function.
-        /// </summary>
-        public Function Function { get; set; }
 
         /// <summary>
         /// Provides information to the given visitor about the current builder.
@@ -43,8 +33,8 @@ namespace SQLGeneration.Builders
         /// <param name="visitor">The visitor requesting information.</param>
         public override void Accept(BuilderVisitor visitor)
         {
-            visitor.VisitDefaultConstraint(this);
-        }     
-    
+            visitor.VisitUniqueConstraint(this);
+        }
+
     }
 }

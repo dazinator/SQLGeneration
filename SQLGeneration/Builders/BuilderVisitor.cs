@@ -572,7 +572,24 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitDefaultConstraint(DefaultConstraint item)
-        {          
+        {
+        }
+
+        /// <summary>
+        /// Visits a PrimaryKeyConstraint builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitPrimaryKeyConstraint(PrimaryKeyConstraint item)
+        {
+
+        }
+
+        /// <summary>
+        /// Visits a UniqueConstraint builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitUniqueConstraint(UniqueConstraint item)
+        {
         }
     }
 }

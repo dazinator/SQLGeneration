@@ -1421,12 +1421,20 @@ namespace SQLGeneration.Generators
         {
             visitMultipartIdentifier(item.Qualifier, item.Name);
 
-            if (item.Arguments != null && item.Arguments.Any())
+            bool hasArgs = item.Arguments != null && item.Arguments.Any();
+            bool hasMax = item.HasMax;
+
+            if (hasArgs || hasMax)
             {
                 writer.Write("(");
-                if (item.Arguments.Any())
+
+                if (hasArgs)
                 {
                     join(",", item.Arguments);
+                }
+                else if (hasMax)
+                {
+                    writer.Write("MAX");
                 }
                 writer.Write(")");
             }
@@ -1478,14 +1486,17 @@ namespace SQLGeneration.Generators
                 ((IVisitableBuilder)item.AutoIncrement).Accept(this);
             }
 
-            if(item.IsRowGuid)
+            if (item.IsRowGuid)
             {
-                writer.Write(" ROWGUIDCOL");               
+                writer.Write(" ROWGUIDCOL");
             }
 
-            if (item.IsPrimaryKey)
+            // Now do the column constraint list. This will be primary key, unique, foreignkey, default.
+
+            if (item.Constraints != null && item.Constraints.Any())
             {
-                writer.Write(" PRIMARY KEY");
+                writer.Write(" ");
+                join(" ", item.Constraints);
             }
 
             base.VisitColumnDefinition(item);
@@ -1507,6 +1518,11 @@ namespace SQLGeneration.Generators
                 }
                 writer.Write(")");
             }
+
+            if (item.NotForReplication)
+            {
+                writer.Write(" NOT FOR REPLICATION");
+            }
             base.VisitAutoIncrement(item);
         }
 
@@ -1519,7 +1535,7 @@ namespace SQLGeneration.Generators
 
             if (!string.IsNullOrWhiteSpace(item.ConstraintName))
             {
-                writer.Write("CONSTRAINT ");                    
+                writer.Write("CONSTRAINT ");
                 writer.Write(item.ConstraintName);
                 writer.Write(" ");
             }
@@ -1540,6 +1556,38 @@ namespace SQLGeneration.Generators
             }
 
             base.VisitDefaultConstraint(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a PrimaryKeyConstraint builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitPrimaryKeyConstraint(PrimaryKeyConstraint item)
+        {
+            if (!string.IsNullOrWhiteSpace(item.ConstraintName))
+            {
+                writer.Write("CONSTRAINT ");
+                writer.Write(item.ConstraintName);
+                writer.Write(" ");
+            }
+            writer.Write("PRIMARY KEY");
+            base.VisitPrimaryKeyConstraint(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a UniqueConstraint builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitUniqueConstraint(UniqueConstraint item)
+        {
+            if (!string.IsNullOrWhiteSpace(item.ConstraintName))
+            {
+                writer.Write("CONSTRAINT ");
+                writer.Write(item.ConstraintName);
+                writer.Write(" ");
+            }
+            writer.Write("UNIQUE");
+            base.VisitUniqueConstraint(item);
         }
 
     }

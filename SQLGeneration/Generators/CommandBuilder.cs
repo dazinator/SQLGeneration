@@ -247,9 +247,28 @@ namespace SQLGeneration.Generators
                     {
                         ValueList arguments = new ValueList();
                         buildValueList(argumentsResult, arguments);
-                        foreach (Literal value in arguments.Values)
+
+                        foreach (var value in arguments.Values)
                         {
-                            dataType.AddArgument(value);
+
+                            var lit = value as Literal;
+                            if (lit != null)
+                            {
+                                dataType.AddArgument(lit);
+                            }
+                            else
+                            {
+
+                                var placeHolder = value as Placeholder;
+                                if (placeHolder != null)
+                                {
+                                    if (placeHolder.Value.ToLower() == "max")
+                                    {
+                                        dataType.HasMax = true;
+                                    }
+                                }
+                            }
+
                         }
                     }
                 }
@@ -314,9 +333,7 @@ namespace SQLGeneration.Generators
                     }
 
                 }
-
             }
-
 
             var identityResult = result.Matches[SqlGrammar.ColumnDefinition.Identity.Name];
             if (identityResult.IsMatch)
@@ -337,6 +354,13 @@ namespace SQLGeneration.Generators
                         }
                     }
                 }
+
+                MatchResult notForReplicationResult = identityResult.Matches[SqlGrammar.ColumnDefinition.Identity.NotForReplicationExpressionName];
+                if (notForReplicationResult.IsMatch)
+                {
+                    autoIncrement.NotForReplication = true;
+                }
+
                 columnDefinition.AutoIncrement = autoIncrement;
             }
 
@@ -346,8 +370,99 @@ namespace SQLGeneration.Generators
                 columnDefinition.IsRowGuid = true;
             }
 
+            // Column constraints
+            MatchResult columnConstraintsResult = result.Matches[SqlGrammar.ColumnDefinition.ColumnConstraintListExpressionName];
+            if (columnConstraintsResult.IsMatch)
+            {
+                buildColumnConstraintList(columnDefinition, columnConstraintsResult);
+            }
+
             return columnDefinition;
         }
+
+        private void buildColumnConstraintList(ColumnDefinition builder, MatchResult columnConstraintsResult)
+        {
+            // First add column defintions
+            MatchResult multiple = columnConstraintsResult.Matches[SqlGrammar.ColumnConstraintList.Multiple.Name];
+            if (multiple.IsMatch)
+            {
+                MatchResult first = multiple.Matches[SqlGrammar.ColumnConstraintList.Multiple.First];
+                buildColumnConstraint(builder, first);
+                // builder.Columns.AddColumnDefinition(column);
+                MatchResult remaining = multiple.Matches[SqlGrammar.ColumnConstraintList.Multiple.Remaining];
+                buildColumnConstraintList(builder, remaining);
+                return;
+            }
+            MatchResult single = columnConstraintsResult.Matches[SqlGrammar.ColumnConstraintList.Single];
+            if (single.IsMatch)
+            {
+                buildColumnConstraint(builder, single);
+                // ColumnDefinition column = buildColumnDefinition(single);
+                // builder.Columns.AddColumnDefinition(column);
+                return;
+            }
+        }
+
+        private void buildColumnConstraint(ColumnDefinition builder, MatchResult result)
+        {
+
+            string constraintName = null;
+            var constraintResult = result.Matches[SqlGrammar.ColumnDefinition.Constraint.Name];
+            if (constraintResult.IsMatch)
+            {
+                var constraintNameResult = constraintResult.Matches[SqlGrammar.ColumnDefinition.Constraint.ConstraintName];
+                if (constraintNameResult.IsMatch)
+                {
+                    constraintName = getToken(constraintNameResult);
+                }
+            }
+
+            //   var constraintResult = result.Matches[SqlGrammar.ColumnConstraint.Name];
+            var pkOrUniqueResult = result.Matches[SqlGrammar.ColumnConstraint.PrimarKeyOrUniqueConstraint.Name];
+            if (pkOrUniqueResult.IsMatch)
+            {
+                // which is it..
+                var pkResult = pkOrUniqueResult.Matches[SqlGrammar.ColumnConstraint.PrimaryKey.Name];
+                if (pkResult.IsMatch)
+                {
+                    // build pk                    
+                    PrimaryKeyConstraint pk = new PrimaryKeyConstraint(constraintName);
+                    builder.Constraints.AddConstraint(pk);
+                }
+                else
+                {
+                    var uniqueResult = pkOrUniqueResult.Matches[SqlGrammar.ColumnConstraint.Unique.Name];
+                    if (uniqueResult.IsMatch)
+                    {
+                        UniqueConstraint un = new UniqueConstraint(constraintName);
+                        builder.Constraints.AddConstraint(un);
+                        // build unique
+                    }
+                }
+            }
+            else
+            {
+                // is it a fk?
+                var fkResult = result.Matches[SqlGrammar.ColumnConstraint.ForeignKeyExpressionName];
+                if (fkResult.IsMatch)
+                {
+                    // build fk
+                }
+                else
+                {
+                    // is it a check constraint?
+                    var chkResult = result.Matches[SqlGrammar.ColumnConstraint.Check.Name];
+                    if (chkResult.IsMatch)
+                    {
+                        // buils chk
+
+                    }
+                }
+            }
+
+            //  throw new NotImplementedException();
+        }
+
 
         private ISelectBuilder buildSelectStatement(MatchResult result)
         {

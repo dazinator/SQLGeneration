@@ -55,13 +55,16 @@
     <Compile Include="Builders\DDL\AutoIncrement.cs" />
     <Compile Include="Builders\DDL\ColumnDefinition.cs" />
     <Compile Include="Builders\DDL\ColumnDefinitionList.cs" />
+    <Compile Include="Builders\DDL\Constraint.cs" />
     <Compile Include="Builders\DDL\DataType.cs" />
     <Compile Include="Builders\DDL\Database.cs" />
     <Compile Include="Builders\DDL\DefaultConstraint.cs" />
     <Compile Include="Builders\DDL\ICreateBuilder.cs" />
     <Compile Include="Builders\DDL\IDatabaseObject.cs" />
     <Compile Include="Builders\DDL\CreateBuilder.cs" />
+    <Compile Include="Builders\DDL\PrimaryKeyConstraint.cs" />
     <Compile Include="Builders\DDL\TableDefinition.cs" />
+    <Compile Include="Builders\DDL\UniqueConstraint.cs" />
     <Compile Include="Builders\PrecedingUnboundFrame.cs" />
     <Compile Include="Builders\FollowingUnboundFrame.cs" />
     <Compile Include="Builders\FollowingBoundFrame.cs" />

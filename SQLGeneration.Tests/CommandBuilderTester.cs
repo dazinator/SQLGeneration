@@ -1096,7 +1096,7 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a simple create database statement.
         /// </summary>
         [TestMethod]
-        public void TestCreate_Database()
+        public void TestCreateDatabase()
         {
             string commandText = "CREATE DATABASE NewDatabase";
             assertCanReproduce(commandText);
@@ -1106,7 +1106,7 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a simple create table statement.
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table()
+        public void TestCreateTable()
         {
             string commandText = "CREATE TABLE NewTable";
             assertCanReproduce(commandText);
@@ -1116,7 +1116,7 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a simple create table statement.
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_MultiPartIdentifier()
+        public void TestCreateTable_MultiPartIdentifier()
         {
             string commandText = "CREATE TABLE somedatabase.dbo.NewTable";
             assertCanReproduce(commandText);
@@ -1126,7 +1126,7 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a create table statement using quoted identifiers
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_QuotedMultiPartIdentifier()
+        public void TestCreateTable_QuotedMultiPartIdentifier()
         {
             string commandText = "CREATE TABLE [dbo].[NewTable]";
             assertCanReproduce(commandText);
@@ -1136,7 +1136,7 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a create table statement with one simplistic column
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_WithSimpleColumn()
+        public void TestCreateTable_WithColumn_Simple()
         {
             string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA CHAR)";         
             assertCanReproduce(commandText);
@@ -1146,7 +1146,7 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a create table statement with one column that has a COLLATION
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_WithColumn_Collate()
+        public void TestCreateTable_WithColumn_Collate()
         {
             string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA NCHAR COLLATE Latin1_General)";
             assertCanReproduce(commandText);
@@ -1156,19 +1156,19 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a create table statement with one column that has a precision and scale.
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_WithColumn_PrecisionAndScale()
+        public void TestCreateTable_WithColumn_DataType_PrecisionAndScale()
         {
             string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA DECIMAL(10,2))";
             assertCanReproduce(commandText);
         }
 
         /// <summary>
-        /// This sees whether we can reproduce a create table statement with one column that has an identity.
+        /// This sees whether we can reproduce a create table statement with one column that has a precision and scale.
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_WithColumn_Identity()
+        public void TestCreateTable_WithColumn_DataType_Max()
         {
-            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1))";
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA VARCHAR(MAX))";
             assertCanReproduce(commandText);
         }
 
@@ -1176,7 +1176,27 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a create table statement with one column that has an identity.
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_WithColumn_RowGuid()
+        public void TestCreateTable_WithColumn_Identity()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1))";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has an identity and not for replication.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Identity_NotForReplication()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1) NOT FOR REPLICATION)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has an identity.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_RowGuid()
         {
             string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA UNIQUEIDENTIFIER ROWGUIDCOL)";
             assertCanReproduce(commandText);
@@ -1186,9 +1206,50 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a create table statement with multiple simple columns.
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_WithSimpleColumns()
+        public void TestCreateTable_WithColumns_Simple()
         {
             string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT, ColumnB CHAR)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has a DEFAULT
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Default()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA NCHAR DEFAULT 'A')";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has a DEFAULT and constraint name
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Default_Named_Constraint()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA NCHAR CONSTRAINT my_constraint DEFAULT 'A')";
+            assertCanReproduce(commandText);
+        }
+
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has a NULL
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Null()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA NCHAR NULL)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with one column that has a NOT NULL
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Not_Null()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA NCHAR NOT NULL)";
             assertCanReproduce(commandText);
         }
 
@@ -1196,11 +1257,54 @@ namespace SQLGeneration.Tests
         /// This sees whether we can reproduce a create table statement using quoted identifiers
         /// </summary>
         [TestMethod]
-        public void TestCreate_Table_WithColumns()
+        public void TestCreateTable_WithColumns_RealWorld()
         {
             string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA CHAR, ColumnB VARCHAR(150), ColumnC DECIMAL(10,2), ColumnD NTEXT COLLATE Latin1_General, ColumnE NCHAR COLLATE Latin1_General NOT NULL, ColumnF NVARCHAR COLLATE Latin1_General NULL DEFAULT 'Hello!', ColumnG NVARCHAR COLLATE Latin1_General NULL CONSTRAINT my_constraintname DEFAULT 'Wham!', ColumnH INT NOT NULL IDENTITY, ColumnI INT NOT NULL IDENTITY(1,1), ColumnJ INT NOT NULL DEFAULT 1, ColumnK UNIQUEIDENTIFIER ROWGUIDCOL)";
             assertCanReproduce(commandText);
         }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a primary key constriant.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_PrimaryKey_Constraint()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1) PRIMARY KEY)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a named primary key constriant.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_PrimaryKey_Named_Constraint()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1) CONSTRAINT my_mk PRIMARY KEY)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a unique key constriant.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Unique_Constraint()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1) UNIQUE)";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a create table statement with a column that has a named unique key constriant.
+        /// </summary>
+        [TestMethod]
+        public void TestCreateTable_WithColumn_Unique_Named_Constraint()
+        {
+            string commandText = @"CREATE TABLE [dbo].[NewTable](ColumnA INT IDENTITY(1,1) CONSTRAINT my_un UNIQUE)";
+            assertCanReproduce(commandText);
+        }
+
+
+     
 
 
         #endregion

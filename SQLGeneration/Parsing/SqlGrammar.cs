@@ -72,9 +72,9 @@ namespace SQLGeneration.Parsing
             defineColumnDefinitionsList();
             defineColumnDefinition();
             defineColumnConstraintList();
-            defineColumnConstraint();         
+            defineColumnConstraint();
             defineForeignKeyConstraint();
-            defineNotForReplication();          
+            defineNotForReplication();
 
         }
 
@@ -4086,6 +4086,11 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string RightParenthesis = "RightParenthesis";
 
+                /// <summary>
+                /// Gets the name identifying NotForReplication Expression
+                /// </summary>
+                public const string NotForReplicationExpressionName = "NotForReplicationExpression";
+
             }
 
             /// <summary>
@@ -4126,9 +4131,10 @@ namespace SQLGeneration.Parsing
                           .Add(ColumnDefinition.Identity.IdentitySeed, false, Define()
                               .Add(ColumnDefinition.Identity.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
                               .Add(ColumnDefinition.Identity.IdentitySeedValues, true, Expression(ValueList.Name))
-                              .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))))
+                              .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
+                          .Add(ColumnDefinition.Identity.NotForReplicationExpressionName, false, Expression(NotForReplication.Name))))
                   .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol))
-                  .Add(ColumnDefinition.ColumnConstraintListExpressionName, false, Expression(ColumnConstraintList.Name));                                
+                  .Add(ColumnDefinition.ColumnConstraintListExpressionName, false, Expression(ColumnConstraintList.Name));
 
             // Then we can have an optional column index.
 

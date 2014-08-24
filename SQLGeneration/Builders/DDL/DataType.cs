@@ -12,6 +12,7 @@ namespace SQLGeneration.Builders
     public class DataType : IDatabaseObject
     {
         private readonly Namespace qualifier;
+
         private readonly List<Literal> arguments;
 
         /// <summary>
@@ -78,6 +79,11 @@ namespace SQLGeneration.Builders
         }
 
         /// <summary>
+        /// Whether this datatype size has "max" specified. 
+        /// </summary>
+        public bool HasMax { get; set; }
+
+        /// <summary>
         /// Gets a list of the arguments being passed to the datatype.
         /// </summary>
         public IEnumerable<Literal> Arguments
@@ -112,6 +118,6 @@ namespace SQLGeneration.Builders
         {
             visitor.VisitDataType(this);
         }
-    } 
+    }
 
 }

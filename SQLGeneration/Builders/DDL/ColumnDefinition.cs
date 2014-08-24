@@ -10,6 +10,10 @@ namespace SQLGeneration.Builders
     /// </summary>
     public class ColumnDefinition : IDatabaseObject
     {
+
+        private readonly ConstraintList _constraints;
+
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -17,6 +21,7 @@ namespace SQLGeneration.Builders
         public ColumnDefinition(string name)
         {
             this.Name = name;
+            _constraints = new ConstraintList();
         }
 
         /// <summary>
@@ -45,14 +50,20 @@ namespace SQLGeneration.Builders
         public DefaultConstraint Default { get; set; }
 
         /// <summary>
+        /// Returns the constraints for the column.
+        /// </summary>
+        public ConstraintList Constraints
+        {
+            get
+            {
+                return _constraints;
+            }
+        }    
+
+        /// <summary>
         /// Whether the column can hold null values.
         /// </summary>
         public bool? IsNullable { get; set; }
-
-        /// <summary>
-        /// Whether the column is the primary key.
-        /// </summary>
-        public bool IsPrimaryKey { get; set; }
 
         /// <summary>
         /// Whether the column is a row guid column.

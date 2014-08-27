@@ -9,13 +9,13 @@ namespace SQLGeneration.Builders
     /// <summary>
     /// The database object.
     /// </summary>
-    public class Database : IDatabaseObject
+    public class CreateDatabase : IDatabaseObject
     {
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="name"></param>
-        public Database(string name)
+        public CreateDatabase(string name)
         {
             this.Name = name;
         }
@@ -25,9 +25,16 @@ namespace SQLGeneration.Builders
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// The collation of the database.
+        /// </summary>
+        public string Collation { get; set; }
+
         void IVisitableBuilder.Accept(BuilderVisitor visitor)
         {
             visitor.VisitDatabase(this);
         }
-    }  
+    }
+
+
 }

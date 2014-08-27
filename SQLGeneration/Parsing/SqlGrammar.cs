@@ -69,12 +69,20 @@ namespace SQLGeneration.Parsing
 
             // ddl
             defineCreateStatement();
+            defineCreateDatabase();
+            defineCreateTable();
             defineColumnDefinitionsList();
             defineColumnDefinition();
             defineColumnConstraintList();
             defineColumnConstraint();
             defineForeignKeyConstraint();
             defineNotForReplication();
+            defineAlterStatement();
+            defineAlterDatabase();
+            defineAlterTable();
+            defineDataType();
+            defineCollate();
+            defineNullability();
 
         }
 
@@ -124,9 +132,14 @@ namespace SQLGeneration.Parsing
             public const string Terminator = "terminator";
 
             /// <summary>
-            /// Gets the name for the INSERT statement option.
+            /// Gets the name for the CREATE statement option.
             /// </summary>
             public const string CreateStatement = "create_statement";
+
+            /// <summary>
+            /// Gets the name for the CREATE statement option.
+            /// </summary>
+            public const string AlterStatement = "alter_statement";
 
 
         }
@@ -140,6 +153,7 @@ namespace SQLGeneration.Parsing
                     .Add(Start.UpdateStatement, Expression(UpdateStatement.Name))
                     .Add(Start.DeleteStatement, Expression(DeleteStatement.Name))
                     .Add(Start.CreateStatement, Expression(CreateStatement.Name))
+                    .Add(Start.AlterStatement, Expression(AlterStatement.Name))
                     )
                 .Add(Start.Terminator, false, Token(SqlTokenRegistry.LineTerminator));
         }
@@ -3739,7 +3753,7 @@ namespace SQLGeneration.Parsing
 
         #region DDL
 
-        #region CreateStatement
+        #region Create
 
         /// <summary>
         /// Describes the structure of the Create statement.
@@ -3752,14 +3766,34 @@ namespace SQLGeneration.Parsing
             public const string Name = "CreateStatement";
 
             /// <summary>
-            /// Gets the name identifying the CREATE DATABASE statement.
+            /// Gets the identifier for the CreateDatabaseExpression.
             /// </summary>
-            public const string CreateDatabaseName = "CreateDatabaseStatement";
+            public const string CreateDatabaseExpressionName = "CreateDatabaseExpression";
 
             /// <summary>
-            /// Gets the name identifying the CREATE TABLE statement.
+            /// Gets the identifier for the CreateTableExpression.
             /// </summary>
-            public const string CreateTableName = "CreateTableStatement";
+            public const string CreateTableExpressionName = "CreateTableExpression";
+
+        }
+
+        private void defineCreateStatement()
+        {
+            Define(CreateStatement.Name)
+                .Add(true, Options()
+                    .Add(CreateStatement.CreateDatabaseExpressionName, Expression(CreateDatabaseStatement.Name))
+                    .Add(CreateStatement.CreateTableExpressionName, Expression(CreateTableStatement.Name)));
+        }
+
+        /// <summary>
+        /// Describes the structure of the Create Database statement.
+        /// </summary>
+        public static class CreateDatabaseStatement
+        {
+            /// <summary>
+            /// Gets the name identifying the CREATE statement.
+            /// </summary>
+            public const string Name = "CreateDatabaseStatement";
 
             /// <summary>
             /// Gets the identifier for the CREATE keyword.
@@ -3775,6 +3809,59 @@ namespace SQLGeneration.Parsing
             /// Gets the identifier for the table name.
             /// </summary>
             public const string DatabaseName = "databasename";
+
+            /// <summary>
+            /// Describes the structure of the Collate statement.
+            /// </summary>
+            public static class Collate
+            {
+
+                /// <summary>
+                /// Gets the identifier for the Name keyword.
+                /// </summary>
+                public const string Name = "collate";
+
+                /// <summary>
+                /// Gets the identifier for the DATABASE keyword.
+                /// </summary>
+                public const string CollateKeyword = "collate";
+
+                /// <summary>
+                /// Gets the identifier for the collation.
+                /// </summary>
+                public const string Collation = "collation";
+            }
+        }
+
+        private void defineCreateDatabase()
+        {
+            Define(CreateDatabaseStatement.Name)
+                .Add(CreateDatabaseStatement.CreateKeyword, true, Token(SqlTokenRegistry.Create))
+                .Add(CreateDatabaseStatement.DatabaseKeyword, true, Token(SqlTokenRegistry.Database))
+                .Add(CreateDatabaseStatement.DatabaseName, true, Token(SqlTokenRegistry.Identifier))
+                .Add(CreateDatabaseStatement.Collate.Name, false, Define()
+                    .Add(CreateDatabaseStatement.Collate.CollateKeyword, true, Token(SqlTokenRegistry.Collate))
+                    .Add(CreateDatabaseStatement.Collate.Collation, true, Token(SqlTokenRegistry.Identifier)));
+        }
+
+        #endregion
+
+        #region CreateTable
+
+        /// <summary>
+        /// Describes the structure of the Create Table statement.
+        /// </summary>
+        public static class CreateTableStatement
+        {
+            /// <summary>
+            /// Gets the name identifying the CREATE TABLE statement.
+            /// </summary>
+            public const string Name = "CreateTable";
+
+            /// <summary>
+            /// Gets the identifier for the CREATE keyword.
+            /// </summary>
+            public const string CreateKeyword = "create";
 
             /// <summary>
             /// Gets the identifier for the TABLE keyword.
@@ -3814,25 +3901,18 @@ namespace SQLGeneration.Parsing
 
         }
 
-        private void defineCreateStatement()
+        private void defineCreateTable()
         {
 
-            Define(CreateStatement.Name)
-                .Add(SqlGrammar.CreateStatement.CreateKeyword, true, Token(SqlTokenRegistry.Create))
-                .Add(true, Options()
-                    .Add(CreateStatement.CreateDatabaseName, Define()
-                        .Add(SqlGrammar.CreateStatement.DatabaseKeyword, true, Token(SqlTokenRegistry.Database))
-                        .Add(SqlGrammar.CreateStatement.DatabaseName, true, Token(SqlTokenRegistry.Identifier)))
-                    .Add(CreateStatement.CreateTableName, Define()
-                        .Add(SqlGrammar.CreateStatement.TableKeyword, true, Token(SqlTokenRegistry.Table))
-                        .Add(SqlGrammar.CreateStatement.TableName, true, Expression(MultipartIdentifier.Name))
-                        .Add(false, Options()
-                            .Add(CreateStatement.TableDefinition.Name, Define()
-                                .Add(CreateStatement.TableDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                                .Add(CreateStatement.TableDefinition.ColumnsDefinitionList, true, Expression(ColumnDefinitionList.Name))
-                                .Add(CreateStatement.TableDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))))
-
-                        ));
+            Define(CreateTableStatement.Name)
+                .Add(CreateTableStatement.CreateKeyword, true, Token(SqlTokenRegistry.Create))
+                .Add(CreateTableStatement.TableKeyword, true, Token(SqlTokenRegistry.Table))
+                .Add(CreateTableStatement.TableName, true, Expression(MultipartIdentifier.Name))
+                .Add(false, Options()
+                    .Add(CreateTableStatement.TableDefinition.Name, Define()
+                    .Add(CreateTableStatement.TableDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                    .Add(CreateTableStatement.TableDefinition.ColumnsDefinitionList, true, Expression(ColumnDefinitionList.Name))
+                    .Add(CreateTableStatement.TableDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))));
 
         }
 
@@ -3917,80 +3997,6 @@ namespace SQLGeneration.Parsing
             /// Gets the name identifying RowGuidCol Keyword.
             /// </summary>
             public const string RowGuidColKeyword = "RowGuidColKeyword";
-
-            /// <summary>
-            /// Describes the structure of the DataType syntax.
-            /// </summary>
-            public static class DataType
-            {
-
-                /// <summary>
-                /// Gets the name identifying the Column Data Type expression.
-                /// </summary>
-                public const string Name = "ColumnDataType";
-
-                /// <summary>
-                /// Gets the name identifying the column size.
-                /// </summary>
-                public const string ColumnSize = "ColumnSize";
-
-                /// <summary>
-                /// Gets the name identifying LeftParethesis.
-                /// </summary>
-                public const string LeftParenthesis = "LeftParenthesis";
-
-                /// <summary>
-                /// Gets the name identifying LeftParethesis.
-                /// </summary>
-                public const string RightParenthesis = "RightParenthesis";
-
-                /// <summary>
-                /// Gets the name identifying LeftParethesis.
-                /// </summary>
-                public const string ColumnSizeArguments = "ColumnSizeArguments";
-            }
-
-            /// <summary>
-            /// Describes the structure of the Nullable syntax.
-            /// </summary>
-            public static class Nullable
-            {
-                /// <summary>
-                /// Gets the name identifying Column Nullable.
-                /// </summary>
-                public const string Name = "ColumnNullable";
-
-                /// <summary>
-                /// Gets the name identifying ColumnNull.
-                /// </summary>
-                public const string NullKeyword = "NullKeyword";
-
-                /// <summary>
-                /// Gets the name identifying Not.
-                /// </summary>
-                public const string NotKeyword = "NotKeyword";
-            }
-
-            /// <summary>
-            /// Describes the structure of the Collation syntax.
-            /// </summary>
-            public static class Collation
-            {
-                /// <summary>
-                /// Gets the name identifying Collate.
-                /// </summary>
-                public const string Name = "Collation";
-
-                /// <summary>
-                /// Gets the name identifying Collate.
-                /// </summary>
-                public const string CollateKeyword = "CollateKeyword";
-
-                /// <summary>
-                /// Gets the name identifying CollationName.
-                /// </summary>
-                public const string CollationName = "CollationName";
-            }
 
             /// <summary>
             /// Describes the structure of the Default syntax.
@@ -4104,17 +4110,9 @@ namespace SQLGeneration.Parsing
         {
             Define(ColumnDefinition.Name)
                   .Add(ColumnDefinition.ColumnName, true, Token(SqlTokenRegistry.Identifier))
-                  .Add(ColumnDefinition.DataType.Name, true, Expression(MultipartIdentifier.Name))
-                  .Add(ColumnDefinition.DataType.ColumnSize, false, Define()
-                      .Add(ColumnDefinition.DataType.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                      .Add(ColumnDefinition.DataType.ColumnSizeArguments, true, Expression(ValueList.Name))
-                      .Add(ColumnDefinition.DataType.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
-                  .Add(ColumnDefinition.Collation.Name, false, Define()
-                      .Add(ColumnDefinition.Collation.CollateKeyword, true, Token(SqlTokenRegistry.Collate))
-                      .Add(ColumnDefinition.Collation.CollationName, true, Token(SqlTokenRegistry.Identifier)))
-                  .Add(ColumnDefinition.Nullable.Name, false, Define()
-                      .Add(ColumnDefinition.Nullable.NotKeyword, false, Token(SqlTokenRegistry.Not))
-                      .Add(ColumnDefinition.Nullable.NullKeyword, true, Token(SqlTokenRegistry.Null)))
+                  .Add(DataType.Name, true, Expression(DataType.Name))
+                  .Add(Collate.Name, false, Expression(Collate.Name))
+                  .Add(Nullability.Name, false, Expression(Nullability.Name))
                   .Add(false, Options()
                       .Add(ColumnDefinition.Default.Name, Define()
                           .Add(ColumnDefinition.Constraint.Name, false, Define()
@@ -4685,6 +4683,313 @@ namespace SQLGeneration.Parsing
         }
 
         #endregion
+
+        #region Alter
+
+        /// <summary>
+        /// Describes the structure of the Alter statement.
+        /// </summary>
+        public static class AlterStatement
+        {
+            /// <summary>
+            /// Gets the name identifying the Alter statement.
+            /// </summary>
+            public const string Name = "AlterStatement";
+
+            /// <summary>
+            /// Gets the identifier for the AlterDatabaseExpression.
+            /// </summary>
+            public const string AlterDatabaseExpressionName = "AlterDatabaseExpression";
+
+            /// <summary>
+            /// Gets the identifier for the AlterTableExpression.
+            /// </summary>
+            public const string AlterTableExpressionName = "AlterTableExpression";
+
+        }
+
+        private void defineAlterStatement()
+        {
+            Define(AlterStatement.Name)
+                .Add(true, Options()
+                      .Add(AlterStatement.AlterDatabaseExpressionName, Expression(AlterDatabaseStatement.Name))
+                      .Add(AlterStatement.AlterTableExpressionName, Expression(AlterTableStatement.Name))
+            );
+            // .Add(AlterStatement.AlterTableExpressionName, Expression(AlterTableStatement.Name))
+            // );
+        }
+
+        /// <summary>
+        /// Describes the structure of the Alter Database statement.
+        /// </summary>
+        public static class AlterDatabaseStatement
+        {
+            /// <summary>
+            /// Gets the name identifying the Alter Database statement.
+            /// </summary>
+            public const string Name = "AlterDatabaseStatement";
+
+            /// <summary>
+            /// Gets the identifier for the CREATE keyword.
+            /// </summary>
+            public const string AlterKeyword = "alter";
+
+            /// <summary>
+            /// Gets the identifier for the DATABASE keyword.
+            /// </summary>
+            public const string DatabaseKeyword = "database";
+
+            /// <summary>
+            /// Gets the identifier for the Current keyword.
+            /// </summary>
+            public const string CurrentKeyword = "current";
+
+            /// <summary>
+            /// Gets the identifier for the database name.
+            /// </summary>
+            public const string DatabaseName = "databasename";
+
+            /// <summary>
+            /// Describes the structure of the ModifyName statement.
+            /// </summary>
+            public static class ModifyName
+            {
+
+                /// <summary>
+                /// Gets the identifier for the ModifyName statement.
+                /// </summary>
+                public const string Name = "modifyname";
+
+                /// <summary>
+                /// Gets the identifier for the MODIFY keyword.
+                /// </summary>
+                public const string ModifyKeyword = "modify";
+
+                /// <summary>
+                /// Gets the identifier for the EqualTo Keyword.
+                /// </summary>
+                public const string EqualToKeyword = "equalto";
+
+                /// <summary>
+                /// Gets the identifier for the NameKeyword.
+                /// </summary>
+                public const string NameKeyword = "name";
+
+                /// <summary>
+                /// Gets the identifier for the New Database Name.
+                /// </summary>
+                public const string NewDatabaseName = "newdatabasename";
+            }
+
+        }
+
+        private void defineAlterDatabase()
+        {
+            Define(AlterDatabaseStatement.Name)
+                .Add(AlterDatabaseStatement.AlterKeyword, true, Token(SqlTokenRegistry.Alter))
+                .Add(AlterDatabaseStatement.DatabaseKeyword, true, Token(SqlTokenRegistry.Database))
+                .Add(true, Options()
+                    .Add(AlterDatabaseStatement.CurrentKeyword, Token(SqlTokenRegistry.Current))
+                    .Add(AlterDatabaseStatement.DatabaseName, Token(SqlTokenRegistry.Identifier)))
+                .Add(true, Options()
+                    .Add(AlterDatabaseStatement.ModifyName.Name, Define()
+                        .Add(AlterDatabaseStatement.ModifyName.ModifyKeyword, true, Token(SqlTokenRegistry.Modify))
+                        .Add(AlterDatabaseStatement.ModifyName.NameKeyword, true, Token(SqlTokenRegistry.Name))
+                        .Add(AlterDatabaseStatement.ModifyName.EqualToKeyword, true, Token(SqlTokenRegistry.EqualTo))
+                        .Add(AlterDatabaseStatement.ModifyName.NewDatabaseName, true, Token(SqlTokenRegistry.Identifier))
+                      )
+                    .Add(Collate.Name, Expression(Collate.Name)));
+        }
+
+        /// <summary>
+        /// Describes the structure of the Alter Table statement.
+        /// </summary>
+        public static class AlterTableStatement
+        {
+            /// <summary>
+            /// Gets the name identifying the ALTER Database statement.
+            /// </summary>
+            public const string Name = "AlterTableStatement";
+
+            /// <summary>
+            /// Gets the identifier for the CREATE keyword.
+            /// </summary>
+            public const string AlterKeyword = "alter";
+
+            /// <summary>
+            /// Gets the identifier for the TABLE keyword.
+            /// </summary>
+            public const string TableKeyword = "table";
+
+            /// <summary>
+            /// Gets the identifier for the table name.
+            /// </summary>
+            public const string TableName = "tablename";
+
+            /// <summary>
+            /// Describes the structure of the AlterColumn statement.
+            /// </summary>
+            public static class AlterColumn
+            {
+
+                /// <summary>
+                /// Gets the identifier for the ALTER keyword.
+                /// </summary>
+                public const string AlterKeyword = "alterkeyword";
+
+                /// <summary>
+                /// Gets the identifier for the ModifyName statement.
+                /// </summary>
+                public const string Name = "altercolumn";
+
+                /// <summary>
+                /// Gets the identifier for the NameKeyword.
+                /// </summary>
+                public const string ColumnKeyword = "column";
+
+                /// <summary>
+                /// Gets the identifier for the ColumnName.
+                /// </summary>
+                public const string ColumnName = "columnname";
+
+                /// <summary>
+                /// Gets the identifier for the alter column datatype expression.
+                /// </summary>
+                public const string AlterColumnDataTypeExpressionName = "altercolumndatatype";
+
+
+
+            }
+
+
+        }
+
+        private void defineAlterTable()
+        {
+            Define(AlterTableStatement.Name)
+                .Add(AlterTableStatement.AlterKeyword, true, Token(SqlTokenRegistry.Alter))
+                .Add(AlterTableStatement.TableKeyword, true, Token(SqlTokenRegistry.Table))
+                .Add(AlterTableStatement.TableName, true, Expression(MultipartIdentifier.Name))
+                .Add(true, Options()
+                    .Add(AlterTableStatement.AlterColumn.Name, Define()
+                        .Add(AlterTableStatement.AlterColumn.AlterKeyword, true, Token(SqlTokenRegistry.Alter))
+                        .Add(AlterTableStatement.AlterColumn.ColumnKeyword, true, Token(SqlTokenRegistry.Column))
+                        .Add(AlterTableStatement.AlterColumn.ColumnName, true, Token(SqlTokenRegistry.Identifier))
+                        .Add(true, Options()
+                        .Add(AlterTableStatement.AlterColumn.AlterColumnDataTypeExpressionName, Define()
+                            .Add(DataType.Name, false, Expression(DataType.Name))
+                            .Add(Collate.Name, false, Expression(Collate.Name))
+                            .Add(Nullability.Name, false, Expression(Nullability.Name))
+                            ))))
+                            ;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Describes the structure of the Collate statement.
+        /// </summary>
+        public static class Collate
+        {
+
+            /// <summary>
+            /// Gets the identifier for the Name keyword.
+            /// </summary>
+            public const string Name = "collate";
+
+            /// <summary>
+            /// Gets the identifier for the DATABASE keyword.
+            /// </summary>
+            public const string CollateKeyword = "collate";
+
+            /// <summary>
+            /// Gets the identifier for the collation.
+            /// </summary>
+            public const string Collation = "collation";
+        }
+
+        private void defineCollate()
+        {
+            Define(Collate.Name)
+             .Add(Collate.CollateKeyword, true, Token(SqlTokenRegistry.Collate))
+             .Add(Collate.Collation, true, Token(SqlTokenRegistry.Identifier));
+        }
+
+        /// <summary>
+        /// Describes the structure of the DataType syntax.
+        /// </summary>
+        public static class DataType
+        {
+
+            /// <summary>
+            /// Gets the name identifying the Column Data Type expression.
+            /// </summary>
+            public const string Name = "ColumnDataType";
+
+            /// <summary>
+            /// Gets the name identifying the Column DataTypeName.
+            /// </summary>
+            public const string DataTypeName = "DataTypeName";
+
+            /// <summary>
+            /// Gets the name identifying the column size.
+            /// </summary>
+            public const string ColumnSize = "ColumnSize";
+
+            /// <summary>
+            /// Gets the name identifying LeftParethesis.
+            /// </summary>
+            public const string LeftParenthesis = "LeftParenthesis";
+
+            /// <summary>
+            /// Gets the name identifying LeftParethesis.
+            /// </summary>
+            public const string RightParenthesis = "RightParenthesis";
+
+            /// <summary>
+            /// Gets the name identifying LeftParethesis.
+            /// </summary>
+            public const string ColumnSizeArguments = "ColumnSizeArguments";
+        }
+
+        private void defineDataType()
+        {
+            Define(DataType.Name)
+                .Add(DataType.DataTypeName, true, Expression(MultipartIdentifier.Name))
+                .Add(DataType.ColumnSize, false, Define()
+                      .Add(DataType.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                      .Add(DataType.ColumnSizeArguments, true, Expression(ValueList.Name))
+                      .Add(DataType.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)));
+        }
+
+        /// <summary>
+        /// Describes the structure of the Nullable syntax.
+        /// </summary>
+        public static class Nullability
+        {
+            /// <summary>
+            /// Gets the name identifying Column Nullable.
+            /// </summary>
+            public const string Name = "ColumnNullable";
+
+            /// <summary>
+            /// Gets the name identifying ColumnNull.
+            /// </summary>
+            public const string NullKeyword = "NullKeyword";
+
+            /// <summary>
+            /// Gets the name identifying Not.
+            /// </summary>
+            public const string NotKeyword = "NotKeyword";
+        }
+
+        private void defineNullability()
+        {
+            Define(Nullability.Name)
+                    .Add(Nullability.NotKeyword, false, Token(SqlTokenRegistry.Not))
+                    .Add(Nullability.NullKeyword, true, Token(SqlTokenRegistry.Null));
+        }
+
 
         #endregion
     }

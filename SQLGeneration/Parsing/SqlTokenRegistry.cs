@@ -488,7 +488,32 @@ namespace SQLGeneration.Parsing
         /// Gets the identifier for the Check keyword.
         /// </summary>
         public const string Check = "Check";
-        
+
+        /// <summary>
+        /// Gets the identifier for the Alter keyword.
+        /// </summary>
+        public const string Alter = "Alter";
+
+        /// <summary>
+        /// Gets the identifier for the Modify keyword.
+        /// </summary>
+        public const string Modify = "Modify";
+
+        /// <summary>
+        /// Gets the identifier for the Name keyword.
+        /// </summary>
+        public const string Name = "Name";
+
+        /// <summary>
+        /// Gets the identifier for the Current keyword.
+        /// </summary>
+        public const string Current = "Current";
+
+        /// <summary>
+        /// Gets the identifier for the Column keyword.
+        /// </summary>
+        public const string Column = "Column";
+
 
 
         #endregion
@@ -577,6 +602,11 @@ namespace SQLGeneration.Parsing
             Define(For, @"FOR\b", true);
             Define(Replication, @"REPLICATION\b", true);
             Define(Check, @"CHECK\b", true);
+            Define(Alter, @"ALTER\b", true);
+            Define(Modify, @"MODIFY\b", true);
+            Define(Name, @"NAME\b", true);
+            Define(Current, @"CURRENT\b", true);
+            Define(Column, @"COLUMN\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 

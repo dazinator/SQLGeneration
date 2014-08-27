@@ -1347,7 +1347,8 @@ namespace SQLGeneration.Generators
             Insert,
             Update,
             Delete,
-            Create
+            Create,
+            Alter
         }
 
         private enum SourceReferenceType
@@ -1364,6 +1365,8 @@ namespace SQLGeneration.Generators
         }
 
         #region DDL
+
+        #region Create
 
         /// <summary>
         /// Generates the text for a Create builder.
@@ -1390,17 +1393,23 @@ namespace SQLGeneration.Generators
         /// Generates the text for a Database builder.
         /// </summary>
         /// <param name="item">The item to generate the text for.</param>
-        protected internal override void VisitDatabase(Database item)
+        protected internal override void VisitDatabase(CreateDatabase item)
         {
             writer.Write("DATABASE ");
             writer.Write(item.Name);
+
+            if (!string.IsNullOrWhiteSpace(item.Collation))
+            {
+                writer.Write(" COLLATE ");
+                writer.Write(item.Collation);
+            }
         }
 
         /// <summary>
         /// Generates the text for a TableDefinition builder.
         /// </summary>
         /// <param name="item">The item to generate the text for.</param>
-        protected internal override void VisitTableDefinition(TableDefinition item)
+        protected internal override void VisitCreateTableDefinition(CreateTableDefinition item)
         {
             writer.Write("TABLE ");
             visitMultipartIdentifier(item.Qualifier, item.Name);
@@ -1673,6 +1682,67 @@ namespace SQLGeneration.Generators
             writer.Write("SET NULL");
             base.VisitForeignKeySetNullAction(item);
         }
+        #endregion
+
+
+        #region Alter
+
+        /// <summary>
+        /// Generates the text for a Alter builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitAlter(AlterBuilder item)
+        {
+          //  forCommandType(CommandType.Alter).
+                visitAlter(item);
+        }
+
+        private void visitAlter(AlterBuilder item)
+        {
+            writer.Write("ALTER ");
+
+            item.AlterObject.Accept(this);
+
+            if (item.HasTerminator)
+            {
+                writer.Write(options.Terminator);
+            }
+
+        }
+
+        protected internal override void VisitAlterDatabase(AlterDatabase item)
+        {
+            writer.Write("DATABASE ");
+            if (!string.IsNullOrEmpty(item.Name))
+            {
+                writer.Write(item.Name);
+            }
+            else
+            {
+                if (item.CurrentDatabase)
+                {
+                    writer.Write("CURRENT");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(item.NewDatabaseName))
+            {
+                writer.Write(" MODIFY NAME = ");
+                writer.Write(item.NewDatabaseName);
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(item.NewCollation))
+                {
+                    writer.Write(" COLLATE ");
+                    writer.Write(item.NewCollation);
+                }
+            }
+
+            base.VisitAlterDatabase(item);
+        }
+
+        #endregion
 
         #endregion
 

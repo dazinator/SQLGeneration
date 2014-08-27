@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 
 namespace SQLGeneration.Builders
-{
+{    
+
     /// <summary>
-    /// The table definition object.
+    /// The alter table definition object.
     /// </summary>
-    public class TableDefinition : IDatabaseObject
+    public class AlterTableDefinition : IDatabaseObject
     {
 
         private readonly ColumnDefinitionList _columnDefinitionsList;
@@ -18,7 +19,7 @@ namespace SQLGeneration.Builders
         /// Initializes a new instance of a Table.
         /// </summary>
         /// <param name="name">The name of the table.</param>
-        public TableDefinition(string name)
+        public AlterTableDefinition(string name)
             : this(null, name)
         {
         }
@@ -28,7 +29,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="qualifier">The schema the table belongs to.</param>
         /// <param name="name">The name of the table.</param>
-        public TableDefinition(Namespace qualifier, string name)
+        public AlterTableDefinition(Namespace qualifier, string name)
         {
             if (String.IsNullOrWhiteSpace(name))
             {
@@ -70,7 +71,7 @@ namespace SQLGeneration.Builders
 
         void IVisitableBuilder.Accept(BuilderVisitor visitor)
         {
-            visitor.VisitTableDefinition(this);
+            visitor.VisitAlterTableDefinition(this);
         }
 
     }

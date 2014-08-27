@@ -530,7 +530,7 @@ namespace SQLGeneration.Builders
         /// Visits a Database builder.
         /// </summary>
         /// <param name="item">The item to visit.</param>
-        protected internal virtual void VisitDatabase(Database item)
+        protected internal virtual void VisitDatabase(CreateDatabase item)
         {
         }
 
@@ -538,7 +538,7 @@ namespace SQLGeneration.Builders
         /// Visits a TableDefinition builder.
         /// </summary>
         /// <param name="item"></param>
-        protected internal virtual void VisitTableDefinition(TableDefinition item)
+        protected internal virtual void VisitCreateTableDefinition(CreateTableDefinition item)
         {
         }
 
@@ -604,7 +604,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitForeignKeyCascadeAction(CascadeAction item)
-        {          
+        {
         }
 
         /// <summary>
@@ -612,7 +612,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitForeignKeySetDefaultAction(SetDefaultAction item)
-        {          
+        {
         }
 
         /// <summary>
@@ -620,7 +620,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitForeignKeySetNullAction(SetNullAction item)
-        {          
+        {
         }
 
         /// <summary>
@@ -628,7 +628,31 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitForeignKeyNoAction(NoAction item)
-        {            
+        {
+        }
+
+        /// <summary>
+        /// Visits a Alter builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAlter(AlterBuilder item)
+        {
+        }
+
+        /// <summary>
+        /// Visits a Alter database builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAlterDatabase(AlterDatabase item)
+        {
+        }
+
+        /// <summary>
+        /// Visits a Alter table builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAlterTableDefinition(AlterTableDefinition item)
+        {          
         }
     }
 }

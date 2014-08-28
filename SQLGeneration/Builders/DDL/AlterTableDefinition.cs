@@ -5,7 +5,16 @@ using System.Linq;
 using System.Text;
 
 namespace SQLGeneration.Builders
-{    
+{
+    /// <summary>
+    /// Defines any object that represents an alter to a column.
+    /// </summary>
+    public interface IAlterColumn : IVisitableBuilder
+    {
+        
+
+    }
+
 
     /// <summary>
     /// The alter table definition object.
@@ -13,7 +22,7 @@ namespace SQLGeneration.Builders
     public class AlterTableDefinition : IDatabaseObject
     {
 
-        private readonly ColumnDefinitionList _columnDefinitionsList;
+        private readonly ColumnDefinitionList _addColumnsList;
 
         /// <summary>
         /// Initializes a new instance of a Table.
@@ -37,7 +46,7 @@ namespace SQLGeneration.Builders
             }
             Qualifier = qualifier;
             Name = name;
-            _columnDefinitionsList = new ColumnDefinitionList();
+            _addColumnsList = new ColumnDefinitionList();
         }
 
         /// <summary>
@@ -59,19 +68,118 @@ namespace SQLGeneration.Builders
         }
 
         /// <summary>
-        /// Returns the column definitions for the table.
+        /// Returns the columns to be added.
         /// </summary>
-        public ColumnDefinitionList Columns
+        public ColumnDefinitionList AddColumns
         {
             get
             {
-                return _columnDefinitionsList;
+                return _addColumnsList;
             }
         }
+
+        /// <summary>
+        /// The alteration to an existing column.
+        /// </summary>
+        public IAlterColumn AlterColumn { get; set; }
 
         void IVisitableBuilder.Accept(BuilderVisitor visitor)
         {
             visitor.VisitAlterTableDefinition(this);
+        }
+
+    }
+
+    /// <summary>
+    /// An alter column that adds a column property.
+    /// </summary>
+    public class AlterColumnAddProperty : IAlterColumn
+    {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name"></param>
+        public AlterColumnAddProperty(string name)
+        {
+            this.PropertyName = name;
+        }
+
+        /// <summary>
+        /// The name of the column.
+        /// </summary>
+        public string PropertyName { get; set; }
+
+        void IVisitableBuilder.Accept(BuilderVisitor visitor)
+        {
+            visitor.VisitAlterColumnAddProperty(this);
+        }
+
+    }
+
+    /// <summary>
+    /// An alter column that drops a column property.
+    /// </summary>
+    public class AlterColumnDropProperty : IAlterColumn
+    {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name"></param>
+        public AlterColumnDropProperty(string name)
+        {
+            this.PropertyName = name;
+        }
+
+        /// <summary>
+        /// The name of the column.
+        /// </summary>
+        public string PropertyName { get; set; }
+
+        void IVisitableBuilder.Accept(BuilderVisitor visitor)
+        {
+            visitor.VisitAlterColumnDropProperty(this);
+        }
+
+    }
+
+    /// <summary>
+    /// An alter column.
+    /// </summary>
+    public class AlterColumn : IAlterColumn
+    {
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name"></param>
+        public AlterColumn(string name)
+        {
+            this.Name = name;
+        }
+
+        /// <summary>
+        /// The name of the column.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The collation of the column.
+        /// </summary>
+        public string Collation { get; set; }
+
+        /// <summary>
+        /// The datatype of the column.
+        /// </summary>
+        public DataType DataType { get; set; }
+
+        /// <summary>
+        /// Whether the column can hold null values.
+        /// </summary>
+        public bool? IsNullable { get; set; }
+
+        void IVisitableBuilder.Accept(BuilderVisitor visitor)
+        {
+            visitor.VisitAlterColumn(this);
         }
 
     }

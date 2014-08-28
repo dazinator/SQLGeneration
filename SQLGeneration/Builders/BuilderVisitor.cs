@@ -652,7 +652,31 @@ namespace SQLGeneration.Builders
         /// </summary>
         /// <param name="item"></param>
         protected internal virtual void VisitAlterTableDefinition(AlterTableDefinition item)
-        {          
+        {
+        }
+
+        /// <summary>
+        /// Visits a AlterColumn builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAlterColumn(AlterColumn item)
+        {
+        }
+
+        /// <summary>
+        /// Visits a AlterColumnDropProperty builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAlterColumnDropProperty(AlterColumnDropProperty item)
+        {
+        }
+
+        /// <summary>
+        /// Visits a AlterColumnAddProperty builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAlterColumnAddProperty(AlterColumnAddProperty item)
+        {
         }
     }
 }

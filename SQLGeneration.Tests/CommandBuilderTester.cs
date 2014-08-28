@@ -1461,12 +1461,23 @@ namespace SQLGeneration.Tests
         }
 
         /// <summary>
-        /// This sees whether we can reproduce a simple alter database collation name statement.
+        /// This sees whether we can reproduce a simple alter table column statement.
         /// </summary>
         [TestMethod]
         public void TestAlterTable_AlterColumn_DataType()
         {
             string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn INT";
+            assertCanReproduce(commandText);
+        }
+
+
+        /// <summary>
+        /// This sees whether we can reproduce a simple alter table column.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_DataType_Size_And_NotNull()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn VARCHAR(10) COLLATE latin_general NOT NULL";
             assertCanReproduce(commandText);
         }
 

@@ -678,27 +678,28 @@ namespace SQLGeneration.Generators
 
             ac = new AlterColumn(columnName);
 
-            var dataTypeResult = result.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AlterColumnDataTypeExpressionName];
-            if (dataTypeResult.IsMatch)
+            var columnDefinitionResult = result.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AlterColumnDataTypeExpressionName];
+            if (columnDefinitionResult.IsMatch)
             {
-                var colDataTypeResult = dataTypeResult.Matches[SqlGrammar.DataType.Name];
+                var colDataTypeResult = columnDefinitionResult.Matches[SqlGrammar.DataType.Name];
                 var dataType = buildDataType(colDataTypeResult);
                 ac.DataType = dataType;
-            }
 
-            var collationResult = result.Matches[SqlGrammar.Collate.Name];
-            if (collationResult.IsMatch)
-            {
-                var collation = buildCollation(collationResult);
-                ac.Collation = collation;
-            }
+                var collationResult = columnDefinitionResult.Matches[SqlGrammar.Collate.Name];
+                if (collationResult.IsMatch)
+                {
+                    var collation = buildCollation(collationResult);
+                    ac.Collation = collation;
+                }
 
-            var nullabilityResult = result.Matches[SqlGrammar.Nullability.Name];
-            if (nullabilityResult.IsMatch)
-            {
-                var isNullable = buildIsNullable(nullabilityResult);
-                ac.IsNullable = isNullable;
-            }
+                var nullabilityResult = columnDefinitionResult.Matches[SqlGrammar.Nullability.Name];
+                if (nullabilityResult.IsMatch)
+                {
+                    var isNullable = buildIsNullable(nullabilityResult);
+                    ac.IsNullable = isNullable;
+                }
+
+            }           
 
             return ac;
         }

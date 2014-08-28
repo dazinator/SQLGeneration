@@ -1454,66 +1454,6 @@ namespace SQLGeneration.Generators
         }
 
         /// <summary>
-        /// Generates the text for a ColumnDefinition builder.
-        /// </summary>
-        /// <param name="item">The item to generate the text for.</param>
-        protected internal override void VisitColumnDefinition(ColumnDefinition item)
-        {
-            writer.Write(item.Name);
-
-            if (item.DataType != null)
-            {
-                writer.Write(" ");
-                ((IVisitableBuilder)item.DataType).Accept(this);
-            }
-
-            if (!string.IsNullOrEmpty(item.Collation))
-            {
-                writer.Write(" COLLATE ");
-                writer.Write(item.Collation);
-            }
-
-            if (item.IsNullable.HasValue)
-            {
-                if (item.IsNullable.Value)
-                {
-                    writer.Write(" NULL");
-                }
-                else
-                {
-                    writer.Write(" NOT NULL");
-                }
-            }
-
-            if (item.Default != null)
-            {
-                writer.Write(" ");
-                ((IVisitableBuilder)item.Default).Accept(this);
-            }
-
-            if (item.AutoIncrement != null)
-            {
-                writer.Write(" ");
-                ((IVisitableBuilder)item.AutoIncrement).Accept(this);
-            }
-
-            if (item.IsRowGuid)
-            {
-                writer.Write(" ROWGUIDCOL");
-            }
-
-            // Now do the column constraint list. This will be primary key, unique, foreignkey, default.
-
-            if (item.Constraints != null && item.Constraints.Any())
-            {
-                writer.Write(" ");
-                join(" ", item.Constraints);
-            }
-
-            base.VisitColumnDefinition(item);
-        }
-
-        /// <summary>
         /// Generates the text for a AutoIncrement builder.
         /// </summary>
         /// <param name="item">The item to generate the text for.</param>
@@ -1684,7 +1624,6 @@ namespace SQLGeneration.Generators
         }
         #endregion
 
-
         #region Alter
 
         /// <summary>
@@ -1693,8 +1632,7 @@ namespace SQLGeneration.Generators
         /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitAlter(AlterBuilder item)
         {
-          //  forCommandType(CommandType.Alter).
-                visitAlter(item);
+            forCommandType(CommandType.Alter).visitAlter(item);
         }
 
         private void visitAlter(AlterBuilder item)
@@ -1740,6 +1678,125 @@ namespace SQLGeneration.Generators
             }
 
             base.VisitAlterDatabase(item);
+        }
+
+        protected internal override void VisitAlterTableDefinition(AlterTableDefinition item)
+        {
+            writer.Write("TABLE ");
+            writer.Write(item.Name);
+            writer.Write(" ");
+
+            if (item.AlterColumn != null)
+            {
+                ((IVisitableBuilder)item.AlterColumn).Accept(this);
+            }
+
+            if (item.AddColumns != null && item.AddColumns.Any())
+            {
+                writer.Write(" ADD ");
+                IVisitableBuilder first = item.AddColumns.First();
+                first.Accept(this);
+
+                foreach (IVisitableBuilder next in item.AddColumns.Skip(1))
+                {
+                    writer.Write(", ");
+                    next.Accept(this);
+                }               
+            }
+
+            base.VisitAlterTableDefinition(item);
+        }
+
+        protected internal override void VisitAlterColumn(AlterColumn item)
+        {
+            writer.Write("ALTER COLUMN ");
+            writer.Write(item.Name);
+
+            if (item.DataType != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.DataType).Accept(this);
+            }
+
+            if (!string.IsNullOrEmpty(item.Collation))
+            {
+                writer.Write(" COLLATE ");
+                writer.Write(item.Collation);
+            }
+
+            if (item.IsNullable.HasValue)
+            {
+                if (item.IsNullable.Value)
+                {
+                    writer.Write(" NULL");
+                }
+                else
+                {
+                    writer.Write(" NOT NULL");
+                }
+            }
+
+            base.VisitAlterColumn(item);
+        }
+
+        /// <summary>
+        /// Generates the text for a ColumnDefinition builder.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitColumnDefinition(ColumnDefinition item)
+        {
+            writer.Write(item.Name);
+
+            if (item.DataType != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.DataType).Accept(this);
+            }
+
+            if (!string.IsNullOrEmpty(item.Collation))
+            {
+                writer.Write(" COLLATE ");
+                writer.Write(item.Collation);
+            }
+
+            if (item.IsNullable.HasValue)
+            {
+                if (item.IsNullable.Value)
+                {
+                    writer.Write(" NULL");
+                }
+                else
+                {
+                    writer.Write(" NOT NULL");
+                }
+            }
+
+            if (item.Default != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.Default).Accept(this);
+            }
+
+            if (item.AutoIncrement != null)
+            {
+                writer.Write(" ");
+                ((IVisitableBuilder)item.AutoIncrement).Accept(this);
+            }
+
+            if (item.IsRowGuid)
+            {
+                writer.Write(" ROWGUIDCOL");
+            }
+
+            // Now do the column constraint list. This will be primary key, unique, foreignkey, default.
+
+            if (item.Constraints != null && item.Constraints.Any())
+            {
+                writer.Write(" ");
+                join(" ", item.Constraints);
+            }
+
+            base.VisitColumnDefinition(item);
         }
 
         #endregion

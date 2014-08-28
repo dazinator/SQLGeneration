@@ -13,7 +13,6 @@ namespace SQLGeneration.Builders
 
         private readonly ConstraintList _constraints;
 
-
         /// <summary>
         /// Constructor.
         /// </summary>

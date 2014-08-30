@@ -711,5 +711,43 @@ namespace SQLGeneration.Builders
         {
 
         }
+        /// <summary>
+        /// Visits a DropColumn.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitDropColumn(DropColumn item)
+        {
+        }
+        /// <summary>
+        /// Visits a DropConstraint.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitDropConstraint(DropConstraint item)
+        {
+        }
+        /// <summary>
+        /// Visits a DropItemsList.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitDropItemsList(DropItemsList item)
+        {
+        }
+
+        /// <summary>
+        /// Visits a DropColumnsList.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitDropColumnsList(DropColumnsList item)
+        {
+
+        }
+
+        /// <summary>
+        /// Visits a DropConstraintsList.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitDropConstraintsList(DropConstraintsList item)
+        {
+        }
     }
 }

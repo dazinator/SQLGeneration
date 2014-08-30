@@ -1790,6 +1790,69 @@ namespace SQLGeneration.Generators
             base.VisitAddColumns(item);
         }
 
+        protected internal override void VisitDropItemsList(DropItemsList item)
+        {
+            if (item.Items != null && item.Items.Any())
+            {
+                writer.Write("DROP ");
+                IVisitableBuilder first = item.Items.First();
+                first.Accept(this);
+
+                foreach (IVisitableBuilder next in item.Items.Skip(1))
+                {
+                    writer.Write(", ");
+                    next.Accept(this);
+                }
+            }
+            base.VisitDropItemsList(item);
+        }
+
+        protected internal override void VisitDropColumnsList(DropColumnsList item)
+        {        
+            if (item.Items != null && item.Items.Any())
+            {
+                writer.Write("COLUMN ");              
+                IVisitableBuilder first = item.Items.First();
+                first.Accept(this);
+
+                foreach (IVisitableBuilder next in item.Items.Skip(1))
+                {
+                    writer.Write(", ");
+                    next.Accept(this);
+                }
+            }
+            base.VisitDropColumnsList(item);
+        }
+
+        protected internal override void VisitDropColumn(DropColumn item)
+        {
+            writer.Write(item.Name);    
+            base.VisitDropColumn(item);
+        }
+
+        protected internal override void VisitDropConstraintsList(DropConstraintsList item)
+        {
+            if (item.Items != null && item.Items.Any())
+            {
+                writer.Write("CONSTRAINT ");
+                IVisitableBuilder first = item.Items.First();
+                first.Accept(this);
+
+                foreach (IVisitableBuilder next in item.Items.Skip(1))
+                {
+                    writer.Write(", ");
+                    next.Accept(this);
+                }
+            }
+            base.VisitDropConstraintsList(item);
+        }
+
+        protected internal override void VisitDropConstraint(DropConstraint item)
+        {
+            writer.Write(item.Name);  
+            base.VisitDropConstraint(item);
+        }
+
         #endregion
 
         protected internal override void VisitColumnDefinition(ColumnDefinition item)

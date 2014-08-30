@@ -218,7 +218,7 @@ namespace SQLGeneration.Generators
                 }
             }
             return tableDef;
-        }      
+        }
 
         #endregion
 
@@ -284,9 +284,155 @@ namespace SQLGeneration.Generators
                     alterTable.Alteration = alterColumn;
                 }
 
+                MatchResult dropTableItemsResult = result.Matches[SqlGrammar.AlterTableStatement.DropColumnsOrConstraints.Name];
+                if (dropTableItemsResult.IsMatch)
+                {
+                    ITableAlteration dropItems = buildDropTableItems(dropTableItemsResult);
+                    alterTable.Alteration = dropItems;
+                }
+
             }
             return alterTable;
             //  throw new NotImplementedException();
+        }
+
+        private ITableAlteration buildDropTableItems(MatchResult result)
+        {
+            var dropItems = new DropItemsList();
+            var dropListItemsResult = result.Matches[SqlGrammar.AlterTableStatement.DropColumnsOrConstraints.DropListExpressionName];
+
+            //   MatchResult columnsDefinitionResult = result.Matches[SqlGrammar.CreateTableStatement.TableDefinition.ColumnsDefinitionList];
+            if (dropListItemsResult.IsMatch)
+            {
+                buildDropItemsList(dropItems.Items, dropListItemsResult);
+            }
+            return dropItems;
+            // throw new NotImplementedException();
+        }
+
+        private void buildDropItemsList(List<IDropTableItem> list, MatchResult result)
+        {
+            // First add column defintions
+            MatchResult multiple = result.Matches[SqlGrammar.DropTableItemsList.Multiple.Name];
+            if (multiple.IsMatch)
+            {
+                MatchResult first = multiple.Matches[SqlGrammar.DropTableItemsList.Multiple.First];
+                var dropTableItem = buildDropItem(first);
+                list.Add(dropTableItem);
+                // ColumnDefinition column = buildColumnDefinition(first);
+                //  columns.AddColumnDefinition(column);
+                MatchResult remaining = multiple.Matches[SqlGrammar.DropTableItemsList.Multiple.Remaining];
+                buildDropItemsList(list, remaining);
+                return;
+            }
+            MatchResult single = result.Matches[SqlGrammar.DropTableItemsList.Single];
+            if (single.IsMatch)
+            {
+                var dropTableItem = buildDropItem(single);
+                list.Add(dropTableItem);
+                //ColumnDefinition column = buildColumnDefinition(single);
+                // columns.AddColumnDefinition(column);
+                return;
+            }
+        }
+
+        private IDropTableItem buildDropItem(MatchResult result)
+        {
+            MatchResult dropConstraintExpression = result.Matches[SqlGrammar.DropTableItem.DropConstraintExpressionName];
+            if (dropConstraintExpression.IsMatch)
+            {
+                var dropConstraintsListResult = dropConstraintExpression.Matches[SqlGrammar.DropTableItem.DropConstraintListExpressionName];
+                if (dropConstraintsListResult.IsMatch)
+                {
+                    var constraints = new DropConstraintsList();
+                    buildDropTableConstraintsList(constraints, dropConstraintsListResult);
+                    return constraints;
+                }
+            }
+
+            MatchResult dropColumnExpression = result.Matches[SqlGrammar.DropTableItem.DropColumnExpressionName];
+            if (dropColumnExpression.IsMatch)
+            {
+
+                var dropColumnsListResult = dropColumnExpression.Matches[SqlGrammar.DropTableItem.DropColumnListExpressionName];
+                if (dropColumnsListResult.IsMatch)
+                {
+                    var cols = new DropColumnsList();
+                    buildDropTableColumnsList(cols, dropColumnsListResult);
+                    return cols;
+                }
+            }
+
+            return null;
+
+        }
+
+        private void buildDropTableConstraintsList(DropConstraintsList list, MatchResult result)
+        {
+            // First add column defintions
+            MatchResult multiple = result.Matches[SqlGrammar.DropTableConstraintList.Multiple.Name];
+            if (multiple.IsMatch)
+            {
+                MatchResult first = multiple.Matches[SqlGrammar.DropTableConstraintList.Multiple.First];
+                DropConstraint item = buildDropConstraint(first);
+                list.Items.Add(item);
+                // ColumnDefinition column = buildColumnDefinition(first);
+                //  columns.AddColumnDefinition(column);
+                MatchResult remaining = multiple.Matches[SqlGrammar.DropTableConstraintList.Multiple.Remaining];
+                buildDropTableConstraintsList(list, remaining);
+                return;
+            }
+            MatchResult single = result.Matches[SqlGrammar.DropTableConstraintList.Single];
+            if (single.IsMatch)
+            {
+                DropConstraint item = buildDropConstraint(single);
+                list.Items.Add(item);
+                //ColumnDefinition column = buildColumnDefinition(single);
+                // columns.AddColumnDefinition(column);
+                return;
+            }
+        }
+
+        private DropConstraint buildDropConstraint(MatchResult result)
+        {
+            var nameResult = result.Matches[SqlGrammar.DropTableConstraint.ConstraintName];
+            var name = getToken(nameResult);
+            var dropConstraint = new DropConstraint(name);
+            return dropConstraint;
+        }
+
+        private void buildDropTableColumnsList(DropColumnsList list, MatchResult result)
+        {
+            // First add column defintions
+            MatchResult multiple = result.Matches[SqlGrammar.DropTableColumnList.Multiple.Name];
+            if (multiple.IsMatch)
+            {
+                MatchResult first = multiple.Matches[SqlGrammar.DropTableColumnList.Multiple.First];
+                DropColumn item = buildDropColumn(first);
+                list.Items.Add(item);
+                // ColumnDefinition column = buildColumnDefinition(first);
+                //  columns.AddColumnDefinition(column);
+                MatchResult remaining = multiple.Matches[SqlGrammar.DropTableColumnList.Multiple.Remaining];
+                buildDropTableColumnsList(list, remaining);
+                return;
+            }
+            MatchResult single = result.Matches[SqlGrammar.DropTableColumnList.Single];
+            if (single.IsMatch)
+            {
+                DropColumn item = buildDropColumn(single);
+                list.Items.Add(item);
+                //ColumnDefinition column = buildColumnDefinition(single);
+                // columns.AddColumnDefinition(column);
+                return;
+            }
+        }
+
+        private DropColumn buildDropColumn(MatchResult result)
+        {
+            var colNameResult = result.Matches[SqlGrammar.DropTableColumn.ColumnName];
+            var columnName = getToken(colNameResult);
+            var dropCol = new DropColumn(columnName);
+            return dropCol;
         }
 
         private ITableAlteration buildAlterTableAddColumns(MatchResult result)
@@ -300,7 +446,7 @@ namespace SQLGeneration.Generators
                 buildColumnDefinitionsList(addColumns.Columns, addColumnsDefinitionListResult);
             }
             return addColumns;
-        }      
+        }
 
         private ITableAlteration buildAlterColumn(MatchResult result)
         {

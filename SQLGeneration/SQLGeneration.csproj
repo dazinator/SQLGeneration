@@ -52,6 +52,7 @@
     <Compile Include="Builders\BuilderVisitor.cs" />
     <Compile Include="Builders\ConditionalCaseBranch.cs" />
     <Compile Include="Builders\ConditionalCase.cs" />
+    <Compile Include="Builders\DDL\AddColumns.cs" />
     <Compile Include="Builders\DDL\AlterBuilder.cs" />
     <Compile Include="Builders\DDL\AlterColumn.cs" />
     <Compile Include="Builders\DDL\AlterColumnProperty.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="Builders\DDL\ForeignKeyAction.cs" />
     <Compile Include="Builders\DDL\ForeignKeyConstraint.cs" />
     <Compile Include="Builders\DDL\IAlterBuilder.cs" />
-    <Compile Include="Builders\DDL\IAlterColumn.cs" />
+    <Compile Include="Builders\DDL\ITableAlteration.cs" />
     <Compile Include="Builders\DDL\IColumnProperty.cs" />
     <Compile Include="Builders\DDL\ICreateBuilder.cs" />
     <Compile Include="Builders\DDL\IDatabaseObject.cs" />

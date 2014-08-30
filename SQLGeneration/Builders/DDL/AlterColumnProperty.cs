@@ -8,7 +8,7 @@ namespace SQLGeneration.Builders
     /// <summary>
     /// An alter column property. Used to Add or Drop a column property.
     /// </summary>
-    public class AlterColumnProperty : IAlterColumn
+    public class AlterColumnProperty : ITableAlteration
     {
         /// <summary>
         /// Constructor.

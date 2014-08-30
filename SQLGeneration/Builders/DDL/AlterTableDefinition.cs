@@ -10,9 +10,7 @@ namespace SQLGeneration.Builders
     /// The alter table definition builder.
     /// </summary>
     public class AlterTableDefinition : IDatabaseObject
-    {
-
-        private readonly ColumnDefinitionList _addColumnsList;
+    {       
 
         /// <summary>
         /// Initializes a new instance of a Table.
@@ -36,7 +34,7 @@ namespace SQLGeneration.Builders
             }
             Qualifier = qualifier;
             Name = name;
-            _addColumnsList = new ColumnDefinitionList();
+         
         }
 
         /// <summary>
@@ -55,23 +53,12 @@ namespace SQLGeneration.Builders
         {
             get;
             private set;
-        }
+        }    
 
         /// <summary>
-        /// Returns the columns to be added.
+        /// The alteration to be made to this table.
         /// </summary>
-        public ColumnDefinitionList AddColumns
-        {
-            get
-            {
-                return _addColumnsList;
-            }
-        }
-
-        /// <summary>
-        /// The alteration to an existing column.
-        /// </summary>
-        public IAlterColumn AlterColumn { get; set; }
+        public ITableAlteration Alteration { get; set; }
 
         void IVisitableBuilder.Accept(BuilderVisitor visitor)
         {

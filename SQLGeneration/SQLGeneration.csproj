@@ -68,9 +68,15 @@
     <Compile Include="Builders\DDL\DataType.cs" />
     <Compile Include="Builders\DDL\CreateDatabase.cs" />
     <Compile Include="Builders\DDL\DefaultConstraint.cs" />
+    <Compile Include="Builders\DDL\DropColumn.cs" />
+    <Compile Include="Builders\DDL\DropColumnsList.cs" />
+    <Compile Include="Builders\DDL\DropConstraint.cs" />
+    <Compile Include="Builders\DDL\DropConstraintsList.cs" />
+    <Compile Include="Builders\DDL\DropItemsList.cs" />
     <Compile Include="Builders\DDL\ForeignKeyAction.cs" />
     <Compile Include="Builders\DDL\ForeignKeyConstraint.cs" />
     <Compile Include="Builders\DDL\IAlterBuilder.cs" />
+    <Compile Include="Builders\DDL\IDropTableItem.cs" />
     <Compile Include="Builders\DDL\ITableAlteration.cs" />
     <Compile Include="Builders\DDL\IColumnProperty.cs" />
     <Compile Include="Builders\DDL\ICreateBuilder.cs" />

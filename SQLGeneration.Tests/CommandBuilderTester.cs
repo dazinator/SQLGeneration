@@ -1581,7 +1581,70 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// This sees whether we can reproduce an alter table drop column.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_DropColumn()
+        {
+            string commandText = "ALTER TABLE MyTable DROP COLUMN mycolumn";
+            assertCanReproduce(commandText);
+        }
 
+        /// <summary>
+        /// This sees whether we can reproduce an alter table drop columns.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_DropColumns()
+        {
+            string commandText = "ALTER TABLE MyTable DROP COLUMN mycolumn, myothercolumn, andanothercolumn";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table drop constraint.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_DropConstraint()
+        {
+            string commandText = "ALTER TABLE MyTable DROP CONSTRAINT myconstraint";
+            assertCanReproduce(commandText);
+        }      
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table drop constraint with no constraint keyword.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_DropConstraint_NoConstraintKeyword()
+        {
+            string commandText = "ALTER TABLE MyTable DROP myconstraint";
+            string assertText = "ALTER TABLE MyTable DROP CONSTRAINT myconstraint";
+            CommandBuilder builder = new CommandBuilder();
+            ICommand command = builder.GetCommand(commandText);
+            Formatter formatter = new Formatter();
+            string actual = formatter.GetCommandText(command);
+            Assert.AreEqual(assertText, actual, "The command builder did not generate the original command text.");
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table drop constraint.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_DropConstraints()
+        {
+            string commandText = "ALTER TABLE MyTable DROP CONSTRAINT myconstraint, myotherconstraint, andanotherconstraint";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table statement that drops columns and constraints
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_DropColumns_And_Constraints()
+        {
+            string commandText = "ALTER TABLE MyTable DROP CONSTRAINT myconstraint, myotherconstraint, COLUMN andacolumn, andanothercolumn, CONSTRAINT finalconstraint, COLUMN finalcolumn";
+            assertCanReproduce(commandText);
+        }
 
         #endregion
 

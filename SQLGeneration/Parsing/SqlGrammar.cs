@@ -79,11 +79,16 @@ namespace SQLGeneration.Parsing
             defineNotForReplication();
             defineAlterStatement();
             defineAlterDatabase();
-            defineAlterTable();          
+            defineAlterTable();
             defineDataType();
             defineCollate();
             defineNullability();
-
+            defineDropTableItemsList();
+            defineDropTableItem();
+            defineDropTableConstraintList();
+            defineDropTableColumnList();
+            defineDropTableColumn();
+            defineDropTableConstraint();
         }
 
         /// <summary>
@@ -3916,7 +3921,7 @@ namespace SQLGeneration.Parsing
 
         }
 
-        #endregion        
+        #endregion
 
         #region ColumnConstraintList
 
@@ -4696,6 +4701,29 @@ namespace SQLGeneration.Parsing
 
             }
 
+            /// <summary>
+            /// Describes the structure of the DropColumnsOrConstraints statement.
+            /// </summary>
+            public static class DropColumnsOrConstraints
+            {
+
+                /// <summary>
+                /// Gets the identifier for the ModifyName statement.
+                /// </summary>
+                public const string Name = "DropColumnsOrConstraints";
+
+                /// <summary>
+                /// Gets the identifier for the ADD keyword.
+                /// </summary>
+                public const string DropKeyword = "DropKeyword";
+
+                /// <summary>
+                /// Gets the identifier for the ColumnNameListExpressionName expression.
+                /// </summary>
+                public const string DropListExpressionName = "DropListExpressionName";
+
+            }
+
         }
 
         private void defineAlterTable()
@@ -4726,8 +4754,311 @@ namespace SQLGeneration.Parsing
                                     .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.SparseKeyword, Token(SqlTokenRegistry.Sparse))))))
                     .Add(AlterTableStatement.AddColumns.Name, Define()
                         .Add(AlterTableStatement.AddColumns.AddKeyword, true, Token(SqlTokenRegistry.Add))
-                        .Add(AlterTableStatement.AddColumns.ColumnDefinitionListExpressionName, true, Expression(ColumnDefinitionList.Name))));
-        }      
+                        .Add(AlterTableStatement.AddColumns.ColumnDefinitionListExpressionName, true, Expression(ColumnDefinitionList.Name)))
+                    .Add(AlterTableStatement.DropColumnsOrConstraints.Name, Define()
+                        .Add(AlterTableStatement.DropColumnsOrConstraints.DropKeyword, true, Token(SqlTokenRegistry.Drop))
+                        .Add(AlterTableStatement.DropColumnsOrConstraints.DropListExpressionName, true, Expression(DropTableItemsList.Name)))
+                        );
+        }
+
+        #region DropTableItemsList
+
+        /// <summary>
+        /// Describes the structure of the DropItemsList.
+        /// </summary>
+        public static class DropTableItemsList
+        {
+            /// <summary>
+            /// Gets the name identifying the DropTableItemsList.
+            /// </summary>
+            public const string Name = "DropTableItemsList";
+
+            /// <summary>
+            /// Describes the structure of a column definitions list with multiple columns.
+            /// </summary>
+            public static class Multiple
+            {
+                /// <summary>
+                /// Gets the identifier used to indicate that multiple column definitions exist.
+                /// </summary>
+                public const string Name = "Multiple";
+
+                /// <summary>
+                /// Gets the identifier for the first column.
+                /// </summary>
+                public const string First = "first";
+
+                /// <summary>
+                /// Gets the identifier for the comma separator.
+                /// </summary>
+                public const string Comma = "comma";
+
+                /// <summary>
+                /// Gets the identifier for the remaining columns.
+                /// </summary>
+                public const string Remaining = "remaining";
+            }
+
+            /// <summary>
+            /// Gets the identifier used to indicate that a single DropTableItem.
+            /// </summary>
+            public const string Single = "single";
+        }
+
+        private void defineDropTableItemsList()
+        {
+            Define(DropTableItemsList.Name)
+                .Add(true, Options()
+                    .Add(DropTableItemsList.Multiple.Name, Define()
+                        .Add(DropTableItemsList.Multiple.First, true, Expression(DropTableItem.Name))
+                        .Add(DropTableItemsList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
+                        .Add(DropTableItemsList.Multiple.Remaining, true, Expression(DropTableItemsList.Name)))
+                    .Add(DropTableItemsList.Single, Expression(DropTableItem.Name)));
+
+        }
+
+        #endregion
+
+        #region DropTableItem
+
+        /// <summary>
+        /// Describes the structure of the DropItem.
+        /// </summary>
+        public static class DropTableItem
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "DropTableItem";
+
+            /// <summary>
+            /// Gets the name identifying RowGuidCol Keyword.
+            /// </summary>
+            public const string ColumnKeyword = "ColumnKeyword";
+
+            /// <summary>
+            /// Gets the name identifying RowGuidCol Keyword.
+            /// </summary>
+            public const string ConstraintKeyword = "ConstraintKeyword";
+
+            /// <summary>
+            /// Gets the name identifying DropConstraintListExpression.
+            /// </summary>
+            public const string DropConstraintListExpressionName = "DropConstraintListExpression";
+
+            /// <summary>
+            /// Gets the name identifying DropColumnListExpression.
+            /// </summary>
+            public const string DropColumnListExpressionName = "DropColumnListExpression";
+
+            /// <summary>
+            /// Gets the name identifying DropConstraintExpression.
+            /// </summary>
+            public const string DropConstraintExpressionName = "DropConstraintExpression";
+
+            /// <summary>
+            /// Gets the name identifying DropColumnExpression.
+            /// </summary>
+            public const string DropColumnExpressionName = "DropColumnExpression";
+
+
+        }
+
+        private void defineDropTableItem()
+        {
+            Define(DropTableItem.Name)
+                .Add(true, Options()
+                     .Add(DropTableItem.DropConstraintExpressionName, Define()
+                        .Add(DropTableItem.ConstraintKeyword, false, Token(SqlTokenRegistry.Constraint))
+                        .Add(DropTableItem.DropConstraintListExpressionName, true, Expression(DropTableConstraintList.Name)))
+                     .Add(DropTableItem.DropColumnExpressionName, Define()
+                        .Add(DropTableItem.ColumnKeyword, true, Token(SqlTokenRegistry.Column))
+                        .Add(DropTableItem.DropColumnListExpressionName, true, Expression(DropTableColumnList.Name)))
+                        );
+        }
+
+        #endregion
+
+        #region DropTableConstraintList
+
+        /// <summary>
+        /// Describes the structure of the DropTableConstraintList.
+        /// </summary>
+        public static class DropTableConstraintList
+        {
+            /// <summary>
+            /// Gets the name identifying the DropTableConstraintList.
+            /// </summary>
+            public const string Name = "DropTableConstraintList";
+
+            /// <summary>
+            /// Describes the structure of a DropTableConstraint list with multiple constraints.
+            /// </summary>
+            public static class Multiple
+            {
+                /// <summary>
+                /// Gets the identifier used to indicate that multiple constraints.
+                /// </summary>
+                public const string Name = "Multiple";
+
+                /// <summary>
+                /// Gets the identifier for the first constraint.
+                /// </summary>
+                public const string First = "first";
+
+                /// <summary>
+                /// Gets the identifier for the comma separator.
+                /// </summary>
+                public const string Comma = "comma";
+
+                /// <summary>
+                /// Gets the identifier for the remaining constraints.
+                /// </summary>
+                public const string Remaining = "remaining";
+            }
+
+            /// <summary>
+            /// Gets the identifier used to indicate that a single constraint exists.
+            /// </summary>
+            public const string Single = "single";
+        }
+
+        private void defineDropTableConstraintList()
+        {
+            Define(DropTableConstraintList.Name)
+                .Add(true, Options()
+                    .Add(DropTableConstraintList.Multiple.Name, Define()
+                        .Add(DropTableConstraintList.Multiple.First, true, Expression(DropTableConstraint.Name))
+                        .Add(DropTableConstraintList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
+                        .Add(DropTableConstraintList.Multiple.Remaining, true, Expression(DropTableConstraintList.Name)))
+                    .Add(DropTableConstraintList.Single, Expression(DropTableConstraint.Name)));
+
+        }
+
+        #endregion
+
+        #region DropTableColumnList
+
+        /// <summary>
+        /// Describes the structure of the DropColumnList.
+        /// </summary>
+        public static class DropTableColumnList
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "DropColumnList";
+
+            /// <summary>
+            /// Describes the structure of a column definitions list with multiple columns.
+            /// </summary>
+            public static class Multiple
+            {
+                /// <summary>
+                /// Gets the identifier used to indicate that multiple column definitions exist.
+                /// </summary>
+                public const string Name = "Multiple";
+
+                /// <summary>
+                /// Gets the identifier for the first column.
+                /// </summary>
+                public const string First = "first";
+
+                /// <summary>
+                /// Gets the identifier for the comma separator.
+                /// </summary>
+                public const string Comma = "comma";
+
+                /// <summary>
+                /// Gets the identifier for the remaining columns.
+                /// </summary>
+                public const string Remaining = "remaining";
+            }
+
+            /// <summary>
+            /// Gets the identifier used to indicate that a single column definition exists.
+            /// </summary>
+            public const string Single = "single";
+        }
+
+        private void defineDropTableColumnList()
+        {
+            Define(DropTableColumnList.Name)
+                .Add(true, Options()
+                    .Add(DropTableColumnList.Multiple.Name, Define()
+                        .Add(DropTableColumnList.Multiple.First, true, Expression(DropTableColumn.Name))
+                        .Add(DropTableColumnList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
+                        .Add(DropTableColumnList.Multiple.Remaining, true, Expression(DropTableColumnList.Name)))
+                    .Add(DropTableColumnList.Single, Expression(DropTableColumn.Name)));
+
+        }
+
+        #endregion
+
+        #region DropTableColumn
+
+        /// <summary>
+        /// Describes the structure of the DropColumn.
+        /// </summary>
+        public static class DropTableColumn
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "DropColumn";
+
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string ColumnName = "ColumnName";
+
+            ///// <summary>
+            ///// Gets the name identifying RowGuidCol Keyword.
+            ///// </summary>
+            //public const string ColumnKeyword = "ColumnKeyword";
+
+        }
+
+        private void defineDropTableColumn()
+        {
+            Define(DropTableColumn.Name)
+                .Add(DropTableColumn.ColumnName, true, Token(SqlTokenRegistry.Identifier));
+        }
+
+        #endregion
+
+        #region DropTableConstraint
+
+        /// <summary>
+        /// Describes the structure of the TableDropItem.
+        /// </summary>
+        public static class DropTableConstraint
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "DropTableConstraint";
+
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string ConstraintName = "ConstraintName";
+
+            ///// <summary>
+            ///// Gets the name identifying RowGuidCol Keyword.
+            ///// </summary>
+            //public const string ConstraintKeyword = "ConstraintKeyword";                 
+
+        }
+
+        private void defineDropTableConstraint()
+        {
+            Define(DropTableConstraint.Name)
+                .Add(DropTableConstraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier));
+
+        }
+
+        #endregion
 
         #endregion
 

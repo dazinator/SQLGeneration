@@ -6,38 +6,36 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Add columns.
+    /// List of items to drop from a table.
     /// </summary>
-    public class AddColumns : ITableAlteration
+    public class DropItemsList : ITableAlteration
     {
-
-        private readonly ColumnDefinitionList _addColumnsList;
+        private readonly List<IDropTableItem> _dropItems;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="name"></param>
-        public AddColumns()
+        public DropItemsList()
         {
-            _addColumnsList = new ColumnDefinitionList();
+            _dropItems = new List<IDropTableItem>();
         }
 
         /// <summary>
         /// Returns the columns to be added.
         /// </summary>
-        public ColumnDefinitionList Columns
+        public List<IDropTableItem> Items
         {
             get
             {
-                return _addColumnsList;
+                return _dropItems;
             }
         }
 
-
         void IVisitableBuilder.Accept(BuilderVisitor visitor)
         {
-            visitor.VisitAddColumns(this);
+            visitor.VisitDropItemsList(this);
         }
 
-    }  
+    }
 }

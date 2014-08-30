@@ -71,7 +71,7 @@ namespace SQLGeneration.Parsing
             defineCreateStatement();
             defineCreateDatabase();
             defineCreateTable();
-            defineCreateTableColumnDefinitionsList();
+            defineColumnDefinitionsList();
             defineColumnDefinition();
             defineColumnConstraintList();
             defineColumnConstraint();
@@ -79,8 +79,7 @@ namespace SQLGeneration.Parsing
             defineNotForReplication();
             defineAlterStatement();
             defineAlterDatabase();
-            defineAlterTable();
-            defineAlterTableAddColumnsDefinitionList();
+            defineAlterTable();          
             defineDataType();
             defineCollate();
             defineNullability();
@@ -3912,70 +3911,12 @@ namespace SQLGeneration.Parsing
                 .Add(false, Options()
                     .Add(CreateTableStatement.TableDefinition.Name, Define()
                     .Add(CreateTableStatement.TableDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                    .Add(CreateTableStatement.TableDefinition.ColumnsDefinitionList, true, Expression(CreateTableColumnDefinitionList.Name))
+                    .Add(CreateTableStatement.TableDefinition.ColumnsDefinitionList, true, Expression(ColumnDefinitionList.Name))
                     .Add(CreateTableStatement.TableDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))));
 
         }
 
-        #endregion
-
-        #region CreateTableColumnDefinitionList
-
-        /// <summary>
-        /// Describes the structure of the column definitions list.
-        /// </summary>
-        public static class CreateTableColumnDefinitionList
-        {
-            /// <summary>
-            /// Gets the name identifying the column list.
-            /// </summary>
-            public const string Name = "CreateTableColumnDefinitionList";
-
-            /// <summary>
-            /// Describes the structure of a column definitions list with multiple columns.
-            /// </summary>
-            public static class Multiple
-            {
-                /// <summary>
-                /// Gets the identifier used to indicate that multiple column definitions exist.
-                /// </summary>
-                public const string Name = "Multiple";
-
-                /// <summary>
-                /// Gets the identifier for the first column.
-                /// </summary>
-                public const string First = "first";
-
-                /// <summary>
-                /// Gets the identifier for the comma separator.
-                /// </summary>
-                public const string Comma = "comma";
-
-                /// <summary>
-                /// Gets the identifier for the remaining columns.
-                /// </summary>
-                public const string Remaining = "remaining";
-            }
-
-            /// <summary>
-            /// Gets the identifier used to indicate that a single column definition exists.
-            /// </summary>
-            public const string Single = "single";
-        }
-
-        private void defineCreateTableColumnDefinitionsList()
-        {
-            Define(CreateTableColumnDefinitionList.Name)
-                .Add(true, Options()
-                    .Add(CreateTableColumnDefinitionList.Multiple.Name, Define()
-                        .Add(CreateTableColumnDefinitionList.Multiple.First, true, Expression(ColumnDefinition.Name))
-                        .Add(CreateTableColumnDefinitionList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
-                        .Add(CreateTableColumnDefinitionList.Multiple.Remaining, true, Expression(CreateTableColumnDefinitionList.Name)))
-                    .Add(CreateTableColumnDefinitionList.Single, Expression(ColumnDefinition.Name)));
-
-        }
-
-        #endregion
+        #endregion        
 
         #region ColumnConstraintList
 
@@ -4785,61 +4726,8 @@ namespace SQLGeneration.Parsing
                                     .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.SparseKeyword, Token(SqlTokenRegistry.Sparse))))))
                     .Add(AlterTableStatement.AddColumns.Name, Define()
                         .Add(AlterTableStatement.AddColumns.AddKeyword, true, Token(SqlTokenRegistry.Add))
-                        .Add(AlterTableStatement.AddColumns.ColumnDefinitionListExpressionName, true, Expression(AlterTableAddColumnsDefinitionList.Name))));
-        }
-
-        /// <summary>
-        /// Describes the structure of the column definitions list.
-        /// </summary>
-        public static class AlterTableAddColumnsDefinitionList
-        {
-            /// <summary>
-            /// Gets the name identifying the column list.
-            /// </summary>
-            public const string Name = "AlterTableAddColumnsDefinitionList";
-
-            /// <summary>
-            /// Describes the structure of a column definitions list with multiple columns.
-            /// </summary>
-            public static class Multiple
-            {
-                /// <summary>
-                /// Gets the identifier used to indicate that multiple column definitions exist.
-                /// </summary>
-                public const string Name = "Multiple";
-
-                /// <summary>
-                /// Gets the identifier for the first column.
-                /// </summary>
-                public const string First = "first";
-
-                /// <summary>
-                /// Gets the identifier for the comma separator.
-                /// </summary>
-                public const string Comma = "comma";
-
-                /// <summary>
-                /// Gets the identifier for the remaining columns.
-                /// </summary>
-                public const string Remaining = "remaining";
-            }
-
-            /// <summary>
-            /// Gets the identifier used to indicate that a single column definition exists.
-            /// </summary>
-            public const string Single = "single";
-        }
-
-        private void defineAlterTableAddColumnsDefinitionList()
-        {
-            Define(AlterTableAddColumnsDefinitionList.Name)
-                .Add(true, Options()
-                    .Add(AlterTableAddColumnsDefinitionList.Multiple.Name, Define()
-                        .Add(AlterTableAddColumnsDefinitionList.Multiple.First, true, Expression(ColumnDefinition.Name))
-                        .Add(AlterTableAddColumnsDefinitionList.Multiple.Remaining, true, Expression(AlterTableAddColumnsDefinitionList.Name)))
-                    .Add(AlterTableAddColumnsDefinitionList.Single, Expression(ColumnDefinition.Name)));
-
-        }
+                        .Add(AlterTableStatement.AddColumns.ColumnDefinitionListExpressionName, true, Expression(ColumnDefinitionList.Name))));
+        }      
 
         #endregion
 
@@ -5112,6 +5000,64 @@ namespace SQLGeneration.Parsing
 
 
         }
+
+        #region ColumnDefinitionList
+
+        /// <summary>
+        /// Describes the structure of the column definitions list.
+        /// </summary>
+        public static class ColumnDefinitionList
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "ColumnDefinitionList";
+
+            /// <summary>
+            /// Describes the structure of a column definitions list with multiple columns.
+            /// </summary>
+            public static class Multiple
+            {
+                /// <summary>
+                /// Gets the identifier used to indicate that multiple column definitions exist.
+                /// </summary>
+                public const string Name = "Multiple";
+
+                /// <summary>
+                /// Gets the identifier for the first column.
+                /// </summary>
+                public const string First = "first";
+
+                /// <summary>
+                /// Gets the identifier for the comma separator.
+                /// </summary>
+                public const string Comma = "comma";
+
+                /// <summary>
+                /// Gets the identifier for the remaining columns.
+                /// </summary>
+                public const string Remaining = "remaining";
+            }
+
+            /// <summary>
+            /// Gets the identifier used to indicate that a single column definition exists.
+            /// </summary>
+            public const string Single = "single";
+        }
+
+        private void defineColumnDefinitionsList()
+        {
+            Define(ColumnDefinitionList.Name)
+                .Add(true, Options()
+                    .Add(ColumnDefinitionList.Multiple.Name, Define()
+                        .Add(ColumnDefinitionList.Multiple.First, true, Expression(ColumnDefinition.Name))
+                        .Add(ColumnDefinitionList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
+                        .Add(ColumnDefinitionList.Multiple.Remaining, true, Expression(ColumnDefinitionList.Name)))
+                    .Add(ColumnDefinitionList.Single, Expression(ColumnDefinition.Name)));
+
+        }
+
+        #endregion
 
         #endregion
     }

@@ -1587,7 +1587,7 @@ namespace SQLGeneration.Tests
         [TestMethod]
         public void TestAlterTable_AddColumns()
         {
-            string commandText = "ALTER TABLE MyTable ADD mycolumn VARCHAR(100) NOT NULL myothercolumn INT NOT NULL PRIMARY KEY";
+            string commandText = "ALTER TABLE MyTable ADD mycolumn VARCHAR(100) NOT NULL, myothercolumn INT NOT NULL PRIMARY KEY";
             assertCanReproduce(commandText);
         }
 

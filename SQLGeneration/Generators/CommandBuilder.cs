@@ -212,35 +212,13 @@ namespace SQLGeneration.Generators
                     MatchResult columnsDefinitionResult = tableDefinitionResult.Matches[SqlGrammar.CreateTableStatement.TableDefinition.ColumnsDefinitionList];
                     if (columnsDefinitionResult.IsMatch)
                     {
-                        buildCreateTableColumnDefinitionsList(tableDef.Columns, columnsDefinitionResult);
+                        buildColumnDefinitionsList(tableDef.Columns, columnsDefinitionResult);
                     }
 
                 }
             }
             return tableDef;
-        }
-
-        private void buildCreateTableColumnDefinitionsList(ColumnDefinitionList columns, MatchResult columnsDefinitionResult)
-        {
-            // First add column defintions
-            MatchResult multiple = columnsDefinitionResult.Matches[SqlGrammar.CreateTableColumnDefinitionList.Multiple.Name];
-            if (multiple.IsMatch)
-            {
-                MatchResult first = multiple.Matches[SqlGrammar.CreateTableColumnDefinitionList.Multiple.First];
-                ColumnDefinition column = buildColumnDefinition(first);
-                columns.AddColumnDefinition(column);
-                MatchResult remaining = multiple.Matches[SqlGrammar.CreateTableColumnDefinitionList.Multiple.Remaining];
-                buildCreateTableColumnDefinitionsList(columns, remaining);
-                return;
-            }
-            MatchResult single = columnsDefinitionResult.Matches[SqlGrammar.CreateTableColumnDefinitionList.Single];
-            if (single.IsMatch)
-            {
-                ColumnDefinition column = buildColumnDefinition(single);
-                columns.AddColumnDefinition(column);
-                return;
-            }
-        }
+        }      
 
         #endregion
 
@@ -319,32 +297,10 @@ namespace SQLGeneration.Generators
             //   MatchResult columnsDefinitionResult = result.Matches[SqlGrammar.CreateTableStatement.TableDefinition.ColumnsDefinitionList];
             if (addColumnsDefinitionListResult.IsMatch)
             {
-                buildAlterTableAddColumnsDefinitionsList(addColumns.Columns, addColumnsDefinitionListResult);
+                buildColumnDefinitionsList(addColumns.Columns, addColumnsDefinitionListResult);
             }
             return addColumns;
-        }
-
-        private void buildAlterTableAddColumnsDefinitionsList(ColumnDefinitionList columns, MatchResult columnsDefinitionResult)
-        {
-            // First add column defintions
-            MatchResult multiple = columnsDefinitionResult.Matches[SqlGrammar.AlterTableAddColumnsDefinitionList.Multiple.Name];
-            if (multiple.IsMatch)
-            {
-                MatchResult first = multiple.Matches[SqlGrammar.AlterTableAddColumnsDefinitionList.Multiple.First];
-                ColumnDefinition column = buildColumnDefinition(first);
-                columns.AddColumnDefinition(column);
-                MatchResult remaining = multiple.Matches[SqlGrammar.AlterTableAddColumnsDefinitionList.Multiple.Remaining];
-                buildCreateTableColumnDefinitionsList(columns, remaining);
-                return;
-            }
-            MatchResult single = columnsDefinitionResult.Matches[SqlGrammar.AlterTableAddColumnsDefinitionList.Single];
-            if (single.IsMatch)
-            {
-                ColumnDefinition column = buildColumnDefinition(single);
-                columns.AddColumnDefinition(column);
-                return;
-            }
-        }
+        }      
 
         private ITableAlteration buildAlterColumn(MatchResult result)
         {
@@ -603,6 +559,28 @@ namespace SQLGeneration.Generators
             }
 
             return columnDefinition;
+        }
+
+        private void buildColumnDefinitionsList(ColumnDefinitionList columns, MatchResult columnsDefinitionResult)
+        {
+            // First add column defintions
+            MatchResult multiple = columnsDefinitionResult.Matches[SqlGrammar.ColumnDefinitionList.Multiple.Name];
+            if (multiple.IsMatch)
+            {
+                MatchResult first = multiple.Matches[SqlGrammar.ColumnDefinitionList.Multiple.First];
+                ColumnDefinition column = buildColumnDefinition(first);
+                columns.AddColumnDefinition(column);
+                MatchResult remaining = multiple.Matches[SqlGrammar.ColumnDefinitionList.Multiple.Remaining];
+                buildColumnDefinitionsList(columns, remaining);
+                return;
+            }
+            MatchResult single = columnsDefinitionResult.Matches[SqlGrammar.ColumnDefinitionList.Single];
+            if (single.IsMatch)
+            {
+                ColumnDefinition column = buildColumnDefinition(single);
+                columns.AddColumnDefinition(column);
+                return;
+            }
         }
 
         private void buildColumnConstraintList(ColumnDefinition builder, MatchResult columnConstraintsResult)

@@ -6,12 +6,12 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// A builder specifying "CREATE" DDL statements.
+    /// Defines a builder that can be used to build "Create" statements.
     /// </summary>
     public interface ICreateBuilder : ICommand
     {
         /// <summary>
-        /// The database object to be created.
+        /// The object to be created.
         /// </summary>
         IDatabaseObject CreateObject { get; set; }
     }

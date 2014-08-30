@@ -336,7 +336,7 @@ namespace SQLGeneration.Generators
                 MatchResult notForReplicationResult = identityResult.Matches[SqlGrammar.ColumnDefinition.Identity.NotForReplicationExpressionName];
                 if (notForReplicationResult.IsMatch)
                 {
-                    autoIncrement.NotForReplication = true;
+                    autoIncrement.NotForReplication = new NotForReplicationColumnProperty();
                 }
 
                 columnDefinition.AutoIncrement = autoIncrement;
@@ -554,7 +554,7 @@ namespace SQLGeneration.Generators
                     var notForReplicationResult = fkResult.Matches[SqlGrammar.ForeignKeyConstraint.NotForReplicationExpressionName];
                     if (notForReplicationResult.IsMatch)
                     {
-                        fk.NotForReplication = true;
+                        fk.NotForReplication = new NotForReplicationColumnProperty();
                     }
 
                     builder.Constraints.AddConstraint(fk);
@@ -667,7 +667,7 @@ namespace SQLGeneration.Generators
 
         private IAlterColumn buildAlterColumn(MatchResult result)
         {
-            AlterColumn ac = null;
+            //  AlterColumn ac = null;
             string columnName = null;
 
             MatchResult columNameResult = result.Matches[SqlGrammar.AlterTableStatement.AlterColumn.ColumnName];
@@ -676,11 +676,11 @@ namespace SQLGeneration.Generators
                 columnName = getToken(columNameResult);
             }
 
-            ac = new AlterColumn(columnName);
-
             var columnDefinitionResult = result.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AlterColumnDataTypeExpressionName];
             if (columnDefinitionResult.IsMatch)
             {
+                var ac = new AlterColumn(columnName);
+
                 var colDataTypeResult = columnDefinitionResult.Matches[SqlGrammar.DataType.Name];
                 var dataType = buildDataType(colDataTypeResult);
                 ac.DataType = dataType;
@@ -699,9 +699,63 @@ namespace SQLGeneration.Generators
                     ac.IsNullable = isNullable;
                 }
 
-            }           
+                return ac;
+            }
 
-            return ac;
+            var addOrDropPropertyResult = result.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AddOrDropColumnProperty.Name];
+            if (addOrDropPropertyResult.IsMatch)
+            {
+
+                AlterAction alterType;
+                var addResult = addOrDropPropertyResult.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AddOrDropColumnProperty.AddKeyword];
+                if (addResult.IsMatch)
+                {
+                    alterType = AlterAction.Add;
+                }
+                else
+                {
+                    alterType = AlterAction.Drop;
+                }
+
+                var ac = new AlterColumnProperty(alterType, columnName);
+
+                IColumnProperty prop = null;
+                var notForReplicationResult = addOrDropPropertyResult.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AddOrDropColumnProperty.NotForReplicationExpressionName];
+                if (notForReplicationResult.IsMatch)
+                {
+                    prop = new NotForReplicationColumnProperty();
+                    ac.Property = prop;
+                    return ac;
+                }
+
+                var persistedResult = addOrDropPropertyResult.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AddOrDropColumnProperty.PersistedKeyword];
+                if (persistedResult.IsMatch)
+                {
+                    prop = new PersistedColumnProperty();
+                    ac.Property = prop;
+                    return ac;
+                }
+
+                var rowGuidResult = addOrDropPropertyResult.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AddOrDropColumnProperty.RowGuidColKeyword];
+                if (rowGuidResult.IsMatch)
+                {
+                    prop = new RowGuidColumnProperty();
+                    ac.Property = prop;
+                    return ac;
+                }
+
+                var sparseResult = addOrDropPropertyResult.Matches[SqlGrammar.AlterTableStatement.AlterColumn.AddOrDropColumnProperty.SparseKeyword];
+                if (sparseResult.IsMatch)
+                {
+                    prop = new SparseColumnProperty();
+                    ac.Property = prop;
+                    return ac;
+                }
+
+            }
+
+            throw new InvalidOperationException();
+
         }
 
         private AlterDatabase buildAlterDatabase(MatchResult result)

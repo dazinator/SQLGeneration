@@ -661,22 +661,46 @@ namespace SQLGeneration.Builders
         /// <param name="item"></param>
         protected internal virtual void VisitAlterColumn(AlterColumn item)
         {
-        }
+        }     
 
         /// <summary>
-        /// Visits a AlterColumnDropProperty builder.
+        /// Visits a AlterColumnProperty builder.
         /// </summary>
         /// <param name="item"></param>
-        protected internal virtual void VisitAlterColumnDropProperty(AlterColumnDropProperty item)
+        protected internal virtual void VisitAlterColumnProperty(AlterColumnProperty item)
         {
         }
-
         /// <summary>
-        /// Visits a AlterColumnAddProperty builder.
+        /// Visits a RowGuidColumnProperty builder.
         /// </summary>
         /// <param name="item"></param>
-        protected internal virtual void VisitAlterColumnAddProperty(AlterColumnAddProperty item)
+        protected internal virtual void VisitRowGuidColumnProperty(RowGuidColumnProperty item)
         {
+           
+        }
+        /// <summary>
+        /// Visits a NotForReplicationColumnProperty builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitNotForReplicationColumnProperty(NotForReplicationColumnProperty item)
+        {
+           
+        }
+        /// <summary>
+        /// Visits a SparseColumnProperty builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitSparseColumnProperty(SparseColumnProperty item)
+        {
+          
+        }
+        /// <summary>
+        /// Visits a PersistedColumnProperty builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitPersistedColumnProperty(PersistedColumnProperty item)
+        {
+           
         }
     }
 }

@@ -4663,7 +4663,6 @@ namespace SQLGeneration.Parsing
             /// </summary>
             public const string ForKeyword = "ForKeyword";
 
-
             /// <summary>
             /// Gets the name identifying Replication Keyword.
             /// </summary>
@@ -4793,8 +4792,7 @@ namespace SQLGeneration.Parsing
                     .Add(AlterDatabaseStatement.DatabaseName, Token(SqlTokenRegistry.Identifier)))
                 .Add(true, Options()
                     .Add(AlterDatabaseStatement.ModifyName.Name, Define()
-                        .Add(AlterDatabaseStatement.ModifyName.ModifyKeyword, true, Token(SqlTokenRegistry.Modify))
-                        .Add(AlterDatabaseStatement.ModifyName.NameKeyword, true, Token(SqlTokenRegistry.Name))
+                        .Add(AlterDatabaseStatement.ModifyName.ModifyKeyword, true, Token(SqlTokenRegistry.ModifyName))
                         .Add(AlterDatabaseStatement.ModifyName.EqualToKeyword, true, Token(SqlTokenRegistry.EqualTo))
                         .Add(AlterDatabaseStatement.ModifyName.NewDatabaseName, true, Token(SqlTokenRegistry.Identifier))
                       )
@@ -4857,6 +4855,48 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string AlterColumnDataTypeExpressionName = "altercolumndatatype";
 
+                public class AddOrDropColumnProperty
+                {
+
+                    /// <summary>
+                    /// Gets the identifier for the addordropproperty statement.
+                    /// </summary>
+                    public const string Name = "addordropproperty";
+
+                    /// <summary>
+                    /// Gets the identifier for the Add Keyword.
+                    /// </summary>
+                    public const string AddKeyword = "add";
+
+                    /// <summary>
+                    /// Gets the identifier for the Drop Keyword.
+                    /// </summary>
+                    public const string DropKeyword = "drop";
+
+                    /// <summary>
+                    /// Gets the name identifying RowGuidCol Keyword.
+                    /// </summary>
+                    public const string RowGuidColKeyword = "RowGuidColKeyword";
+
+                    /// <summary>
+                    /// Gets the name identifying Persisted Keyword.
+                    /// </summary>
+                    public const string PersistedKeyword = "PersistedKeyword";
+
+                    /// <summary>
+                    /// Gets the name identifying NotForReplicationExpression.
+                    /// </summary>
+                    public const string NotForReplicationExpressionName = "NotForReplicationExpression";
+
+                    /// <summary>
+                    /// Gets the name identifying SparseKeyword.
+                    /// </summary>
+                    public const string SparseKeyword = "SparseKeyword";
+
+
+                }
+
+
 
 
             }
@@ -4876,11 +4916,23 @@ namespace SQLGeneration.Parsing
                         .Add(AlterTableStatement.AlterColumn.ColumnKeyword, true, Token(SqlTokenRegistry.Column))
                         .Add(AlterTableStatement.AlterColumn.ColumnName, true, Token(SqlTokenRegistry.Identifier))
                         .Add(true, Options()
-                        .Add(AlterTableStatement.AlterColumn.AlterColumnDataTypeExpressionName, Define()
-                            .Add(DataType.Name, false, Expression(DataType.Name))
-                            .Add(Collate.Name, false, Expression(Collate.Name))
-                            .Add(Nullability.Name, false, Expression(Nullability.Name))
-                            ))))
+                            .Add(AlterTableStatement.AlterColumn.AlterColumnDataTypeExpressionName, Define()
+                                .Add(DataType.Name, true, Expression(DataType.Name))
+                                .Add(Collate.Name, false, Expression(Collate.Name))
+                                .Add(Nullability.Name, false, Expression(Nullability.Name)))
+                            .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.Name, Define()
+                                .Add(true, Options()
+                                     .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.AddKeyword, Token(SqlTokenRegistry.Add))
+                                     .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.DropKeyword, Token(SqlTokenRegistry.Drop))
+                                     )
+                                .Add(true, Options()
+                                    .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.RowGuidColKeyword, Token(SqlTokenRegistry.RowGuidCol))
+                                    .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.PersistedKeyword, Token(SqlTokenRegistry.Persisted))
+                                    .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.NotForReplicationExpressionName, Expression(NotForReplication.Name))
+                                    .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.SparseKeyword, Token(SqlTokenRegistry.Sparse))
+
+                                     ))
+                                )))
                             ;
         }
 

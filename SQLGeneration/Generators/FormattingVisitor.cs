@@ -1470,9 +1470,10 @@ namespace SQLGeneration.Generators
                 writer.Write(")");
             }
 
-            if (item.NotForReplication)
+            if (item.NotForReplication != null)
             {
-                writer.Write(" NOT FOR REPLICATION");
+                writer.Write(" ");
+                ((IVisitableBuilder)item.NotForReplication).Accept(this);
             }
             base.VisitAutoIncrement(item);
         }
@@ -1575,9 +1576,10 @@ namespace SQLGeneration.Generators
                 writer.Write(" ON UPDATE ");
                 ((IVisitableBuilder)item.OnUpdateAction).Accept(this);
             }
-            if (item.NotForReplication)
+            if (item.NotForReplication != null)
             {
-                writer.Write(" NOT FOR REPLICATION");
+                writer.Write(" ");
+                ((IVisitableBuilder)item.NotForReplication).Accept(this);
             }
 
             base.VisitForeignKeyConstraint(item);
@@ -1701,7 +1703,7 @@ namespace SQLGeneration.Generators
                 {
                     writer.Write(", ");
                     next.Accept(this);
-                }               
+                }
             }
 
             base.VisitAlterTableDefinition(item);
@@ -1797,6 +1799,50 @@ namespace SQLGeneration.Generators
             }
 
             base.VisitColumnDefinition(item);
+        }
+
+        protected internal override void VisitAlterColumnProperty(AlterColumnProperty item)
+        {
+            writer.Write("ALTER COLUMN ");
+            writer.Write(item.Name);
+            //  writer.Write(" ");
+
+            switch (item.AlterType)
+            {
+                case AlterAction.Add:
+                    writer.Write(" ADD ");
+                    break;
+                case AlterAction.Drop:
+                    writer.Write(" DROP ");
+                    break;
+            }
+
+            ((IVisitableBuilder)item.Property).Accept(this);
+            base.VisitAlterColumnProperty(item);
+        }
+
+        protected internal override void VisitNotForReplicationColumnProperty(NotForReplicationColumnProperty item)
+        {
+            writer.Write("NOT FOR REPLICATION");
+            base.VisitNotForReplicationColumnProperty(item);
+        }
+
+        protected internal override void VisitPersistedColumnProperty(PersistedColumnProperty item)
+        {
+            writer.Write("PERSISTED");
+            base.VisitPersistedColumnProperty(item);
+        }
+
+        protected internal override void VisitRowGuidColumnProperty(RowGuidColumnProperty item)
+        {
+            writer.Write("ROWGUIDCOL");
+            base.VisitRowGuidColumnProperty(item);
+        }
+
+        protected internal override void VisitSparseColumnProperty(SparseColumnProperty item)
+        {
+            writer.Write("SPARSE");
+            base.VisitSparseColumnProperty(item);
         }
 
         #endregion

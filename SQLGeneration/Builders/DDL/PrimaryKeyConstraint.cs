@@ -7,7 +7,7 @@ namespace SQLGeneration.Builders
 {
 
     /// <summary>
-    /// Represents an PrimaryKeyConstraint.
+    /// A Primary Key Constraint.
     /// </summary>
     public class PrimaryKeyConstraint : Constraint
     {

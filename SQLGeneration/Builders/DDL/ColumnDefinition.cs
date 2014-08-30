@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// The column definition object.
+    /// The column definition.
     /// </summary>
     public class ColumnDefinition : IDatabaseObject
     {

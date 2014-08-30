@@ -1472,14 +1472,95 @@ namespace SQLGeneration.Tests
 
 
         /// <summary>
-        /// This sees whether we can reproduce a simple alter table column.
+        /// This sees whether we can reproduce an alter table column.
         /// </summary>
         [TestMethod]
-        public void TestAlterTable_AlterColumn_DataType_Size_And_NotNull()
+        public void TestAlterTable_AlterColumn_DataType_Size_And_Collate_And_NotNull()
         {
             string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn VARCHAR(10) COLLATE latin_general NOT NULL";
             assertCanReproduce(commandText);
         }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table column - add rowguidcol.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Add_RowGuidCol()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn ADD ROWGUIDCOL";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table column - add Persisted.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Add_Persisted()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn ADD PERSISTED";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table column - add not for replication.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Add_Not_For_Replication()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn ADD NOT FOR REPLICATION";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a simple alter table column - add Sparse.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Add_Not_For_Sparse()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn ADD SPARSE";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table column - drop ROWGUIDCOL.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Drop_RowGuidCol()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn DROP ROWGUIDCOL";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table column - drop Persisted.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Drop_Persisted()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn DROP PERSISTED";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table column - drop not for replication.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Drop_Not_For_Replication()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn DROP NOT FOR REPLICATION";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table column - drop Sparse.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AlterColumn_Drop_Not_For_Sparse()
+        {
+            string commandText = "ALTER TABLE MyTable ALTER COLUMN mycolumn DROP SPARSE";
+            assertCanReproduce(commandText);
+        }
+
 
 
         #endregion

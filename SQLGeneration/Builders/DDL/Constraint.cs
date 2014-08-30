@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// The base class for a constraint.
+    /// The constraint base class.
     /// </summary> 
     public abstract class Constraint : IDatabaseObject
     {

@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// A builder specifying "ALTER" DDL statements.
+    /// Defines a builder that can be used to build "Alter" statements.
     /// </summary>
     public interface IAlterBuilder : ICommand
     {

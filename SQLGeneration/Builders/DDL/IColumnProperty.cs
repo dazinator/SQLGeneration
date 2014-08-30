@@ -6,11 +6,11 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Defines an object that can be subjected to "CREATE", "ALTER" and "DROP" statements.
+    /// Defines an object that represents a column property.
     /// </summary>
-    public interface IDatabaseObject : IVisitableBuilder
+    public interface IColumnProperty : IVisitableBuilder
     {
 
-    }
 
+    }
 }

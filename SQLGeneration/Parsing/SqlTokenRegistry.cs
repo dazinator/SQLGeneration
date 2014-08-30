@@ -497,12 +497,7 @@ namespace SQLGeneration.Parsing
         /// <summary>
         /// Gets the identifier for the Modify keyword.
         /// </summary>
-        public const string Modify = "Modify";
-
-        /// <summary>
-        /// Gets the identifier for the Name keyword.
-        /// </summary>
-        public const string Name = "Name";
+        public const string ModifyName = "ModifyName";      
 
         /// <summary>
         /// Gets the identifier for the Current keyword.
@@ -513,6 +508,26 @@ namespace SQLGeneration.Parsing
         /// Gets the identifier for the Column keyword.
         /// </summary>
         public const string Column = "Column";
+
+        /// <summary>
+        /// Gets the identifier for the Add keyword.
+        /// </summary>
+        public const string Add = "Add";
+
+        /// <summary>
+        /// Gets the identifier for the Drop keyword.
+        /// </summary>
+        public const string Drop = "Drop";
+
+        /// <summary>
+        /// Gets the identifier for the Persisted keyword.
+        /// </summary>
+        public const string Persisted = "Persisted";
+
+        /// <summary>
+        /// Gets the identifier for the Sparse keyword.
+        /// </summary>
+        public const string Sparse = "Sparse";
 
 
 
@@ -603,10 +618,13 @@ namespace SQLGeneration.Parsing
             Define(Replication, @"REPLICATION\b", true);
             Define(Check, @"CHECK\b", true);
             Define(Alter, @"ALTER\b", true);
-            Define(Modify, @"MODIFY\b", true);
-            Define(Name, @"NAME\b", true);
+            Define(ModifyName, @"MODIFY\s+NAME\b", true);        
             Define(Current, @"CURRENT\b", true);
             Define(Column, @"COLUMN\b", true);
+            Define(Add, @"ADD\b", true);
+            Define(Drop, @"DROP\b", true);
+            Define(Persisted, @"PERSISTED\b", true);
+            Define(Sparse, @"SPARSE\b", true);
 
             Define(Identifier, @"([\p{L}:?@#_][\p{L}\p{N}@#$_]*)|(""(\.|"""")+"")|(\[[^\]]+\])");
 

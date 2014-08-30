@@ -1782,9 +1782,7 @@ namespace SQLGeneration.Generators
 
                 foreach (IVisitableBuilder next in item.Columns.Skip(1))
                 {
-                    writer.Write(" ");
-                    //  writer.Write(", ");
-                //    writer.Write("ADD ");
+                    writer.Write(", ");                
                     next.Accept(this);
                 }
             }

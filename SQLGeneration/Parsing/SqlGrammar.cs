@@ -71,7 +71,7 @@ namespace SQLGeneration.Parsing
             defineCreateStatement();
             defineCreateDatabase();
             defineCreateTable();
-            defineColumnDefinitionsList();
+            defineCreateTableColumnDefinitionsList();
             defineColumnDefinition();
             defineColumnConstraintList();
             defineColumnConstraint();
@@ -80,6 +80,7 @@ namespace SQLGeneration.Parsing
             defineAlterStatement();
             defineAlterDatabase();
             defineAlterTable();
+            defineAlterTableAddColumnsDefinitionList();
             defineDataType();
             defineCollate();
             defineNullability();
@@ -3911,24 +3912,24 @@ namespace SQLGeneration.Parsing
                 .Add(false, Options()
                     .Add(CreateTableStatement.TableDefinition.Name, Define()
                     .Add(CreateTableStatement.TableDefinition.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                    .Add(CreateTableStatement.TableDefinition.ColumnsDefinitionList, true, Expression(ColumnDefinitionList.Name))
+                    .Add(CreateTableStatement.TableDefinition.ColumnsDefinitionList, true, Expression(CreateTableColumnDefinitionList.Name))
                     .Add(CreateTableStatement.TableDefinition.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis))));
 
         }
 
         #endregion
 
-        #region ColumnDefinitionList
+        #region CreateTableColumnDefinitionList
 
         /// <summary>
         /// Describes the structure of the column definitions list.
         /// </summary>
-        public static class ColumnDefinitionList
+        public static class CreateTableColumnDefinitionList
         {
             /// <summary>
             /// Gets the name identifying the column list.
             /// </summary>
-            public const string Name = "ColumnDefinitionList";
+            public const string Name = "CreateTableColumnDefinitionList";
 
             /// <summary>
             /// Describes the structure of a column definitions list with multiple columns.
@@ -3962,185 +3963,15 @@ namespace SQLGeneration.Parsing
             public const string Single = "single";
         }
 
-        private void defineColumnDefinitionsList()
+        private void defineCreateTableColumnDefinitionsList()
         {
-            Define(ColumnDefinitionList.Name)
+            Define(CreateTableColumnDefinitionList.Name)
                 .Add(true, Options()
-                    .Add(ColumnDefinitionList.Multiple.Name, Define()
-                        .Add(ColumnDefinitionList.Multiple.First, true, Expression(ColumnDefinition.Name))
-                        .Add(ColumnDefinitionList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
-                        .Add(ColumnDefinitionList.Multiple.Remaining, true, Expression(ColumnDefinitionList.Name)))
-                    .Add(ColumnDefinitionList.Single, Expression(ColumnDefinition.Name)));
-
-        }
-
-        #endregion
-
-        #region ColumnDefinition
-
-        /// <summary>
-        /// Describes the structure of the column definitions list.
-        /// </summary>
-        public static class ColumnDefinition
-        {
-            /// <summary>
-            /// Gets the name identifying the column list.
-            /// </summary>
-            public const string Name = "ColumnDefinition";
-
-            /// <summary>
-            /// Gets the name identifying the column list.
-            /// </summary>
-            public const string ColumnName = "ColumnName";
-
-            /// <summary>
-            /// Gets the name identifying RowGuidCol Keyword.
-            /// </summary>
-            public const string RowGuidColKeyword = "RowGuidColKeyword";
-
-            /// <summary>
-            /// Describes the structure of the Default syntax.
-            /// </summary>
-            public static class Default
-            {
-
-                /// <summary>
-                /// Gets the name identifying the 'Default' syntax.
-                /// </summary>
-                public const string Name = "Default";
-
-                /// <summary>
-                /// Gets the name identifying the 'Default' part of the syntax.
-                /// </summary>
-                public const string DefaultName = "Default";
-
-                /// <summary>
-                /// Gets the name identifying Default Keyword .
-                /// </summary>
-                public const string DefaultKeyword = "DefaultKeyword";
-
-                /// <summary>
-                /// Gets the name identifying Default Expression.
-                /// </summary>
-                public const string DefaultStringLiteral = "DefaultStringLiteral";
-
-                /// <summary>
-                /// Gets the name identifying Default Numeric Literal.
-                /// </summary>
-                public const string DefaultNumericLiteral = "DefaultNumericLiteral";
-
-                /// <summary>
-                /// Gets the name identifying Default Function.
-                /// </summary>
-                public const string DefaultFunction = "DefaultFunction";
-            }
-
-            /// <summary>
-            /// Describes the structure of the Constraint syntax.
-            /// </summary>
-            public static class Constraint
-            {
-
-                /// <summary>
-                /// Gets the name identifying Constraint.
-                /// </summary>
-                public const string Name = "Constraint";
-
-                /// <summary>
-                /// Gets the name identifying Constraint Keyword.
-                /// </summary>
-                public const string ConstraintKeyword = "ConstraintKeyword";
-
-                /// <summary>
-                /// Gets the name identifying Constraint Name.
-                /// </summary>
-                public const string ConstraintName = "ConstraintName";
-            }
-
-            /// <summary>
-            /// Describes the structure of the Identity syntax.
-            /// </summary>
-            public static class Identity
-            {
-                /// <summary>
-                /// Gets the name identifying Identity.
-                /// </summary>
-                public const string Name = "Identity";
-
-                /// <summary>
-                /// Gets the name identifying Identity Keyword.
-                /// </summary>
-                public const string IdentityKeyword = "IdentityKeyword";
-
-                /// <summary>
-                /// Gets the name identifying Identity Seed.
-                /// </summary>
-                public const string IdentitySeed = "IdentitySeed";
-
-                /// <summary>
-                /// Gets the name identifying Identity Seed Values.
-                /// </summary>
-                public const string IdentitySeedValues = "IdentitySeedValues";
-
-                /// <summary>
-                /// Gets the name identifying LeftParethesis.
-                /// </summary>
-                public const string LeftParenthesis = "LeftParenthesis";
-
-                /// <summary>
-                /// Gets the name identifying LeftParethesis.
-                /// </summary>
-                public const string RightParenthesis = "RightParenthesis";
-
-                /// <summary>
-                /// Gets the name identifying NotForReplication Expression
-                /// </summary>
-                public const string NotForReplicationExpressionName = "NotForReplicationExpression";
-
-            }
-
-            /// <summary>
-            /// Gets the name identifying Column Constraint List Expression
-            /// </summary>
-            public const string ColumnConstraintListExpressionName = "ColumnConstraintListExpression";
-
-        }
-
-        private void defineColumnDefinition()
-        {
-            Define(ColumnDefinition.Name)
-                  .Add(ColumnDefinition.ColumnName, true, Token(SqlTokenRegistry.Identifier))
-                  .Add(DataType.Name, true, Expression(DataType.Name))
-                  .Add(Collate.Name, false, Expression(Collate.Name))
-                  .Add(Nullability.Name, false, Expression(Nullability.Name))
-                  .Add(false, Options()
-                      .Add(ColumnDefinition.Default.Name, Define()
-                          .Add(ColumnDefinition.Constraint.Name, false, Define()
-                              .Add(ColumnDefinition.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
-                              .Add(ColumnDefinition.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
-                          .Add(ColumnDefinition.Default.DefaultName, true, Define()
-                              .Add(ColumnDefinition.Default.DefaultKeyword, true, Token(SqlTokenRegistry.Default))
-                              .Add(true, Options()
-                                  .Add(ColumnDefinition.Default.DefaultStringLiteral, Token(SqlTokenRegistry.String))
-                                  .Add(ColumnDefinition.Default.DefaultNumericLiteral, Token(SqlTokenRegistry.Number))
-                                  .Add(ColumnDefinition.Default.DefaultFunction, Expression(FunctionCall.Name)))))
-                      .Add(ColumnDefinition.Identity.Name, Define()
-                          .Add(ColumnDefinition.Identity.IdentityKeyword, true, Token(SqlTokenRegistry.Identity))
-                          .Add(ColumnDefinition.Identity.IdentitySeed, false, Define()
-                              .Add(ColumnDefinition.Identity.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
-                              .Add(ColumnDefinition.Identity.IdentitySeedValues, true, Expression(ValueList.Name))
-                              .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
-                          .Add(ColumnDefinition.Identity.NotForReplicationExpressionName, false, Expression(NotForReplication.Name))))
-                  .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol))
-                  .Add(ColumnDefinition.ColumnConstraintListExpressionName, false, Expression(ColumnConstraintList.Name));
-
-            // Then we can have an optional column index.
-
-            /*              <column_index> ::=
-              INDEX index_name
-            { [ NONCLUSTERED ] HASH WITH (BUCKET_COUNT = bucket_count) | [ NONCLUSTERED ] }                       
-            */
-
+                    .Add(CreateTableColumnDefinitionList.Multiple.Name, Define()
+                        .Add(CreateTableColumnDefinitionList.Multiple.First, true, Expression(ColumnDefinition.Name))
+                        .Add(CreateTableColumnDefinitionList.Multiple.Comma, true, Token(SqlTokenRegistry.Comma))
+                        .Add(CreateTableColumnDefinitionList.Multiple.Remaining, true, Expression(CreateTableColumnDefinitionList.Name)))
+                    .Add(CreateTableColumnDefinitionList.Single, Expression(ColumnDefinition.Name)));
 
         }
 
@@ -4901,6 +4732,28 @@ namespace SQLGeneration.Parsing
 
             }
 
+            /// <summary>
+            /// Describes the structure of the AlterColumn statement.
+            /// </summary>
+            public static class AddColumns
+            {
+
+                /// <summary>
+                /// Gets the identifier for the ModifyName statement.
+                /// </summary>
+                public const string Name = "addcolumns";
+
+                /// <summary>
+                /// Gets the identifier for the ADD keyword.
+                /// </summary>
+                public const string AddKeyword = "addkeyword";
+
+                /// <summary>
+                /// Gets the identifier for the ColumnDefinitionListExpressionName expression.
+                /// </summary>
+                public const string ColumnDefinitionListExpressionName = "ColumnDefinitionListExpressionName";
+
+            }
 
         }
 
@@ -4929,11 +4782,63 @@ namespace SQLGeneration.Parsing
                                     .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.RowGuidColKeyword, Token(SqlTokenRegistry.RowGuidCol))
                                     .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.PersistedKeyword, Token(SqlTokenRegistry.Persisted))
                                     .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.NotForReplicationExpressionName, Expression(NotForReplication.Name))
-                                    .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.SparseKeyword, Token(SqlTokenRegistry.Sparse))
+                                    .Add(AlterTableStatement.AlterColumn.AddOrDropColumnProperty.SparseKeyword, Token(SqlTokenRegistry.Sparse))))))
+                    .Add(AlterTableStatement.AddColumns.Name, Define()
+                        .Add(AlterTableStatement.AddColumns.AddKeyword, true, Token(SqlTokenRegistry.Add))
+                        .Add(AlterTableStatement.AddColumns.ColumnDefinitionListExpressionName, true, Expression(AlterTableAddColumnsDefinitionList.Name))));
+        }
 
-                                     ))
-                                )))
-                            ;
+        /// <summary>
+        /// Describes the structure of the column definitions list.
+        /// </summary>
+        public static class AlterTableAddColumnsDefinitionList
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "AlterTableAddColumnsDefinitionList";
+
+            /// <summary>
+            /// Describes the structure of a column definitions list with multiple columns.
+            /// </summary>
+            public static class Multiple
+            {
+                /// <summary>
+                /// Gets the identifier used to indicate that multiple column definitions exist.
+                /// </summary>
+                public const string Name = "Multiple";
+
+                /// <summary>
+                /// Gets the identifier for the first column.
+                /// </summary>
+                public const string First = "first";
+
+                /// <summary>
+                /// Gets the identifier for the comma separator.
+                /// </summary>
+                public const string Comma = "comma";
+
+                /// <summary>
+                /// Gets the identifier for the remaining columns.
+                /// </summary>
+                public const string Remaining = "remaining";
+            }
+
+            /// <summary>
+            /// Gets the identifier used to indicate that a single column definition exists.
+            /// </summary>
+            public const string Single = "single";
+        }
+
+        private void defineAlterTableAddColumnsDefinitionList()
+        {
+            Define(AlterTableAddColumnsDefinitionList.Name)
+                .Add(true, Options()
+                    .Add(AlterTableAddColumnsDefinitionList.Multiple.Name, Define()
+                        .Add(AlterTableAddColumnsDefinitionList.Multiple.First, true, Expression(ColumnDefinition.Name))
+                        .Add(AlterTableAddColumnsDefinitionList.Multiple.Remaining, true, Expression(AlterTableAddColumnsDefinitionList.Name)))
+                    .Add(AlterTableAddColumnsDefinitionList.Single, Expression(ColumnDefinition.Name)));
+
         }
 
         #endregion
@@ -5042,6 +4947,171 @@ namespace SQLGeneration.Parsing
                     .Add(Nullability.NullKeyword, true, Token(SqlTokenRegistry.Null));
         }
 
+        /// <summary>
+        /// Describes the structure of the column definitions list.
+        /// </summary>
+        public static class ColumnDefinition
+        {
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string Name = "ColumnDefinition";
+
+            /// <summary>
+            /// Gets the name identifying the column list.
+            /// </summary>
+            public const string ColumnName = "ColumnName";
+
+            /// <summary>
+            /// Gets the name identifying RowGuidCol Keyword.
+            /// </summary>
+            public const string RowGuidColKeyword = "RowGuidColKeyword";
+
+            /// <summary>
+            /// Describes the structure of the Default syntax.
+            /// </summary>
+            public static class Default
+            {
+
+                /// <summary>
+                /// Gets the name identifying the 'Default' syntax.
+                /// </summary>
+                public const string Name = "Default";
+
+                /// <summary>
+                /// Gets the name identifying the 'Default' part of the syntax.
+                /// </summary>
+                public const string DefaultName = "Default";
+
+                /// <summary>
+                /// Gets the name identifying Default Keyword .
+                /// </summary>
+                public const string DefaultKeyword = "DefaultKeyword";
+
+                /// <summary>
+                /// Gets the name identifying Default Expression.
+                /// </summary>
+                public const string DefaultStringLiteral = "DefaultStringLiteral";
+
+                /// <summary>
+                /// Gets the name identifying Default Numeric Literal.
+                /// </summary>
+                public const string DefaultNumericLiteral = "DefaultNumericLiteral";
+
+                /// <summary>
+                /// Gets the name identifying Default Function.
+                /// </summary>
+                public const string DefaultFunction = "DefaultFunction";
+            }
+
+            /// <summary>
+            /// Describes the structure of the Constraint syntax.
+            /// </summary>
+            public static class Constraint
+            {
+
+                /// <summary>
+                /// Gets the name identifying Constraint.
+                /// </summary>
+                public const string Name = "Constraint";
+
+                /// <summary>
+                /// Gets the name identifying Constraint Keyword.
+                /// </summary>
+                public const string ConstraintKeyword = "ConstraintKeyword";
+
+                /// <summary>
+                /// Gets the name identifying Constraint Name.
+                /// </summary>
+                public const string ConstraintName = "ConstraintName";
+            }
+
+            /// <summary>
+            /// Describes the structure of the Identity syntax.
+            /// </summary>
+            public static class Identity
+            {
+                /// <summary>
+                /// Gets the name identifying Identity.
+                /// </summary>
+                public const string Name = "Identity";
+
+                /// <summary>
+                /// Gets the name identifying Identity Keyword.
+                /// </summary>
+                public const string IdentityKeyword = "IdentityKeyword";
+
+                /// <summary>
+                /// Gets the name identifying Identity Seed.
+                /// </summary>
+                public const string IdentitySeed = "IdentitySeed";
+
+                /// <summary>
+                /// Gets the name identifying Identity Seed Values.
+                /// </summary>
+                public const string IdentitySeedValues = "IdentitySeedValues";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string LeftParenthesis = "LeftParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying LeftParethesis.
+                /// </summary>
+                public const string RightParenthesis = "RightParenthesis";
+
+                /// <summary>
+                /// Gets the name identifying NotForReplication Expression
+                /// </summary>
+                public const string NotForReplicationExpressionName = "NotForReplicationExpression";
+
+            }
+
+            /// <summary>
+            /// Gets the name identifying Column Constraint List Expression
+            /// </summary>
+            public const string ColumnConstraintListExpressionName = "ColumnConstraintListExpression";
+
+        }
+
+        private void defineColumnDefinition()
+        {
+            Define(ColumnDefinition.Name)
+                  .Add(ColumnDefinition.ColumnName, true, Token(SqlTokenRegistry.Identifier))
+                  .Add(DataType.Name, true, Expression(DataType.Name))
+                  .Add(Collate.Name, false, Expression(Collate.Name))
+                  .Add(Nullability.Name, false, Expression(Nullability.Name))
+                  .Add(false, Options()
+                      .Add(ColumnDefinition.Default.Name, Define()
+                          .Add(ColumnDefinition.Constraint.Name, false, Define()
+                              .Add(ColumnDefinition.Constraint.ConstraintKeyword, true, Token(SqlTokenRegistry.Constraint))
+                              .Add(ColumnDefinition.Constraint.ConstraintName, true, Token(SqlTokenRegistry.Identifier)))
+                          .Add(ColumnDefinition.Default.DefaultName, true, Define()
+                              .Add(ColumnDefinition.Default.DefaultKeyword, true, Token(SqlTokenRegistry.Default))
+                              .Add(true, Options()
+                                  .Add(ColumnDefinition.Default.DefaultStringLiteral, Token(SqlTokenRegistry.String))
+                                  .Add(ColumnDefinition.Default.DefaultNumericLiteral, Token(SqlTokenRegistry.Number))
+                                  .Add(ColumnDefinition.Default.DefaultFunction, Expression(FunctionCall.Name)))))
+                      .Add(ColumnDefinition.Identity.Name, Define()
+                          .Add(ColumnDefinition.Identity.IdentityKeyword, true, Token(SqlTokenRegistry.Identity))
+                          .Add(ColumnDefinition.Identity.IdentitySeed, false, Define()
+                              .Add(ColumnDefinition.Identity.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
+                              .Add(ColumnDefinition.Identity.IdentitySeedValues, true, Expression(ValueList.Name))
+                              .Add(ColumnDefinition.Identity.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
+                          .Add(ColumnDefinition.Identity.NotForReplicationExpressionName, false, Expression(NotForReplication.Name))))
+                  .Add(ColumnDefinition.RowGuidColKeyword, false, Token(SqlTokenRegistry.RowGuidCol))
+                  .Add(ColumnDefinition.ColumnConstraintListExpressionName, false, Expression(ColumnConstraintList.Name));
+
+            // Then we can have an optional column index.
+
+            /*              <column_index> ::=
+              INDEX index_name
+            { [ NONCLUSTERED ] HASH WITH (BUCKET_COUNT = bucket_count) | [ NONCLUSTERED ] }                       
+            */
+
+
+        }
 
         #endregion
     }

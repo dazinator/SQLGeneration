@@ -8,7 +8,7 @@ namespace SQLGeneration.Builders
     /// <summary>
     /// An alter column.
     /// </summary>
-    public class AlterColumn : IAlterColumn
+    public class AlterColumn : ITableAlteration
     {
 
         /// <summary>

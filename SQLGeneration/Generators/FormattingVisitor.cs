@@ -1688,22 +1688,9 @@ namespace SQLGeneration.Generators
             writer.Write(item.Name);
             writer.Write(" ");
 
-            if (item.AlterColumn != null)
+            if (item.Alteration != null)
             {
-                ((IVisitableBuilder)item.AlterColumn).Accept(this);
-            }
-
-            if (item.AddColumns != null && item.AddColumns.Any())
-            {
-                writer.Write(" ADD ");
-                IVisitableBuilder first = item.AddColumns.First();
-                first.Accept(this);
-
-                foreach (IVisitableBuilder next in item.AddColumns.Skip(1))
-                {
-                    writer.Write(", ");
-                    next.Accept(this);
-                }
+                ((IVisitableBuilder)item.Alteration).Accept(this);
             }
 
             base.VisitAlterTableDefinition(item);
@@ -1741,10 +1728,72 @@ namespace SQLGeneration.Generators
             base.VisitAlterColumn(item);
         }
 
-        /// <summary>
-        /// Generates the text for a ColumnDefinition builder.
-        /// </summary>
-        /// <param name="item">The item to generate the text for.</param>
+        protected internal override void VisitAlterColumnProperty(AlterColumnProperty item)
+        {
+            writer.Write("ALTER COLUMN ");
+            writer.Write(item.Name);
+            //  writer.Write(" ");
+
+            switch (item.AlterType)
+            {
+                case AlterAction.Add:
+                    writer.Write(" ADD ");
+                    break;
+                case AlterAction.Drop:
+                    writer.Write(" DROP ");
+                    break;
+            }
+
+            ((IVisitableBuilder)item.Property).Accept(this);
+            base.VisitAlterColumnProperty(item);
+        }
+
+        protected internal override void VisitNotForReplicationColumnProperty(NotForReplicationColumnProperty item)
+        {
+            writer.Write("NOT FOR REPLICATION");
+            base.VisitNotForReplicationColumnProperty(item);
+        }
+
+        protected internal override void VisitPersistedColumnProperty(PersistedColumnProperty item)
+        {
+            writer.Write("PERSISTED");
+            base.VisitPersistedColumnProperty(item);
+        }
+
+        protected internal override void VisitRowGuidColumnProperty(RowGuidColumnProperty item)
+        {
+            writer.Write("ROWGUIDCOL");
+            base.VisitRowGuidColumnProperty(item);
+        }
+
+        protected internal override void VisitSparseColumnProperty(SparseColumnProperty item)
+        {
+            writer.Write("SPARSE");
+            base.VisitSparseColumnProperty(item);
+        }
+
+        protected internal override void VisitAddColumns(AddColumns item)
+        {
+            if (item.Columns != null && item.Columns.Any())
+            {
+                writer.Write("ADD ");
+                IVisitableBuilder first = item.Columns.First();
+                first.Accept(this);
+
+                foreach (IVisitableBuilder next in item.Columns.Skip(1))
+                {
+                    writer.Write(" ");
+                    //  writer.Write(", ");
+                //    writer.Write("ADD ");
+                    next.Accept(this);
+                }
+            }
+
+            base.VisitAddColumns(item);
+        }
+
+        #endregion
+
         protected internal override void VisitColumnDefinition(ColumnDefinition item)
         {
             writer.Write(item.Name);
@@ -1800,52 +1849,6 @@ namespace SQLGeneration.Generators
 
             base.VisitColumnDefinition(item);
         }
-
-        protected internal override void VisitAlterColumnProperty(AlterColumnProperty item)
-        {
-            writer.Write("ALTER COLUMN ");
-            writer.Write(item.Name);
-            //  writer.Write(" ");
-
-            switch (item.AlterType)
-            {
-                case AlterAction.Add:
-                    writer.Write(" ADD ");
-                    break;
-                case AlterAction.Drop:
-                    writer.Write(" DROP ");
-                    break;
-            }
-
-            ((IVisitableBuilder)item.Property).Accept(this);
-            base.VisitAlterColumnProperty(item);
-        }
-
-        protected internal override void VisitNotForReplicationColumnProperty(NotForReplicationColumnProperty item)
-        {
-            writer.Write("NOT FOR REPLICATION");
-            base.VisitNotForReplicationColumnProperty(item);
-        }
-
-        protected internal override void VisitPersistedColumnProperty(PersistedColumnProperty item)
-        {
-            writer.Write("PERSISTED");
-            base.VisitPersistedColumnProperty(item);
-        }
-
-        protected internal override void VisitRowGuidColumnProperty(RowGuidColumnProperty item)
-        {
-            writer.Write("ROWGUIDCOL");
-            base.VisitRowGuidColumnProperty(item);
-        }
-
-        protected internal override void VisitSparseColumnProperty(SparseColumnProperty item)
-        {
-            writer.Write("SPARSE");
-            base.VisitSparseColumnProperty(item);
-        }
-
-        #endregion
 
         #endregion
 

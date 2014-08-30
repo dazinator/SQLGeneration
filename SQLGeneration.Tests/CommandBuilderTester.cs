@@ -1571,6 +1571,26 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// This sees whether we can reproduce an alter table add column.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AddColumn()
+        {
+            string commandText = "ALTER TABLE MyTable ADD mycolumn VARCHAR(100) NOT NULL";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce an alter table add columns.
+        /// </summary>
+        [TestMethod]
+        public void TestAlterTable_AddColumns()
+        {
+            string commandText = "ALTER TABLE MyTable ADD mycolumn VARCHAR(100) NOT NULL myothercolumn INT NOT NULL PRIMARY KEY";
+            assertCanReproduce(commandText);
+        }
+
 
 
         #endregion

@@ -661,7 +661,7 @@ namespace SQLGeneration.Builders
         /// <param name="item"></param>
         protected internal virtual void VisitAlterColumn(AlterColumn item)
         {
-        }     
+        }
 
         /// <summary>
         /// Visits a AlterColumnProperty builder.
@@ -676,7 +676,7 @@ namespace SQLGeneration.Builders
         /// <param name="item"></param>
         protected internal virtual void VisitRowGuidColumnProperty(RowGuidColumnProperty item)
         {
-           
+
         }
         /// <summary>
         /// Visits a NotForReplicationColumnProperty builder.
@@ -684,7 +684,7 @@ namespace SQLGeneration.Builders
         /// <param name="item"></param>
         protected internal virtual void VisitNotForReplicationColumnProperty(NotForReplicationColumnProperty item)
         {
-           
+
         }
         /// <summary>
         /// Visits a SparseColumnProperty builder.
@@ -692,7 +692,7 @@ namespace SQLGeneration.Builders
         /// <param name="item"></param>
         protected internal virtual void VisitSparseColumnProperty(SparseColumnProperty item)
         {
-          
+
         }
         /// <summary>
         /// Visits a PersistedColumnProperty builder.
@@ -700,7 +700,16 @@ namespace SQLGeneration.Builders
         /// <param name="item"></param>
         protected internal virtual void VisitPersistedColumnProperty(PersistedColumnProperty item)
         {
-           
+
+        }
+
+        /// <summary>
+        /// Visits a AddColumns builder.
+        /// </summary>
+        /// <param name="item"></param>
+        protected internal virtual void VisitAddColumns(AddColumns item)
+        {
+
         }
     }
 }

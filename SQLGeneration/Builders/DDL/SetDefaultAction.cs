@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Foreign Key Set Default Action.
+    /// Foreign Key Action - Set Default.
     /// </summary>
     public class SetDefaultAction : ForeignKeyAction
     {

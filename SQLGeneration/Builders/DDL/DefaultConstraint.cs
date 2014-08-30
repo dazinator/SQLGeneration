@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Represents an DefaultConstraint.
+    /// Represents a "Default" Constraint.
     /// </summary>
     public class DefaultConstraint : Constraint
     {

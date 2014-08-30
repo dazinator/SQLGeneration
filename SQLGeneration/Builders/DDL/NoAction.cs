@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Foreign Key No Action.
+    /// Foreign Key Action - No Action.
     /// </summary>
     public class NoAction : ForeignKeyAction
     {

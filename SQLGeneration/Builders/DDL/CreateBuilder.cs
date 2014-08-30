@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {  
     /// <summary>
-    /// The create builder, used to build "Create" DDL.
+    /// The create builder. Used to build "Create" statements.
     /// </summary>
     public class CreateBuilder : ICreateBuilder
     {

@@ -6,11 +6,11 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Defines an object that can be subjected to "CREATE", "ALTER" and "DROP" statements.
+    /// The actions alter statements can perform.
     /// </summary>
-    public interface IDatabaseObject : IVisitableBuilder
+    public enum AlterAction
     {
-
+        Add,
+        Drop
     }
-
 }

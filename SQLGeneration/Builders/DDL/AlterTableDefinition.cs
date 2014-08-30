@@ -7,17 +7,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Defines any object that represents an alter to a column.
-    /// </summary>
-    public interface IAlterColumn : IVisitableBuilder
-    {
-        
-
-    }
-
-
-    /// <summary>
-    /// The alter table definition object.
+    /// The alter table definition builder.
     /// </summary>
     public class AlterTableDefinition : IDatabaseObject
     {
@@ -90,97 +80,4 @@ namespace SQLGeneration.Builders
 
     }
 
-    /// <summary>
-    /// An alter column that adds a column property.
-    /// </summary>
-    public class AlterColumnAddProperty : IAlterColumn
-    {
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="name"></param>
-        public AlterColumnAddProperty(string name)
-        {
-            this.PropertyName = name;
-        }
-
-        /// <summary>
-        /// The name of the column.
-        /// </summary>
-        public string PropertyName { get; set; }
-
-        void IVisitableBuilder.Accept(BuilderVisitor visitor)
-        {
-            visitor.VisitAlterColumnAddProperty(this);
-        }
-
-    }
-
-    /// <summary>
-    /// An alter column that drops a column property.
-    /// </summary>
-    public class AlterColumnDropProperty : IAlterColumn
-    {
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="name"></param>
-        public AlterColumnDropProperty(string name)
-        {
-            this.PropertyName = name;
-        }
-
-        /// <summary>
-        /// The name of the column.
-        /// </summary>
-        public string PropertyName { get; set; }
-
-        void IVisitableBuilder.Accept(BuilderVisitor visitor)
-        {
-            visitor.VisitAlterColumnDropProperty(this);
-        }
-
-    }
-
-    /// <summary>
-    /// An alter column.
-    /// </summary>
-    public class AlterColumn : IAlterColumn
-    {
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="name"></param>
-        public AlterColumn(string name)
-        {
-            this.Name = name;
-        }
-
-        /// <summary>
-        /// The name of the column.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// The collation of the column.
-        /// </summary>
-        public string Collation { get; set; }
-
-        /// <summary>
-        /// The datatype of the column.
-        /// </summary>
-        public DataType DataType { get; set; }
-
-        /// <summary>
-        /// Whether the column can hold null values.
-        /// </summary>
-        public bool? IsNullable { get; set; }
-
-        void IVisitableBuilder.Accept(BuilderVisitor visitor)
-        {
-            visitor.VisitAlterColumn(this);
-        }
-
-    }
 }

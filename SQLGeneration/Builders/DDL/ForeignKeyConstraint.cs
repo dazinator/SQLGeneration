@@ -7,7 +7,7 @@ namespace SQLGeneration.Builders
 {
 
     /// <summary>
-    /// Represents an ForeignKeyConstraint.
+    /// The "Foreign Key" Constraint builder.
     /// </summary>
     public class ForeignKeyConstraint : Constraint
     {
@@ -59,7 +59,7 @@ namespace SQLGeneration.Builders
         /// <summary>
         /// whether this auto increment should be excluded from replicated databases.
         /// </summary>
-        public bool NotForReplication { get; set; }
+        public NotForReplicationColumnProperty NotForReplication { get; set; }
 
         /// <summary>
         /// Provides information to the given visitor about the current builder.

@@ -7,7 +7,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Represents the datatype.
+    /// The datatype builder.
     /// </summary>
     public class DataType : IDatabaseObject
     {

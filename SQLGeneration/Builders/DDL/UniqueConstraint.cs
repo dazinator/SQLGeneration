@@ -6,7 +6,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// Represents an UniqueConstraint.
+    /// A Unique Constraint.
     /// </summary>
     public class UniqueConstraint : Constraint
     {

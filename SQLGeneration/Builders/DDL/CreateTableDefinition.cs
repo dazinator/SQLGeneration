@@ -7,7 +7,7 @@ using System.Text;
 namespace SQLGeneration.Builders
 {
     /// <summary>
-    /// The table definition object.
+    /// The create table definition object.
     /// </summary>
     public class CreateTableDefinition : IDatabaseObject
     {

@@ -15,7 +15,7 @@ You can parse (and build) batches of SQL statements, you are not limited to just
 ```
 
 ### DDL
-You can parse / and generate some DDL statements! I am busy extending DDL support currently.
+I have added support for some DDL, defined below.
 
 #### Create Database
 
@@ -212,8 +212,96 @@ INDEX index_name [ CLUSTERED | NONCLUSTERED ] (column [ ASC | DESC ] [ ,... n ] 
 &lt;partition_number_expression&gt; TO &lt;partition_number_expression&gt;
 </pre>
 
+#### Alter Table
 
+Example of supported SQL: 
+```
+ALTER TABLE MyTable ADD mycolumn VARCHAR(100) NOT NULL, myothercolumn INT NOT NULL PRIMARY KEY;
+ALTER TABLE MyTable ALTER COLUMN mycolumn VARCHAR(10) COLLATE latin_general NOT NULL;
+ALTER TABLE MyTable ALTER COLUMN mycolumn DROP ROWGUIDCOL;
+ALTER TABLE MyTable ALTER COLUMN mycolumn ADD NOT FOR REPLICATION;
+ALTER TABLE MyTable DROP CONSTRAINT myconstraint, myotherconstraint, COLUMN andacolumn, andanothercolumn, CONSTRAINT finalconstraint, COLUMN finalcolumn;
+```
 
+##### Supported Alter Table Syntax (T-SQL)
+The syntax highlighted in bold is supported, everything else is not yet supported.
+
+<pre>
+
+<strong>ALTER TABLE [ database_name . [ schema_name ] . | schema_name . ] table_name 
+{ 
+    ALTER COLUMN column_name 
+    { 
+        [ type_schema_name. ] type_name 
+            [ ( 
+                { 
+                   precision [ , scale ] 
+                 | max </strong>
+                 | xml_schema_collection 
+                <strong>} 
+            ) ] 
+        [ COLLATE collation_name ] 
+        [ NULL | NOT NULL ]</strong> [ SPARSE ]
+      <strong>| {ADD | DROP } 
+        { ROWGUIDCOL | PERSISTED | NOT FOR REPLICATION | SPARSE }</strong>
+   <strong> }</strong> 
+        | [ WITH { CHECK | NOCHECK } ]
+
+    <strong>| ADD 
+    { 
+        &lt;column_definition&gt;</strong>
+      | &lt;computed_column_definition&gt;
+      | &lt;table_constraint&gt; 
+      | &lt;column_set_definition&gt; 
+    <strong>} [ ,...n ]</strong>
+
+   <strong> | DROP 
+     {
+         [ CONSTRAINT ] 
+         { 
+              constraint_name </strong>
+              [ WITH 
+               ( &lt;drop_clustered_constraint_option&gt; [ ,...n ] ) 
+              ] 
+          <strong>} [ ,...n ]
+          | COLUMN 
+          {
+              column_name 
+          } [ ,...n ]
+     } [ ,...n ]</strong>
+    | [ WITH { CHECK | NOCHECK } ] { CHECK | NOCHECK } CONSTRAINT 
+        { ALL | constraint_name [ ,...n ] } 
+
+    | { ENABLE | DISABLE } TRIGGER 
+        { ALL | trigger_name [ ,...n ] }
+
+    | { ENABLE | DISABLE } CHANGE_TRACKING 
+        [ WITH ( TRACK_COLUMNS_UPDATED = { ON | OFF } ) ]
+
+    | SWITCH [ PARTITION source_partition_number_expression ]
+        TO target_table 
+        [ PARTITION target_partition_number_expression ]
+        [ WITH ( &lt;low_lock_priority_wait&gt; ) ]
+    | SET ( FILESTREAM_ON = 
+            { partition_scheme_name | filegroup | &quot;default&quot; | &quot;NULL&quot; } 
+          )
+
+    | REBUILD 
+      [ [PARTITION = ALL]
+        [ WITH ( &lt;rebuild_option&gt; [ ,...n ] ) ] 
+      | [ PARTITION = partition_number 
+           [ WITH ( &lt;single_partition_rebuild_option&gt; [ ,...n ] ) ]
+        ]
+      ]
+
+    | &lt;table_option&gt;
+
+    | &lt;filetable_option&gt;
+
+}
+[ ; ]
+
+</pre>
 
 
 # SQLGeneration

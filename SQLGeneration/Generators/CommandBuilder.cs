@@ -1751,8 +1751,7 @@ namespace SQLGeneration.Generators
             }
 
 
-            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
-            collection.AddSource("UPDATED", new AliasedSource(new Table("UPDATED"), null));
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));          
             collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
             //scope.Push(collection);
 
@@ -1834,8 +1833,7 @@ namespace SQLGeneration.Generators
             MatchResult setterListResult = result.Matches[SqlGrammar.UpdateStatement.SetterList];
             buildSetterList(setterListResult, builder);
             // output clause
-            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
-            collection.AddSource("UPDATED", new AliasedSource(new Table("UPDATED"), null));
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));            
             collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
             //scope.Push(collection);
 
@@ -1910,8 +1908,7 @@ namespace SQLGeneration.Generators
             scope.Push(collection);
 
             // output clause
-            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
-            collection.AddSource("UPDATED", new AliasedSource(new Table("UPDATED"), null));
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));           
             collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
             //scope.Push(collection);
 

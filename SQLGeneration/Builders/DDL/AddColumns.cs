@@ -15,8 +15,7 @@ namespace SQLGeneration.Builders
 
         /// <summary>
         /// Constructor.
-        /// </summary>
-        /// <param name="name"></param>
+        /// </summary>     
         public AddColumns()
         {
             _addColumnsList = new ColumnDefinitionList();

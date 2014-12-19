@@ -236,6 +236,13 @@ namespace SQLGeneration.Generators
                 writer.Write("FROM ");
             }
             forSourceContext(SourceReferenceType.Declaration).visitAliasedSource(item.Table);
+
+            if (item.OutputColumns.Any())
+            {
+                writer.Write(" OUTPUT ");
+                forValueContext(ValueReferenceType.Reference).join(", ", item.OutputColumns);
+            }
+
             if (item.WhereFilterGroup.HasFilters)
             {
                 writer.Write(" WHERE ");
@@ -520,6 +527,12 @@ namespace SQLGeneration.Generators
                 writer.Write(")");
             }
             writer.Write(" ");
+            if (item.OutputColumns.Any())
+            {
+                writer.Write("OUTPUT ");
+                forValueContext(ValueReferenceType.Reference).join(", ", item.OutputColumns);
+                writer.Write(" ");
+            }
             if (item.Values.IsValueList)
             {
                 writer.Write("VALUES");
@@ -1030,6 +1043,12 @@ namespace SQLGeneration.Generators
             forSourceContext(SourceReferenceType.Declaration).visitAliasedSource(item.Table);
             writer.Write(" SET ");
             forValueContext(ValueReferenceType.Reference).join(", ", item.Setters);
+
+            if (item.OutputColumns.Any())
+            {
+                writer.Write(" OUTPUT ");
+                forValueContext(ValueReferenceType.Reference).join(", ", item.OutputColumns);
+            }
             if (item.WhereFilterGroup.HasFilters)
             {
                 writer.Write(" WHERE ");
@@ -1650,6 +1669,10 @@ namespace SQLGeneration.Generators
 
         }
 
+        /// <summary>
+        /// Generates the text for an Alter Database.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitAlterDatabase(AlterDatabase item)
         {
             writer.Write("DATABASE ");
@@ -1682,6 +1705,10 @@ namespace SQLGeneration.Generators
             base.VisitAlterDatabase(item);
         }
 
+        /// <summary>
+        /// Generates the text for an AlterTableDefinition.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitAlterTableDefinition(AlterTableDefinition item)
         {
             writer.Write("TABLE ");
@@ -1696,6 +1723,10 @@ namespace SQLGeneration.Generators
             base.VisitAlterTableDefinition(item);
         }
 
+        /// <summary>
+        /// Generates the text for an Alter Column.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitAlterColumn(AlterColumn item)
         {
             writer.Write("ALTER COLUMN ");
@@ -1728,6 +1759,10 @@ namespace SQLGeneration.Generators
             base.VisitAlterColumn(item);
         }
 
+        /// <summary>
+        /// Generates the text for an Alter Column Property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitAlterColumnProperty(AlterColumnProperty item)
         {
             writer.Write("ALTER COLUMN ");
@@ -1748,30 +1783,50 @@ namespace SQLGeneration.Generators
             base.VisitAlterColumnProperty(item);
         }
 
+        /// <summary>
+        /// Generates the text for a NotForReplicationColumnProperty column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitNotForReplicationColumnProperty(NotForReplicationColumnProperty item)
         {
             writer.Write("NOT FOR REPLICATION");
             base.VisitNotForReplicationColumnProperty(item);
         }
 
+        /// <summary>
+        /// Generates the text for a PERSISTED column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitPersistedColumnProperty(PersistedColumnProperty item)
         {
             writer.Write("PERSISTED");
             base.VisitPersistedColumnProperty(item);
         }
 
+        /// <summary>
+        /// Generates the text for a ROWGUIDCOL column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitRowGuidColumnProperty(RowGuidColumnProperty item)
         {
             writer.Write("ROWGUIDCOL");
             base.VisitRowGuidColumnProperty(item);
         }
 
+        /// <summary>
+        /// Generates the text for a Sparse column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitSparseColumnProperty(SparseColumnProperty item)
         {
             writer.Write("SPARSE");
             base.VisitSparseColumnProperty(item);
         }
 
+        /// <summary>
+        /// Generates the text for an Add Columns.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitAddColumns(AddColumns item)
         {
             if (item.Columns != null && item.Columns.Any())
@@ -1782,7 +1837,7 @@ namespace SQLGeneration.Generators
 
                 foreach (IVisitableBuilder next in item.Columns.Skip(1))
                 {
-                    writer.Write(", ");                
+                    writer.Write(", ");
                     next.Accept(this);
                 }
             }
@@ -1790,6 +1845,10 @@ namespace SQLGeneration.Generators
             base.VisitAddColumns(item);
         }
 
+        /// <summary>
+        /// Generates the text for a DropItemsList column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitDropItemsList(DropItemsList item)
         {
             if (item.Items != null && item.Items.Any())
@@ -1807,11 +1866,15 @@ namespace SQLGeneration.Generators
             base.VisitDropItemsList(item);
         }
 
+        /// <summary>
+        /// Generates the text for a DropColumnsList column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitDropColumnsList(DropColumnsList item)
-        {        
+        {
             if (item.Items != null && item.Items.Any())
             {
-                writer.Write("COLUMN ");              
+                writer.Write("COLUMN ");
                 IVisitableBuilder first = item.Items.First();
                 first.Accept(this);
 
@@ -1824,12 +1887,20 @@ namespace SQLGeneration.Generators
             base.VisitDropColumnsList(item);
         }
 
+        /// <summary>
+        /// Generates the text for a DropColumn column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitDropColumn(DropColumn item)
         {
-            writer.Write(item.Name);    
+            writer.Write(item.Name);
             base.VisitDropColumn(item);
         }
 
+        /// <summary>
+        /// Generates the text for a DropConstraintsList column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitDropConstraintsList(DropConstraintsList item)
         {
             if (item.Items != null && item.Items.Any())
@@ -1847,14 +1918,22 @@ namespace SQLGeneration.Generators
             base.VisitDropConstraintsList(item);
         }
 
+        /// <summary>
+        /// Generates the text for a DropConstraint column property.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitDropConstraint(DropConstraint item)
         {
-            writer.Write(item.Name);  
+            writer.Write(item.Name);
             base.VisitDropConstraint(item);
         }
 
         #endregion
 
+        /// <summary>
+        /// Generates the text for a ColumnDefinition.
+        /// </summary>
+        /// <param name="item">The item to generate the text for.</param>
         protected internal override void VisitColumnDefinition(ColumnDefinition item)
         {
             writer.Write(item.Name);

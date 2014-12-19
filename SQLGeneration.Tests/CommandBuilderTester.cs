@@ -955,6 +955,16 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// This sees whether we can reproduce an insert statement with an output clause.
+        /// </summary>
+        [TestMethod]
+        public void TestInsert_ColumnsAndOutputInserted()
+        {
+            string commandText = "INSERT INTO [Table] (Column1, Column2, Column3) OUTPUT INSERTED.Column1, INSERTED.Column2, INSERTED.Column3 VALUES(1, 2, 3)";
+            assertCanReproduce(commandText);
+        }
+
         #endregion
 
         #region Update
@@ -999,6 +1009,16 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// This sees whether we can reproduce an update statement with an output clause.
+        /// </summary>
+        [TestMethod]
+        public void TestUpdate_OutputColumns()
+        {
+            string commandText = "UPDATE [Table] SET TestCol = 123 OUTPUT UPDATED.TestCol, DELETED.TestCol";
+            assertCanReproduce(commandText);
+        }
+
         #endregion
 
         #region Delete
@@ -1030,6 +1050,16 @@ namespace SQLGeneration.Tests
         public void TestDelete_WhereClause()
         {
             string commandText = "DELETE FROM [Table] WHERE TestCol = 123";
+            assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// This sees whether we can reproduce a delete statement with an output clause.
+        /// </summary>
+        [TestMethod]
+        public void TestDelete_AndOutputColumns()
+        {
+            string commandText = "DELETE FROM [Table] OUTPUT DELETED.ID, DELETED.OtherColumn";
             assertCanReproduce(commandText);
         }
 

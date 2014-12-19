@@ -7,11 +7,12 @@ namespace SQLGeneration.Builders
     /// <summary>
     /// Builds a string of a delete statement.
     /// </summary>
-    public class DeleteBuilder : IFilteredCommand
+    public class DeleteBuilder : IFilteredCommand, IOutputCommand
     {
         private readonly AliasedSource _table;
         private readonly FilterGroup _where;
         private bool _hasTerminator = false;
+        private readonly List<Column> _outputColumns;
 
         /// <summary>
         /// Initializes a new instance of a DeleteBuilder.
@@ -26,6 +27,7 @@ namespace SQLGeneration.Builders
             }
             _table = new AliasedSource(table, alias);
             _where = new FilterGroup();
+            _outputColumns = new List<Column>();
         }
 
         /// <summary>
@@ -69,6 +71,41 @@ namespace SQLGeneration.Builders
         public bool RemoveWhere(IFilter filter)
         {
             return _where.RemoveFilter(filter);
+        }
+
+        /// <summary>
+        /// Gets the output columns.
+        /// </summary>
+        public IEnumerable<Column> OutputColumns
+        {
+            get { return _outputColumns; }
+        }
+
+        /// <summary>
+        /// Adds the column as an output column.
+        /// </summary>
+        /// <param name="column">The column to add.</param>
+        public void AddOutputColumn(Column column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException("column");
+            }
+            _outputColumns.Add(column);
+        }
+
+        /// <summary>
+        /// Removes the column from the output columns.
+        /// </summary>
+        /// <param name="column">The column to remove.</param>
+        /// <returns>True if the column was removed; otherwise, false.</returns>
+        public bool RemoveOutputColumn(Column column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException("column");
+            }
+            return _outputColumns.Remove(column);
         }
 
         /// <summary>

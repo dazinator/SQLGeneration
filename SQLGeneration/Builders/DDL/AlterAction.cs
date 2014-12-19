@@ -10,7 +10,13 @@ namespace SQLGeneration.Builders
     /// </summary>
     public enum AlterAction
     {
+        /// <summary>
+        /// Add action.
+        /// </summary>
         Add,
+        /// <summary>
+        /// Drop action.
+        /// </summary>
         Drop
     }
 }

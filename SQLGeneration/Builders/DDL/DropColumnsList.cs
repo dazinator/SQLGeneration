@@ -14,8 +14,7 @@ namespace SQLGeneration.Builders
 
         /// <summary>
         /// Constructor.
-        /// </summary>
-        /// <param name="name"></param>
+        /// </summary>   
         public DropColumnsList()
         {
             _dropItems = new List<DropColumn>();

@@ -382,6 +382,11 @@ namespace SQLGeneration.Parsing
         /// </summary>
         public const string LineTerminator = "LineTerminator";
 
+        /// <summary>
+        /// Gets the identifier for the Output keyword.
+        /// </summary>
+        public const string Output = "Output";
+
         #region DDL
 
         /// <summary>
@@ -497,7 +502,7 @@ namespace SQLGeneration.Parsing
         /// <summary>
         /// Gets the identifier for the Modify keyword.
         /// </summary>
-        public const string ModifyName = "ModifyName";      
+        public const string ModifyName = "ModifyName";
 
         /// <summary>
         /// Gets the identifier for the Current keyword.
@@ -594,6 +599,7 @@ namespace SQLGeneration.Parsing
             Define(Then, @"THEN\b", true);
             Define(Else, @"ELSE\b", true);
             Define(End, @"END\b", true);
+            Define(Output, @"OUTPUT\b", true);        
 
             // DDL
             Define(Create, @"CREATE\b", true);
@@ -618,7 +624,7 @@ namespace SQLGeneration.Parsing
             Define(Replication, @"REPLICATION\b", true);
             Define(Check, @"CHECK\b", true);
             Define(Alter, @"ALTER\b", true);
-            Define(ModifyName, @"MODIFY\s+NAME\b", true);        
+            Define(ModifyName, @"MODIFY\s+NAME\b", true);
             Define(Current, @"CURRENT\b", true);
             Define(Column, @"COLUMN\b", true);
             Define(Add, @"ADD\b", true);

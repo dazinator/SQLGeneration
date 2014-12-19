@@ -59,6 +59,7 @@ namespace SQLGeneration.Parsing
             defineConditionList();
             defineConditionListPrime();
             defineCondition();
+            defineOutput();
             defineInsertStatement();
             defineColumnList();
             defineUpdateStatement();
@@ -153,12 +154,12 @@ namespace SQLGeneration.Parsing
         {
             Define(Start.Name)
                 .Add(true, Options()
-                    .Add(Start.SelectStatement, Expression(SelectStatement.Name))
-                    .Add(Start.InsertStatement, Expression(InsertStatement.Name))
-                    .Add(Start.UpdateStatement, Expression(UpdateStatement.Name))
-                    .Add(Start.DeleteStatement, Expression(DeleteStatement.Name))
-                    .Add(Start.CreateStatement, Expression(CreateStatement.Name))
-                    .Add(Start.AlterStatement, Expression(AlterStatement.Name))
+                  .Add(Start.SelectStatement, Expression(SelectStatement.Name))
+                  .Add(Start.InsertStatement, Expression(InsertStatement.Name))
+                  .Add(Start.UpdateStatement, Expression(UpdateStatement.Name))
+                  .Add(Start.DeleteStatement, Expression(DeleteStatement.Name))
+                  .Add(Start.CreateStatement, Expression(CreateStatement.Name))
+                  .Add(Start.AlterStatement, Expression(AlterStatement.Name))
                     )
                 .Add(Start.Terminator, false, Token(SqlTokenRegistry.LineTerminator));
         }
@@ -3339,6 +3340,18 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string RightParenthesis = "right_parenthesis";
             }
+
+            /// <summary>
+            /// Describes the structure of the output clause.
+            /// </summary>
+            public static class Output
+            {
+                /// <summary>
+                /// Gets the identifier indicating that there is a column list.
+                /// </summary>
+                public const string Name = "OutputExpression";
+
+            }
         }
 
         private void defineInsertStatement()
@@ -3354,6 +3367,7 @@ namespace SQLGeneration.Parsing
                     .Add(SqlGrammar.InsertStatement.Columns.LeftParenthesis, true, Token(SqlTokenRegistry.LeftParenthesis))
                     .Add(SqlGrammar.InsertStatement.Columns.ColumnList, true, Expression(ColumnList.Name))
                     .Add(SqlGrammar.InsertStatement.Columns.RightParenthesis, true, Token(SqlTokenRegistry.RightParenthesis)))
+                .Add(SqlGrammar.InsertStatement.Output.Name, false, Expression(Output.Name))
                 .Add(true, Options()
                     .Add(SqlGrammar.InsertStatement.Values.Name, Define()
                         .Add(SqlGrammar.InsertStatement.Values.ValuesKeyword, true, Token(SqlTokenRegistry.Values))
@@ -3499,6 +3513,19 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string FilterList = "filter_list";
             }
+
+            /// <summary>
+            /// Describes the structure of the output clause.
+            /// </summary>
+            public static class Output
+            {
+                /// <summary>
+                /// Gets the identifier indicating that there is a column list.
+                /// </summary>
+                public const string Name = "OutputExpression";
+
+            }
+
         }
 
         private void defineUpdateStatement()
@@ -3511,6 +3538,7 @@ namespace SQLGeneration.Parsing
                     .Add(UpdateStatement.AliasExpression.Alias, true, Token(SqlTokenRegistry.Identifier)))
                 .Add(UpdateStatement.SetKeyword, true, Token(SqlTokenRegistry.Set))
                 .Add(UpdateStatement.SetterList, true, Expression(SetterList.Name))
+                .Add(UpdateStatement.Output.Name, false, Expression(Output.Name))
                 .Add(UpdateStatement.Where.Name, false, Define()
                     .Add(UpdateStatement.Where.WhereKeyword, true, Token(SqlTokenRegistry.Where))
                     .Add(UpdateStatement.Where.FilterList, true, Expression(OrFilter.Name)));
@@ -3681,6 +3709,18 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string FilterList = "filter_list";
             }
+
+            /// <summary>
+            /// Describes the structure of the output clause.
+            /// </summary>
+            public static class Output
+            {
+                /// <summary>
+                /// Gets the identifier indicating that there is a column list.
+                /// </summary>
+                public const string Name = "OutputExpression";
+
+            }
         }
 
         private void defineDeleteStatement()
@@ -3692,6 +3732,7 @@ namespace SQLGeneration.Parsing
                 .Add(DeleteStatement.AliasExpression.Name, false, Define()
                     .Add(DeleteStatement.AliasExpression.AliasIndicator, false, Token(SqlTokenRegistry.As))
                     .Add(DeleteStatement.AliasExpression.Alias, true, Token(SqlTokenRegistry.Identifier)))
+                .Add(DeleteStatement.Output.Name, false, Expression(Output.Name))
                 .Add(DeleteStatement.Where.Name, false, Define()
                     .Add(DeleteStatement.Where.WhereKeyword, true, Token(SqlTokenRegistry.Where))
                     .Add(DeleteStatement.Where.FilterList, true, Expression(OrFilter.Name)));
@@ -3752,6 +3793,51 @@ namespace SQLGeneration.Parsing
                         .Add(MultipartIdentifier.Multiple.Dot, true, Token(SqlTokenRegistry.Dot))
                         .Add(MultipartIdentifier.Multiple.Remaining, true, Expression(MultipartIdentifier.Name)))
                     .Add(MultipartIdentifier.Single, Token(SqlTokenRegistry.Identifier)));
+        }
+
+        #endregion
+
+        #region Output
+
+        /// <summary>
+        /// Describes the structure of an OutputExpression
+        /// </summary>
+        public static class Output
+        {
+            /// <summary>
+            /// Gets the name identifying the output expression.
+            /// </summary>
+            public const string Name = "OutputClause";
+
+            /// <summary>
+            /// Gets the name identifying the output keyword.
+            /// </summary>
+            public const string OutputKeyword = "output";
+
+            /// <summary>
+            /// Describes the structure of the SELECT expression generating the output values.
+            /// </summary>
+            public static class Columns
+            {
+                /// <summary>
+                /// Gets the identifier indicating that the values come from a SELECT statement.
+                /// </summary>
+                public const string Name = "OutputColumnList";
+
+                /// <summary>
+                /// Gets the identifier for the select statement.
+                /// </summary>
+                public const string SelectStatement = "select_statement";
+
+            }
+
+        }
+
+        private void defineOutput()
+        {
+            Define(Output.Name)
+              .Add(Output.OutputKeyword, true, Token(SqlTokenRegistry.Output))
+              .Add(Output.Columns.Name, true, Expression(ColumnList.Name));
         }
 
         #endregion
@@ -4632,6 +4718,9 @@ namespace SQLGeneration.Parsing
                 /// </summary>
                 public const string AlterColumnDataTypeExpressionName = "altercolumndatatype";
 
+                /// <summary>
+                /// Describes the structure of the Add / Drop column clause. 
+                /// </summary>
                 public class AddOrDropColumnProperty
                 {
 

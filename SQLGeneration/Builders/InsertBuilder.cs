@@ -7,10 +7,11 @@ namespace SQLGeneration.Builders
     /// <summary>
     /// Builds a string of an insert statement.
     /// </summary>
-    public class InsertBuilder : ICommand
+    public class InsertBuilder : IOutputCommand
     {
         private readonly AliasedSource _table;
         private readonly List<Column> _columns;
+        private readonly List<Column> _outputColumns;
         private readonly IValueProvider _values;
         private bool _hasTerminator = false;
 
@@ -32,6 +33,7 @@ namespace SQLGeneration.Builders
             }
             _table = new AliasedSource(table, alias);
             _columns = new List<Column>();
+            _outputColumns = new List<Column>();
             _values = values;
         }
 
@@ -52,6 +54,14 @@ namespace SQLGeneration.Builders
         }
 
         /// <summary>
+        /// Gets the output columns.
+        /// </summary>
+        public IEnumerable<Column> OutputColumns
+        {
+            get { return _outputColumns; }
+        }
+
+        /// <summary>
         /// Adds the column to the insert statement.
         /// </summary>
         /// <param name="column">The column to add.</param>
@@ -62,7 +72,7 @@ namespace SQLGeneration.Builders
                 throw new ArgumentNullException("column");
             }
             _columns.Add(column);
-        }
+        }      
 
         /// <summary>
         /// Removes the column from the insert statement.
@@ -76,6 +86,33 @@ namespace SQLGeneration.Builders
                 throw new ArgumentNullException("column");
             }
             return _columns.Remove(column);
+        }
+
+        /// <summary>
+        /// Adds the column as an output column.
+        /// </summary>
+        /// <param name="column">The column to add.</param>
+        public void AddOutputColumn(Column column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException("column");
+            }
+            _outputColumns.Add(column);
+        }
+
+        /// <summary>
+        /// Removes the column from the output columns.
+        /// </summary>
+        /// <param name="column">The column to remove.</param>
+        /// <returns>True if the column was removed; otherwise, false.</returns>
+        public bool RemoveOutputColumn(Column column)
+        {
+            if (column == null)
+            {
+                throw new ArgumentNullException("column");
+            }
+            return _outputColumns.Remove(column);
         }
 
         /// <summary>

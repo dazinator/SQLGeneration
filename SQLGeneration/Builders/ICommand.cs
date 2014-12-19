@@ -13,4 +13,5 @@ namespace SQLGeneration.Builders
         /// </summary>
         bool HasTerminator { get; set; }
     }
+    
 }

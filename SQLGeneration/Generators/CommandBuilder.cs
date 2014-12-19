@@ -1749,7 +1749,26 @@ namespace SQLGeneration.Generators
                 MatchResult columnListResult = columnsResult.Matches[SqlGrammar.InsertStatement.Columns.ColumnList];
                 buildColumnsList(columnListResult, builder);
             }
+
+
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
+            collection.AddSource("UPDATED", new AliasedSource(new Table("UPDATED"), null));
+            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
+            //scope.Push(collection);
+
+            MatchResult outputClauseResult = result.Matches[SqlGrammar.InsertStatement.Output.Name];
+            if (outputClauseResult.IsMatch)
+            {
+                var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
+
+                // MatchResult outputClauseMatch = outputClauseResult.Matches[SqlGrammar.Output.Name];
+                //  MatchResult columnListResult = outputClauseMatch.Matches[SqlGrammar.InsertStatement.Columns.ColumnList];
+                buildOutputColumnsList(columnListResult, builder);
+            }
+
             scope.Pop();
+
+
             return builder;
         }
 
@@ -1775,6 +1794,28 @@ namespace SQLGeneration.Generators
             throw new InvalidOperationException();
         }
 
+        private void buildOutputColumnsList(MatchResult result, IOutputCommand builder)
+        {
+            MatchResult multiple = result.Matches[SqlGrammar.ColumnList.Multiple.Name];
+            if (multiple.IsMatch)
+            {
+                MatchResult first = multiple.Matches[SqlGrammar.ColumnList.Multiple.First];
+                Column column = buildColumn(first);
+                builder.AddOutputColumn(column);
+                MatchResult remaining = multiple.Matches[SqlGrammar.ColumnList.Multiple.Remaining];
+                buildOutputColumnsList(remaining, builder);
+                return;
+            }
+            MatchResult single = result.Matches[SqlGrammar.ColumnList.Single];
+            if (single.IsMatch)
+            {
+                Column column = buildColumn(single);
+                builder.AddOutputColumn(column);
+                return;
+            }
+            throw new InvalidOperationException();
+        }
+
         private ICommand buildUpdateStatement(MatchResult result)
         {
             MatchResult tableResult = result.Matches[SqlGrammar.UpdateStatement.Table];
@@ -1792,6 +1833,22 @@ namespace SQLGeneration.Generators
             scope.Push(collection);
             MatchResult setterListResult = result.Matches[SqlGrammar.UpdateStatement.SetterList];
             buildSetterList(setterListResult, builder);
+            // output clause
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
+            collection.AddSource("UPDATED", new AliasedSource(new Table("UPDATED"), null));
+            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
+            //scope.Push(collection);
+
+            MatchResult outputClauseResult = result.Matches[SqlGrammar.UpdateStatement.Output.Name];
+            if (outputClauseResult.IsMatch)
+            {
+                var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
+
+                // MatchResult outputClauseMatch = outputClauseResult.Matches[SqlGrammar.Output.Name];
+                //  MatchResult columnListResult = outputClauseMatch.Matches[SqlGrammar.InsertStatement.Columns.ColumnList];
+                buildOutputColumnsList(columnListResult, builder);
+            }
+
             MatchResult whereResult = result.Matches[SqlGrammar.UpdateStatement.Where.Name];
             if (whereResult.IsMatch)
             {
@@ -1802,7 +1859,7 @@ namespace SQLGeneration.Generators
             }
             scope.Pop();
             return builder;
-        }
+        }      
 
         private void buildSetterList(MatchResult result, UpdateBuilder builder)
         {
@@ -1851,6 +1908,23 @@ namespace SQLGeneration.Generators
             SourceCollection collection = new SourceCollection();
             collection.AddSource(builder.Table.GetSourceName(), builder.Table);
             scope.Push(collection);
+
+            // output clause
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
+            collection.AddSource("UPDATED", new AliasedSource(new Table("UPDATED"), null));
+            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
+            //scope.Push(collection);
+
+            MatchResult outputClauseResult = result.Matches[SqlGrammar.DeleteStatement.Output.Name];
+            if (outputClauseResult.IsMatch)
+            {
+                var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
+
+                // MatchResult outputClauseMatch = outputClauseResult.Matches[SqlGrammar.Output.Name];
+                //  MatchResult columnListResult = outputClauseMatch.Matches[SqlGrammar.InsertStatement.Columns.ColumnList];
+                buildOutputColumnsList(columnListResult, builder);
+            }
+
             MatchResult whereResult = result.Matches[SqlGrammar.DeleteStatement.Where.Name];
             if (whereResult.IsMatch)
             {
@@ -2095,7 +2169,9 @@ namespace SQLGeneration.Generators
                 string tableName = parts[parts.Count - 2];
                 AliasedSource source = scope.GetSource(tableName);
                 string columnName = parts[parts.Count - 1];
-                return source.Column(columnName);
+                var col = source.Column(columnName);
+                col.Qualify = true;
+                return col;
             }
             else
             {

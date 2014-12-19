@@ -14,6 +14,7 @@ namespace SQLGeneration.Builders
         /// Constructor.
         /// </summary>
         /// <param name="alterType"></param>
+        /// <param name="columnname">The column name to be altered.</param>
         public AlterColumnProperty(AlterAction alterType, string columnname)
         {
             this.Name = columnname;

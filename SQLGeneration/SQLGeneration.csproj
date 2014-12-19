@@ -92,6 +92,7 @@
     <Compile Include="Builders\DDL\CreateTableDefinition.cs" />
     <Compile Include="Builders\DDL\SparseColumnProperty.cs" />
     <Compile Include="Builders\DDL\UniqueConstraint.cs" />
+    <Compile Include="Builders\IOutputCommand.cs" />
     <Compile Include="Builders\PrecedingUnboundFrame.cs" />
     <Compile Include="Builders\FollowingUnboundFrame.cs" />
     <Compile Include="Builders\FollowingBoundFrame.cs" />

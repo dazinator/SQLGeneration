@@ -1015,7 +1015,7 @@ namespace SQLGeneration.Tests
         [TestMethod]
         public void TestUpdate_OutputColumns()
         {
-            string commandText = "UPDATE [Table] SET TestCol = 123 OUTPUT UPDATED.TestCol, DELETED.TestCol";
+            string commandText = "UPDATE [Table] SET TestCol = 123 OUTPUT DELETED.TestCol, INSERTED.TestCol";
             assertCanReproduce(commandText);
         }
 

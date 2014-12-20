@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SQLGeneration.Builders;
 using SQLGeneration.Generators;
+using System.Linq;
 
 namespace SQLGeneration.Tests
 {
@@ -1071,7 +1072,7 @@ namespace SQLGeneration.Tests
         {
             string commandText = "DELETE FROM [Table] OUTPUT DELETED.ID, DELETED.OtherColumn";
             assertCanReproduce(commandText);
-        }
+        }       
 
         #endregion
 
@@ -1649,7 +1650,7 @@ namespace SQLGeneration.Tests
         {
             string commandText = "ALTER TABLE MyTable DROP CONSTRAINT myconstraint";
             assertCanReproduce(commandText);
-        }      
+        }
 
         /// <summary>
         /// This sees whether we can reproduce an alter table drop constraint with no constraint keyword.
@@ -1856,13 +1857,29 @@ ORDER BY b.CompanyId, ra.RouteId, vm.VendingMachineId, p.ProductLookupId, rc.Eff
         #region Bug Fixes
 
         /// <summary>
-        /// @danizator discovered that the NOT was not being persisted within a IS NULL filter.
+        /// @dazinator discovered that the NOT was not being persisted within a IS NULL filter.
         /// </summary>
         [TestMethod]
         public void TestNullFilter_NotPersistsRoundtrip()
         {
             string commandText = "SELECT CustomerId, FirstName, LastName, Created FROM Customer WHERE FirstName IS NOT NULL";
             assertCanReproduce(commandText);
+        }
+
+        /// <summary>
+        /// @dazinator discovered a regression where a column in the WHERE filter was being parsed as a PlaceHolder rather than a Column.
+        /// See 
+        /// </summary>
+        [TestMethod]
+        public void TestDelete_WhereClause_ColumnNotPlaceHolder()
+        {
+            string commandText = "DELETE FROM [Table] WHERE TableId = 123";
+            CommandBuilder builder = new CommandBuilder();
+            ICommand command = builder.GetCommand(commandText, null);
+            var deleteCommand = (DeleteBuilder)command;
+
+            var filter = (EqualToFilter)deleteCommand.Where.First();
+            Assert.IsInstanceOfType(filter.LeftHand, typeof(Column));
         }
 
         #endregion

@@ -1750,21 +1750,17 @@ namespace SQLGeneration.Generators
                 buildColumnsList(columnListResult, builder);
             }
 
-
-            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));          
-            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
-            //scope.Push(collection);
-
+            // within the context of a T-SQL output clause, INSERTED and DELETED are valid sources.
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
+            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));          
             MatchResult outputClauseResult = result.Matches[SqlGrammar.InsertStatement.Output.Name];
             if (outputClauseResult.IsMatch)
             {
                 var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
-
-                // MatchResult outputClauseMatch = outputClauseResult.Matches[SqlGrammar.Output.Name];
-                //  MatchResult columnListResult = outputClauseMatch.Matches[SqlGrammar.InsertStatement.Columns.ColumnList];
                 buildOutputColumnsList(columnListResult, builder);
             }
-
+            collection.Remove("INSERTED");
+            collection.Remove("DELETED");
             scope.Pop();
 
 
@@ -1832,20 +1828,19 @@ namespace SQLGeneration.Generators
             scope.Push(collection);
             MatchResult setterListResult = result.Matches[SqlGrammar.UpdateStatement.SetterList];
             buildSetterList(setterListResult, builder);
-            // output clause
-            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));            
-            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
-            //scope.Push(collection);
 
+            // within the context of a T-SQL output clause, INSERTED and DELETED are valid sources.
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
+            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
+          
             MatchResult outputClauseResult = result.Matches[SqlGrammar.UpdateStatement.Output.Name];
             if (outputClauseResult.IsMatch)
             {
                 var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
-
-                // MatchResult outputClauseMatch = outputClauseResult.Matches[SqlGrammar.Output.Name];
-                //  MatchResult columnListResult = outputClauseMatch.Matches[SqlGrammar.InsertStatement.Columns.ColumnList];
                 buildOutputColumnsList(columnListResult, builder);
             }
+            collection.Remove("INSERTED");
+            collection.Remove("DELETED");
 
             MatchResult whereResult = result.Matches[SqlGrammar.UpdateStatement.Where.Name];
             if (whereResult.IsMatch)
@@ -1857,7 +1852,7 @@ namespace SQLGeneration.Generators
             }
             scope.Pop();
             return builder;
-        }      
+        }
 
         private void buildSetterList(MatchResult result, UpdateBuilder builder)
         {
@@ -1907,20 +1902,18 @@ namespace SQLGeneration.Generators
             collection.AddSource(builder.Table.GetSourceName(), builder.Table);
             scope.Push(collection);
 
-            // output clause
-            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));           
+            // within the context of a T-SQL output clause, INSERTED and DELETED are valid sources.
+            collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
             collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
             //scope.Push(collection);
-
             MatchResult outputClauseResult = result.Matches[SqlGrammar.DeleteStatement.Output.Name];
             if (outputClauseResult.IsMatch)
             {
                 var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
-
-                // MatchResult outputClauseMatch = outputClauseResult.Matches[SqlGrammar.Output.Name];
-                //  MatchResult columnListResult = outputClauseMatch.Matches[SqlGrammar.InsertStatement.Columns.ColumnList];
                 buildOutputColumnsList(columnListResult, builder);
             }
+            collection.Remove("INSERTED");
+            collection.Remove("DELETED");
 
             MatchResult whereResult = result.Matches[SqlGrammar.DeleteStatement.Where.Name];
             if (whereResult.IsMatch)

@@ -11,7 +11,10 @@ namespace SQLGeneration.Builders
     {
         private readonly AliasedSource _table;
         private readonly List<Column> _columns;
-        private readonly List<Column> _outputColumns;
+
+        private readonly List<AliasedProjection> _outputProjection;
+
+      //  private readonly List<Column> _outputColumns;
         private readonly IValueProvider _values;
         private bool _hasTerminator = false;
 
@@ -33,7 +36,8 @@ namespace SQLGeneration.Builders
             }
             _table = new AliasedSource(table, alias);
             _columns = new List<Column>();
-            _outputColumns = new List<Column>();
+            _outputProjection = new List<AliasedProjection>();
+          //  _outputColumns = new List<Column>();
             _values = values;
         }
 
@@ -53,13 +57,7 @@ namespace SQLGeneration.Builders
             get { return _columns; }
         }
 
-        /// <summary>
-        /// Gets the output columns.
-        /// </summary>
-        public IEnumerable<Column> OutputColumns
-        {
-            get { return _outputColumns; }
-        }
+      
 
         /// <summary>
         /// Adds the column to the insert statement.
@@ -89,31 +87,70 @@ namespace SQLGeneration.Builders
         }
 
         /// <summary>
-        /// Adds the column as an output column.
+        /// Gets the output projection items.
         /// </summary>
-        /// <param name="column">The column to add.</param>
-        public void AddOutputColumn(Column column)
+        public IEnumerable<AliasedProjection> Output
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException("column");
-            }
-            _outputColumns.Add(column);
+            get { return _outputProjection; }
         }
 
         /// <summary>
-        /// Removes the column from the output columns.
+        /// Adds a projection item to the output projection.
         /// </summary>
-        /// <param name="column">The column to remove.</param>
-        /// <returns>True if the column was removed; otherwise, false.</returns>
-        public bool RemoveOutputColumn(Column column)
+        /// <param name="item">The projection item to add.</param>
+        /// <param name="alias">The alias to refer to the item with.</param>
+        /// <returns>The item that was added.</returns>
+        public AliasedProjection AddOutputProjection(IProjectionItem item, string alias = null)
         {
-            if (column == null)
+            if (item == null)
             {
-                throw new ArgumentNullException("column");
+                throw new ArgumentNullException("item");
             }
-            return _outputColumns.Remove(column);
+            AliasedProjection projection = new AliasedProjection(item, alias);
+            _outputProjection.Add(projection);
+            return projection;
+        }        
+
+        /// <summary>
+        /// Removes the projection item from the output projection.
+        /// </summary>
+        /// <param name="projection">The projection item to remove.</param>
+        /// <returns>True if the item was removed; otherwise, false.</returns>
+        public bool RemoveOutputProjection(AliasedProjection projection)
+        {
+            if (projection == null)
+            {
+                throw new ArgumentNullException("projection");
+            }
+            return _outputProjection.Remove(projection);
         }
+
+        ///// <summary>
+        ///// Adds the column as an output column.
+        ///// </summary>
+        ///// <param name="column">The column to add.</param>
+        //public void AddOutputColumn(Column column)
+        //{
+        //    if (column == null)
+        //    {
+        //        throw new ArgumentNullException("column");
+        //    }
+        //    _outputColumns.Add(column);
+        //}
+
+        ///// <summary>
+        ///// Removes the column from the output columns.
+        ///// </summary>
+        ///// <param name="column">The column to remove.</param>
+        ///// <returns>True if the column was removed; otherwise, false.</returns>
+        //public bool RemoveOutputColumn(Column column)
+        //{
+        //    if (column == null)
+        //    {
+        //        throw new ArgumentNullException("column");
+        //    }
+        //    return _outputColumns.Remove(column);
+        //}
 
         /// <summary>
         /// Gets the list of values or select statement that populates the insert.

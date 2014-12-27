@@ -237,10 +237,10 @@ namespace SQLGeneration.Generators
             }
             forSourceContext(SourceReferenceType.Declaration).visitAliasedSource(item.Table);
 
-            if (item.OutputColumns.Any())
+            if (item.Output.Any())
             {
                 writer.Write(" OUTPUT ");
-                forValueContext(ValueReferenceType.Reference).join(", ", item.OutputColumns);
+                forValueContext(ValueReferenceType.Reference).join(", ", item.Output);
             }
 
             if (item.WhereFilterGroup.HasFilters)
@@ -527,10 +527,10 @@ namespace SQLGeneration.Generators
                 writer.Write(")");
             }
             writer.Write(" ");
-            if (item.OutputColumns.Any())
+            if (item.Output.Any())
             {
                 writer.Write("OUTPUT ");
-                forValueContext(ValueReferenceType.Reference).join(", ", item.OutputColumns);
+                forValueContext(ValueReferenceType.Reference).join(", ", item.Output);
                 writer.Write(" ");
             }
             if (item.Values.IsValueList)
@@ -1044,10 +1044,10 @@ namespace SQLGeneration.Generators
             writer.Write(" SET ");
             forValueContext(ValueReferenceType.Reference).join(", ", item.Setters);
 
-            if (item.OutputColumns.Any())
+            if (item.Output.Any())
             {
                 writer.Write(" OUTPUT ");
-                forValueContext(ValueReferenceType.Reference).join(", ", item.OutputColumns);
+                forValueContext(ValueReferenceType.Reference).join(", ", item.Output);
             }
             if (item.WhereFilterGroup.HasFilters)
             {

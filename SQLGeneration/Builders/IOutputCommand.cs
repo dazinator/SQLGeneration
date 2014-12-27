@@ -12,17 +12,17 @@ namespace SQLGeneration.Builders
     {
 
         /// <summary>
-        /// Adds the column as an output column.
+        /// Adds the projection item to the output projection items.
         /// </summary>
         /// <param name="column">The column to add.</param>
-        void AddOutputColumn(Column column);
+        AliasedProjection AddOutputProjection(IProjectionItem item, string alias = null);
 
         /// <summary>
-        /// Removes the column from the output columns.
+        /// Removes the AliasedProjection from the output projection.
         /// </summary>
-        /// <param name="column">The column to remove.</param>
-        /// <returns>True if the column was removed; otherwise, false.</returns>
-        bool RemoveOutputColumn(Column column);
+        /// <param name="projection">The AliasedProjection to remove.</param>
+        /// <returns>True if the AliasedProjection was removed; otherwise, false.</returns>
+        bool RemoveOutputProjection(AliasedProjection projection);
 
     }
 }

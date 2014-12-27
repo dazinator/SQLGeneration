@@ -12,7 +12,8 @@ namespace SQLGeneration.Builders
         private readonly AliasedSource _table;
         private readonly FilterGroup _where;
         private bool _hasTerminator = false;
-        private readonly List<Column> _outputColumns;
+
+        private readonly List<AliasedProjection> _outputProjection;
 
         /// <summary>
         /// Initializes a new instance of a DeleteBuilder.
@@ -27,7 +28,7 @@ namespace SQLGeneration.Builders
             }
             _table = new AliasedSource(table, alias);
             _where = new FilterGroup();
-            _outputColumns = new List<Column>();
+            _outputProjection = new List<AliasedProjection>();
         }
 
         /// <summary>
@@ -74,38 +75,42 @@ namespace SQLGeneration.Builders
         }
 
         /// <summary>
-        /// Gets the output columns.
+        /// Gets the output projection items.
         /// </summary>
-        public IEnumerable<Column> OutputColumns
+        public IEnumerable<AliasedProjection> Output
         {
-            get { return _outputColumns; }
+            get { return _outputProjection; }
         }
 
         /// <summary>
-        /// Adds the column as an output column.
+        /// Adds a projection item to the output projection.
         /// </summary>
-        /// <param name="column">The column to add.</param>
-        public void AddOutputColumn(Column column)
+        /// <param name="item">The projection item to add.</param>
+        /// <param name="alias">The alias to refer to the item with.</param>
+        /// <returns>The item that was added.</returns>
+        public AliasedProjection AddOutputProjection(IProjectionItem item, string alias = null)
         {
-            if (column == null)
+            if (item == null)
             {
-                throw new ArgumentNullException("column");
+                throw new ArgumentNullException("item");
             }
-            _outputColumns.Add(column);
+            AliasedProjection projection = new AliasedProjection(item, alias);
+            _outputProjection.Add(projection);
+            return projection;
         }
 
         /// <summary>
-        /// Removes the column from the output columns.
+        /// Removes the projection item from the output projection.
         /// </summary>
-        /// <param name="column">The column to remove.</param>
-        /// <returns>True if the column was removed; otherwise, false.</returns>
-        public bool RemoveOutputColumn(Column column)
+        /// <param name="projection">The projection item to remove.</param>
+        /// <returns>True if the item was removed; otherwise, false.</returns>
+        public bool RemoveOutputProjection(AliasedProjection projection)
         {
-            if (column == null)
+            if (projection == null)
             {
-                throw new ArgumentNullException("column");
+                throw new ArgumentNullException("projection");
             }
-            return _outputColumns.Remove(column);
+            return _outputProjection.Remove(projection);
         }
 
         /// <summary>

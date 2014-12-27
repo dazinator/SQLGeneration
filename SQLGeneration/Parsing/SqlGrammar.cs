@@ -3837,7 +3837,8 @@ namespace SQLGeneration.Parsing
         {
             Define(Output.Name)
               .Add(Output.OutputKeyword, true, Token(SqlTokenRegistry.Output))
-              .Add(Output.Columns.Name, true, Expression(ColumnList.Name));
+              .Add(Output.Columns.Name, true, Expression(ProjectionList.Name));
+             // .Add(Output.Columns.Name, true, Expression(ColumnList.Name));
         }
 
         #endregion

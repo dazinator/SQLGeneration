@@ -966,6 +966,16 @@ namespace SQLGeneration.Tests
             assertCanReproduce(commandText);
         }
 
+        /// <summary>
+        /// This sees whether we can reproduce an insert statement with an output clause.
+        /// </summary>
+        [TestMethod]
+        public void TestInsert_ColumnsAndOutputInserted_AllColumns()
+        {
+            string commandText = "INSERT INTO [Table] (Column1, Column2, Column3) OUTPUT INSERTED.* VALUES(1, 2, 3)";
+            assertCanReproduce(commandText);
+        }
+
         #endregion
 
         #region Update

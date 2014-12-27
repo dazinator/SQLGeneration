@@ -1752,12 +1752,12 @@ namespace SQLGeneration.Generators
 
             // within the context of a T-SQL output clause, INSERTED and DELETED are valid sources.
             collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
-            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));          
+            collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
             MatchResult outputClauseResult = result.Matches[SqlGrammar.InsertStatement.Output.Name];
             if (outputClauseResult.IsMatch)
             {
                 var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
-                buildOutputColumnsList(columnListResult, builder);
+                buildOutputProjectionList(columnListResult, builder);
             }
             collection.Remove("INSERTED");
             collection.Remove("DELETED");
@@ -1789,23 +1789,83 @@ namespace SQLGeneration.Generators
             throw new InvalidOperationException();
         }
 
-        private void buildOutputColumnsList(MatchResult result, IOutputCommand builder)
+        //private void buildOutputColumnsList(MatchResult result, IOutputCommand builder)
+        //{
+        //    MatchResult multiple = result.Matches[SqlGrammar.ColumnList.Multiple.Name];
+        //    if (multiple.IsMatch)
+        //    {
+        //        MatchResult first = multiple.Matches[SqlGrammar.ColumnList.Multiple.First];
+        //        Column column = buildColumn(first);
+        //        builder.AddOutputColumn(column);
+        //        MatchResult remaining = multiple.Matches[SqlGrammar.ColumnList.Multiple.Remaining];
+        //        buildOutputColumnsList(remaining, builder);
+        //        return;
+        //    }
+        //    MatchResult single = result.Matches[SqlGrammar.ColumnList.Single];
+        //    if (single.IsMatch)
+        //    {
+        //        Column column = buildColumn(single);
+        //        builder.AddOutputColumn(column);
+        //        return;
+        //    }
+        //    throw new InvalidOperationException();
+        //}
+
+
+        private void buildOutputProjectionList(MatchResult result, IOutputCommand builder)
         {
-            MatchResult multiple = result.Matches[SqlGrammar.ColumnList.Multiple.Name];
+            MatchResult multiple = result.Matches[SqlGrammar.ProjectionList.Multiple.Name];
             if (multiple.IsMatch)
             {
-                MatchResult first = multiple.Matches[SqlGrammar.ColumnList.Multiple.First];
-                Column column = buildColumn(first);
-                builder.AddOutputColumn(column);
-                MatchResult remaining = multiple.Matches[SqlGrammar.ColumnList.Multiple.Remaining];
-                buildOutputColumnsList(remaining, builder);
+                MatchResult first = multiple.Matches[SqlGrammar.ProjectionList.Multiple.First];
+                buildOutputProjectionItem(first, builder);
+                MatchResult remaining = multiple.Matches[SqlGrammar.ProjectionList.Multiple.Remaining];
+                buildOutputProjectionList(remaining, builder);
                 return;
             }
-            MatchResult single = result.Matches[SqlGrammar.ColumnList.Single];
+            MatchResult single = result.Matches[SqlGrammar.ProjectionList.Single];
             if (single.IsMatch)
             {
-                Column column = buildColumn(single);
-                builder.AddOutputColumn(column);
+                buildOutputProjectionItem(single, builder);
+                return;
+            }
+            throw new InvalidOperationException();
+        }
+
+        private void buildOutputProjectionItem(MatchResult result, IOutputCommand builder)
+        {
+            MatchResult expression = result.Matches[SqlGrammar.ProjectionItem.Expression.Name];
+            if (expression.IsMatch)
+            {
+                MatchResult itemResult = expression.Matches[SqlGrammar.ProjectionItem.Expression.Item];
+                IProjectionItem item = (IProjectionItem)buildArithmeticItem(itemResult);
+                string alias = null;
+                MatchResult aliasExpression = expression.Matches[SqlGrammar.ProjectionItem.Expression.AliasExpression.Name];
+                if (aliasExpression.IsMatch)
+                {
+                    MatchResult aliasResult = aliasExpression.Matches[SqlGrammar.ProjectionItem.Expression.AliasExpression.Alias];
+                    alias = getToken(aliasResult);
+                }
+
+                var p = builder.AddOutputProjection(item, alias);
+
+                return;
+            }
+            MatchResult star = result.Matches[SqlGrammar.ProjectionItem.Star.Name];
+            if (star.IsMatch)
+            {
+                AliasedSource source = null;
+                MatchResult qualifier = star.Matches[SqlGrammar.ProjectionItem.Star.Qualifier.Name];
+                if (qualifier.IsMatch)
+                {
+                    MatchResult columnSource = qualifier.Matches[SqlGrammar.ProjectionItem.Star.Qualifier.ColumnSource];
+                    List<string> parts = new List<string>();
+                    buildMultipartIdentifier(columnSource, parts);
+                    string sourceName = parts[parts.Count - 1];
+                    source = scope.GetSource(sourceName);
+                }
+                AllColumns all = new AllColumns(source);
+                builder.AddOutputProjection(all);
                 return;
             }
             throw new InvalidOperationException();
@@ -1832,12 +1892,12 @@ namespace SQLGeneration.Generators
             // within the context of a T-SQL output clause, INSERTED and DELETED are valid sources.
             collection.AddSource("INSERTED", new AliasedSource(new Table("INSERTED"), null));
             collection.AddSource("DELETED", new AliasedSource(new Table("DELETED"), null));
-          
+
             MatchResult outputClauseResult = result.Matches[SqlGrammar.UpdateStatement.Output.Name];
             if (outputClauseResult.IsMatch)
             {
                 var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
-                buildOutputColumnsList(columnListResult, builder);
+                buildOutputProjectionList(columnListResult, builder);
             }
             collection.Remove("INSERTED");
             collection.Remove("DELETED");
@@ -1910,7 +1970,7 @@ namespace SQLGeneration.Generators
             if (outputClauseResult.IsMatch)
             {
                 var columnListResult = outputClauseResult.Matches[SqlGrammar.Output.Columns.Name];
-                buildOutputColumnsList(columnListResult, builder);
+                buildOutputProjectionList(columnListResult, builder);
             }
             collection.Remove("INSERTED");
             collection.Remove("DELETED");
@@ -2126,7 +2186,9 @@ namespace SQLGeneration.Generators
                 string tableName = parts[parts.Count - 2];
                 AliasedSource source = scope.GetSource(tableName);
                 string columnName = parts[parts.Count - 1];
-                return source.Column(columnName);
+                var column = source.Column(columnName);
+                column.Qualify = true;
+                return column;
             }
             string name = parts[0];
             if (options.PlaceholderPrefix != null && name.StartsWith(options.PlaceholderPrefix))

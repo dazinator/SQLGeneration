@@ -107,8 +107,8 @@ namespace SQLGeneration.Parsing
                 checks = new Dictionary<string, Regex>();
                 foreach (string tokenName in definitionLookup.Keys)
                 {
-                    string pattern = getTokenRegex(definitionLookup[tokenName]);
-                    Regex regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+                    string pattern = getTokenRegex(definitionLookup[tokenName]);                   
+                    Regex regex = new Regex(pattern, RegexOptionsHelper.DefaultOptions | RegexOptions.ExplicitCapture);                  
                     checks.Add(tokenName, regex);
                 }
             }

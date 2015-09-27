@@ -22,7 +22,7 @@ namespace SQLGeneration.Builders
         {
             if (!Enum.IsDefined(typeof(Conjunction), conjunction))
             {
-                throw new InvalidEnumArgumentException("conjunction", (int)conjunction, typeof(Conjunction));
+                throw new ArgumentException("Invalid enum","conjunction");
             }
             if (filters == null)
             {

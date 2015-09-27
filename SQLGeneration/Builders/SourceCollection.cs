@@ -17,7 +17,7 @@ namespace SQLGeneration.Builders
         /// </summary>
         internal SourceCollection()
         {
-            sourceLookup = new Dictionary<string, AliasedSource>(StringComparer.InvariantCultureIgnoreCase);
+            sourceLookup = new Dictionary<string, AliasedSource>(StringComparerHelper.DefaultStringComparer);
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace SQLGeneration.Builders
         /// <param name="other">The source collection to copy the value from.</param>
         internal SourceCollection(SourceCollection other)
         {
-            sourceLookup = new Dictionary<string, AliasedSource>(other.sourceLookup, StringComparer.InvariantCultureIgnoreCase);
+            sourceLookup = new Dictionary<string, AliasedSource>(other.sourceLookup, StringComparerHelper.DefaultStringComparer);
         }
 
         /// <summary>

@@ -39,8 +39,7 @@ namespace SQLGeneration.Parsing
 
             Expression expression = grammar.Expression(expressionType);
             ParseAttempt attempt = new ParseAttempt(this, tokenSource);
-            MatchResult result = expression.Match(attempt, String.Empty);         
-
+            MatchResult result = expression.Match(attempt, String.Empty);
             return result;
         }
 

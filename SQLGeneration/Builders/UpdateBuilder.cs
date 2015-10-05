@@ -111,6 +111,9 @@ namespace SQLGeneration.Builders
             return _where.RemoveFilter(filter);
         }
 
+        /// <summary>
+        /// Columns that are put of an Output Clause.
+        /// </summary>
         public IEnumerable<AliasedProjection> Output
         {
             get { return _outputProjection; }

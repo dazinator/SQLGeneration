@@ -14,7 +14,8 @@ namespace SQLGeneration.Builders
         /// <summary>
         /// Adds the projection item to the output projection items.
         /// </summary>
-        /// <param name="column">The column to add.</param>
+        /// <param name="item">The column to add.</param>
+        /// <param name="alias">The alias for the column.</param>
         AliasedProjection AddOutputProjection(IProjectionItem item, string alias = null);
 
         /// <summary>

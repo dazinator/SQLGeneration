@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using SQLGeneration.Properties;
+using SQLGeneration.SQLGeneration;
 
 namespace SQLGeneration.Parsing
 {
@@ -108,7 +109,7 @@ namespace SQLGeneration.Parsing
                 foreach (string tokenName in definitionLookup.Keys)
                 {
                     string pattern = getTokenRegex(definitionLookup[tokenName]);
-                    Regex regex = new Regex(pattern, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+                    Regex regex = new Regex(pattern, RegexOptionsHelper.DefaultOptions | RegexOptions.ExplicitCapture);
                     checks.Add(tokenName, regex);
                 }
             }
